@@ -24,9 +24,7 @@ async def 내팀보기(ctx):
 
 @commands.command()
 async def 선수목록(ctx, position):
-    async def 선수목록(ctx, position: str):
-    # 선수 데이터 로드
-        players_data = load_data()["players"]
+    players_data = load_data()["players"]
 
     # 포지션에 해당하는 선수들을 티어별로 정리
     tiered_players = {}
