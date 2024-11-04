@@ -445,6 +445,7 @@ async def 관리자명령어(ctx):
     **!선수삭제 [이름]**
     **!on**: 이적시장 활성화
     **!off**: 이적시장 비활성화
+    **이이이잉 쇼메이쿠**
     """
     await ctx.send(manager_commands_list)
 
