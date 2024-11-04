@@ -1,0 +1,72 @@
+from discord.ext import commands
+from player_database import load_data
+from main import user_data, initialize_user, get_player_value
+
+@commands.command()
+async def 선수등록(ctx, position, name):
+    user_id = ctx.author.id
+    initialize_user(user_id)  # 사용자 초기화
+
+    # 선수 정보 확인
+    try:
+        players_data = load_data()["players"]  # 선수 데이터 로드
+        player_info = next(({"name": name, "tier": players["tier"]} for player, players in players_data.items() 
+                            if player == name), None)
+
+        if player_info is None:
+            await ctx.send("올바른 선수 이름을 입력하세요.")
+            return
+
+        player_value = get_player_value(name)
+
+        # 예산 확인
+        if player_value is None:
+            await ctx.send("선수의 가치를 확인할 수 없습니다.")
+            return
+
+        if user_data[user_id]["budget"] < player_value:
+            await ctx.send(f"예산이 부족합니다. 현재 예산: {user_data[user_id]['budget']} 골드")
+            return
+
+        # 이미 등록된 포지션에 선수가 있으면 판매 후 등록
+        if user_data[user_id]["team"][position] is not None:
+            existing_player = user_data[user_id]["team"][position]
+            user_data[user_id]["budget"] += existing_player["value"]
+            user_data[user_id]["team_value"] -= existing_player["value"]
+
+        # 선수 등록
+        user_data[user_id]["team"][position] = {"name": name, "value": player_value}
+        user_data[user_id]["budget"] -= player_value
+        user_data[user_id]["team_value"] += player_value
+
+        await ctx.send(f"{position}에 {name} 선수를 등록했습니다. 남은 예산: {user_data[user_id]['budget']} 골드")
+
+    except KeyError as e:
+        await ctx.send("선수 데이터를 로드하는 데 문제가 발생했습니다.")
+        print(f"KeyError 발생: {e}")
+    except Exception as e:
+        await ctx.send("오류가 발생했습니다.")
+        print(f"오류 발생: {e}")
+
+@commands.command()
+async def 선수판매(ctx, position=None):
+    user_id = ctx.author.id
+    initialize_user(user_id)  # 사용자 초기화
+
+    if position == "ALL":
+        total_value = 0
+        for pos, player in user_data[user_id]["team"].items():
+            if player:
+                total_value += player["value"]
+                user_data[user_id]["team"][pos] = None
+        user_data[user_id]["budget"] += total_value
+        await ctx.send(f"모든 선수가 판매되었으며 {total_value} 골드가 반환되었습니다.")
+    else:
+        if position not in user_data[user_id]["team"] or user_data[user_id]["team"][position] is None:
+            await ctx.send(f"{position} 포지션에 선수가 없습니다.")
+            return
+        name = user_data[user_id]["team"][position]["name"]
+        player_value = get_player_value(name)  # 가치를 업데이트
+        user_data[user_id]["team"][position] = None  # 포지션의 선수를 삭제
+        user_data[user_id]["budget"] += player_value
+        await ctx.send(f"{position} 포지션의 {name} 선수가 판매되어 {player_value} 골드가 반환되었습니다.")
