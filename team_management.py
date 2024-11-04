@@ -1,6 +1,6 @@
 from discord.ext import commands
 from player_database import load_data
-from main import user_data, initialize_user, get_player_value
+from sharing_codes import user_data, initialize_user, get_player_value
 
 @commands.command()
 async def 선수등록(ctx, position, name):

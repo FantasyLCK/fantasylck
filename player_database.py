@@ -1,20 +1,7 @@
 import json
 import os
+from sharing_codes import DATA_FILE, load_data, save_data
 
-# 데이터 파일 경로
-DATA_FILE = "player_data.json"
-
-# JSON 파일이 존재하지 않는 경우 빈 데이터 생성
-def load_data():
-    if not os.path.exists(DATA_FILE):
-        return {"players": {}}
-    with open(DATA_FILE, "r") as f:
-        return json.load(f)
-
-# 데이터를 JSON 파일로 저장
-def save_data(data):
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=4)
 
 # 플레이어 추가
 def add_player(name, position, tier):
