@@ -64,7 +64,7 @@ async def 선수판매(ctx, position=None):
     user_id = ctx.author.id
     initialize_user(user_id)  # 사용자 초기화
 
-    if position == "ALL":
+    if position == "all":
         total_value = 0
         for pos, player in user_data[user_id]["team"].items():
             if player:
@@ -95,7 +95,10 @@ async def 내팀(ctx):
     initialize_user(user_id)
 
     team_info = user_data[user_id]["team"]
-    team_value = user_data[user_id]["team_value"]
+
+    # 보유 선수의 가치 합으로 팀 가치 재계산
+    team_value = sum(player['value'] for player in team_info.values() if player is not None)
+    user_data[user_id]["team_value"] = team_value  # 최신 팀 가치를 저장
 
     team_display = f"감독: {user_name}\n\n"
 
