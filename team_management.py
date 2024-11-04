@@ -56,36 +56,36 @@ async def 선수등록(ctx, position, name):
 
 @commands.command()
 async def 선수판매(ctx, position=None):
-
     if ctx.channel.id not in ALLOWED_CHANNEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
-    
+
     user_id = ctx.author.id
     initialize_user(user_id)  # 사용자 초기화
 
+    # 팀 가치와 예산 조정
+    total_value = 0
     if position == "all":
-        total_value = 0
         for pos, player in user_data[user_id]["team"].items():
             if player:
                 total_value += player["value"]
                 user_data[user_id]["team"][pos] = None
+        user_data[user_id]["team_value"] -= total_value  # 팀 가치 감소
         user_budgets[user_id] += total_value
-        await ctx.send(f"모든 선수가 판매되었습니다.")
+        await ctx.send(f"모든 선수가 판매되었습니다. {total_value} 골드가 반환되었습니다.")
     else:
         if position not in user_data[user_id]["team"] or user_data[user_id]["team"][position] is None:
             await ctx.send(f"{position} 포지션에 선수가 없습니다.")
             return
-        name = user_data[user_id]["team"][position]["name"]
-        player_value = get_player_value(name)  # 가치를 업데이트
+        player = user_data[user_id]["team"][position]
+        player_value = player["value"]
+        user_data[user_id]["team_value"] -= player_value  # 팀 가치 감소
         user_data[user_id]["team"][position] = None  # 포지션의 선수를 삭제
         user_budgets[user_id] += player_value
-        await ctx.send(f"{position} 포지션의 {name} 선수가 판매되어 {player_value} 골드가 반환되었습니다.")
-
+        await ctx.send(f"{position} 포지션의 {player['name']} 선수가 판매되어 {player_value} 골드가 반환되었습니다.")
 
 @commands.command()
 async def 내팀(ctx):
-
     if ctx.channel.id not in ALLOWED_CHANNEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
@@ -94,22 +94,20 @@ async def 내팀(ctx):
     user_name = ctx.author.display_name 
     initialize_user(user_id)
 
+    # 현재 팀 정보와 팀 가치 계산
     team_info = user_data[user_id]["team"]
-
-
     team_display = f"감독: {user_name}\n\n"
 
+    total_team_value = 0
     for position, player in team_info.items():
         if player:
             team_display += f"{position}: {player['name']} (가치: {player['value']} 골드)\n"
+            total_team_value += player["value"]
         else:
-            f"{position}: 등록된 선수가 없습니다.\n"
+            team_display += f"{position}: 등록된 선수가 없습니다.\n"
 
-    total_value = 0
-    for pos, player in user_data[user_id]["team"].items():
-        if player:
-            total_value += player["value"]
-            user_data[user_id]["team"][pos] = None
-
-    team_display += f"\n남은 예산: {user_budgets[user_id]} 골드\n팀 가치: {total_value} 골드"
+    # 팀 가치 업데이트
+    user_data[user_id]["team_value"] = total_team_value
+    team_display += f"\n남은 예산: {user_budgets[user_id]} 골드\n팀 가치: {total_team_value} 골드"
     await ctx.send(team_display)
+
