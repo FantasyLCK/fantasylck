@@ -201,58 +201,54 @@
             "value": 10
         },
         "\ub51c\ub77c\uc774\ud2b8": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "S",
             "value": 50
         },
         "\ub9ac\ud5e8\uc988": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "S",
             "value": 50
         },
         "\ucf00\ub9ac\uc544": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "A",
             "value": 40
         },
         "\ucf08\ub9b0": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "A",
             "value": 40
         },
         "\ubca0\ub9b4": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "B",
             "value": 30
         },
         "\ub4c0\ub85c": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "B",
             "value": 30
         },
         "\uc548\ub51c": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "C",
             "value": 20
         },
         "\uad6c\uac70": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "C",
             "value": 20
         },
         "\ud50c\ub808\ud0c0": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "D",
             "value": 10
         },
         "\ud3f4\ub8e8": {
-            "position": "\uc11c\ud3ec\ud130",
+            "position": "\uc11c\ud3ff",
             "tier": "D",
             "value": 10
         }
-    },
-    "1213106080599638016": {
-        "gold": 135,
-        "play_count": 1
     }
 }
