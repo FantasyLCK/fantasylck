@@ -437,7 +437,7 @@ async def 명령어(ctx):
 
 # 관리자 명령어 목록
 @bot.command()
-async def 관리자명령어(ctx):
+async def 관리자(ctx):
     manager_commands_list = """
     **관리자 전용 명령어:**
     **!선수추가 [이름] [포지션] [티어]**
@@ -445,7 +445,6 @@ async def 관리자명령어(ctx):
     **!선수삭제 [이름]**
     **!on**: 이적시장 활성화
     **!off**: 이적시장 비활성화
-    **이이이잉 쇼메이쿠**
     """
     await ctx.send(manager_commands_list)
 
