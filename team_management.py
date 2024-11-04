@@ -96,12 +96,6 @@ async def 내팀(ctx):
 
     team_info = user_data[user_id]["team"]
 
-    total_value = 0
-    for pos, player in user_data[user_id]["team"].items():
-        if player:
-            total_value += player["value"]
-            user_data[user_id]["team"][pos] = None
-    user_budgets[user_id] += total_value
 
     team_display = f"감독: {user_name}\n\n"
 
@@ -110,6 +104,12 @@ async def 내팀(ctx):
             team_display += f"{position}: {player['name']} (가치: {player['value']} 골드)\n"
         else:
             f"{position}: 등록된 선수가 없습니다.\n"
+
+    total_value = 0
+    for pos, player in user_data[user_id]["team"].items():
+        if player:
+            total_value += player["value"]
+            user_data[user_id]["team"][pos] = None
 
     team_display += f"\n남은 예산: {user_budgets[user_id]} 골드\n팀 가치: {total_value} 골드"
     await ctx.send(team_display)
