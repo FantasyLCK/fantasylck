@@ -38,7 +38,6 @@ async def 맞다이(ctx, opponent: discord.Member):
 @commands.command()
 @commands.has_permissions(administrator=True)
 async def 랭킹(ctx):
-    # Check if there is any user data to rank
     if not user_data:
         await ctx.send("현재 데이터가 없습니다.")
 
@@ -62,25 +61,6 @@ async def 랭킹(ctx):
         user = await ctx.bot.fetch_user(u_id)
         ranking_message.append(f"{i}. {user.display_name} - {team_value} 골드")
 
-    # Include user's rank if they are not in the top 10
-    if user_rank and user_rank > 10:
-        user = await ctx.bot.fetch_user(user_id)
-        ranking_message.append(f"\n{user.display_name}님의 현재 순위: {user_rank}위 - {user_data[user_id]['team_value']} 골드")
-
-    await ctx.send("\n".join(ranking_message))
-
-    # 탑10 정렬
-    user_id = ctx.author.id
-    user_rank = next((i for i, (u_id, _) in enumerate(ranking, start=1) if u_id == user_id), None)
-    top_10 = ranking[:10]
-
-    # 랭킹 메세지 출력
-    ranking_message = ["판타지 LCK 랭킹:"]
-    for i, (u_id, team_value) in enumerate(top_10, start=1):
-        user = await ctx.bot.fetch_user(u_id)
-        ranking_message.append(f"{i}. {user.display_name} - {team_value} 골드")
-
-    # Include user's rank if they are not in the top 10
     if user_rank and user_rank > 10:
         user = await ctx.bot.fetch_user(user_id)
         ranking_message.append(f"\n{user.display_name}님의 현재 순위: {user_rank}위 - {user_data[user_id]['team_value']} 골드")
