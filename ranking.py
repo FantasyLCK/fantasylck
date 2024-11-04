@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from main import user_data
+from sharing_codes import user_data
 import asyncio
 
 @commands.command()
@@ -42,10 +42,18 @@ async def 랭킹(ctx):
     if not user_data:
         await ctx.send("현재 데이터가 없습니다.")
         return
+    
+    guild_id = ctx.guild.id
+    server_user_data = {user_id: data for user_id, data in user_data.items() if "guild_id" in data and data["guild_id"] == guild_id}
+    
+    if not server_user_data:
+        await ctx.send("현재 서버에 등록된 사용자가 없습니다.")
+        return
+
 
     # 서버 구성원 팀가치 정렬
     ranking = sorted(
-        ((user_id, data["team_value"]) for user_id, data in user_data.items() if "team_value" in data),
+        ((user_id, data["team_value"]) for user_id, data in server_user_data.items() if "team_value" in data),
         key=lambda x: x[1],
         reverse=True
     )
