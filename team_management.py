@@ -63,26 +63,33 @@ async def 선수판매(ctx, position=None):
     user_id = ctx.author.id
     initialize_user(user_id)  # 사용자 초기화
 
-    # 팀 가치와 예산 조정
     total_value = 0
+    # "all" 옵션일 때 모든 선수 판매
     if position == "all":
         for pos, player in user_data[user_id]["team"].items():
             if player:
                 total_value += player["value"]
                 user_data[user_id]["team"][pos] = None
-        user_data[user_id]["team_value"] -= total_value  # 팀 가치 감소
         user_budgets[user_id] += total_value
+        user_data[user_id]["team_value"] = 0  # 팀 가치를 0으로 설정
         await ctx.send(f"모든 선수가 판매되었습니다. {total_value} 골드가 반환되었습니다.")
     else:
         if position not in user_data[user_id]["team"] or user_data[user_id]["team"][position] is None:
             await ctx.send(f"{position} 포지션에 선수가 없습니다.")
             return
+        # 특정 포지션의 선수 판매
         player = user_data[user_id]["team"][position]
         player_value = player["value"]
-        user_data[user_id]["team_value"] -= player_value  # 팀 가치 감소
-        user_data[user_id]["team"][position] = None  # 포지션의 선수를 삭제
+        user_data[user_id]["team"][position] = None  # 해당 포지션의 선수를 삭제
         user_budgets[user_id] += player_value
+
+        # 팀 가치 다시 계산
+        user_data[user_id]["team_value"] = sum(
+            player["value"] for player in user_data[user_id]["team"].values() if player
+        )
+
         await ctx.send(f"{position} 포지션의 {player['name']} 선수가 판매되어 {player_value} 골드가 반환되었습니다.")
+    
 
 @commands.command()
 async def 내팀(ctx):
