@@ -25,7 +25,7 @@ async def 육구놀이(ctx):
 
     # 하루 시도 횟수 초과 체크
     if attempts_data[user_id]['attempts'] >= MAX_ATTEMPTS_PER_DAY:
-        await ctx.send("오늘의 시도 횟수를 모두 사용했습니다. 내일 다시 시도해 주세요.")
+        await ctx.send("오늘의 시도 횟수를 모두 사용했습니다. **지나친 도박은 정신건강에 해롭읍니다.**")
         return
     
     if user_budgets[user_id] < 15:  # 사용자 예산 확인
@@ -62,6 +62,9 @@ async def 육구놀이(ctx):
     
     user_budgets[user_id] += gold_earned  # 획득 골드 반영
     await ctx.send(f"획득한 골드: {gold_earned}골드. 현재 예산: {user_budgets[user_id]}골드.")
+
+    # 시도 횟수 증가
+    attempts_data[user_id]['attempts'] += 1
 
 @commands.command()
 async def 출석(ctx):
