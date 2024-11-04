@@ -1,11 +1,10 @@
 from discord.ext import commands
-from main import user_data, load_data, TIER_VALUES
+from sharing_codes import user_data, load_data, TIER_VALUES
 from player_database import players_data
 from sharing_codes import initialize_user
 
 @commands.command()
-async def 내팀보기(ctx):
-    user_id = ctx.author.id
+async def 내팀(ctx):
     user_id = ctx.author.id
     user_name = ctx.author.display_name  # Get the user's display name
     initialize_user(user_id)  # Initialize user if not already done

@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from player_database import DATA_FILE
 from team_management import 선수등록, 선수판매
-from convenience import 내팀보기, 선수목록, 명령어, 관리자
+from convenience import 내팀, 선수목록, 명령어, 관리자
 from gold import 육구놀이, 출석
 from admin import 선수추가, 선수삭제, 선수수정, on, off
 from ranking import 맞다이, 랭킹
@@ -28,7 +28,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 bot.add_command(선수등록)
 bot.add_command(선수판매)
 
-bot.add_command(내팀보기)
+bot.add_command(내팀)
 bot.add_command(선수목록)
 bot.add_command(명령어)
 bot.add_command(관리자)
