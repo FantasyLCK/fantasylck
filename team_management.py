@@ -85,8 +85,7 @@ async def 선수판매(ctx, position=None):
 
         # 팀 가치 다시 계산
         user_data[user_id]["team_value"] = sum(
-            player["value"] for player in user_data[user_id]["team"].values() if player
-        )
+            player["value"] for player in user_data[user_id]["team"].values() if player)
 
         await ctx.send(f"{position} 포지션의 {player['name']} 선수가 판매되어 {player_value} 골드가 반환되었습니다.")
     
