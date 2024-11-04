@@ -71,7 +71,7 @@ async def 선수판매(ctx, position=None):
                 total_value += player["value"]
                 user_data[user_id]["team"][pos] = None
         user_budgets[user_id] += total_value
-        await ctx.send(f"모든 선수가 판매되었으며 {total_value} 골드가 반환되었습니다.")
+        await ctx.send(f"모든 선수가 판매되었습니다.")
     else:
         if position not in user_data[user_id]["team"] or user_data[user_id]["team"][position] is None:
             await ctx.send(f"{position} 포지션에 선수가 없습니다.")
@@ -96,9 +96,12 @@ async def 내팀(ctx):
 
     team_info = user_data[user_id]["team"]
 
-    # 보유 선수의 가치 합으로 팀 가치 재계산
-    team_value = sum(player['value'] for player in team_info.values() if player is not None)
-    user_data[user_id]["team_value"] = team_value  # 최신 팀 가치를 저장
+    total_value = 0
+    for pos, player in user_data[user_id]["team"].items():
+        if player:
+            total_value += player["value"]
+            user_data[user_id]["team"][pos] = None
+    user_budgets[user_id] += total_value
 
     team_display = f"감독: {user_name}\n\n"
 
@@ -108,5 +111,5 @@ async def 내팀(ctx):
         else:
             f"{position}: 등록된 선수가 없습니다.\n"
 
-    team_display += f"\n남은 예산: {user_budgets[user_id]} 골드\n팀 가치: {team_value} 골드"
+    team_display += f"\n남은 예산: {user_budgets[user_id]} 골드\n팀 가치: {total_value} 골드"
     await ctx.send(team_display)
