@@ -189,12 +189,13 @@ def save_data(data):
         json.dump(data, f, indent=4)
 
 # 공유된 함수
-def initialize_user(user_id):
+def initialize_user(user_id) -> UserData:
     if user_id not in user_data:
         user_data[user_id] = UserData(user_id)
         logger.info(f"Initialized user data for user ID: {user_id}")
     else:
         logger.debug(f"User data for user ID: {user_id} already initialized")
+    return user_data[user_id]
 
 players_data = {
     "도란": {"position": "탑", "tier": "S"},
