@@ -38,7 +38,7 @@ async def 선수등록(ctx, position: str, name: str):
         return
 
     # 해당 포지션에 이미 선수가 있는지 확인
-    if getattr(name, position) is not None:
+    if getattr(user, 'position') is not None:
         await ctx.send(f"{position} 포지션에는 이미 선수가 등록되어 있습니다.")
         return
 
@@ -64,7 +64,7 @@ async def 선수판매(ctx, position: str):
     user = initialize_user(user_id)  # 사용자 초기화 및 가져오기
 
     # 포지션에 선수 확인
-    player = getattr(user, position)
+    player = getattr(user, 'position')
     if player is None:
         await ctx.send(f"{position} 포지션에 등록된 선수가 없습니다.")
         return
