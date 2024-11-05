@@ -45,7 +45,8 @@ async def 명령어(ctx):
 
     **!맞다이 [상대 아이디]**: 상대와 팀가치를 비교해 대결을 합니다.
 
-    만든이: 다운사람 (www.instagram.com/lolsonam80)
+    만든이:    다운사람 (www.instagram.com/lolsonam80)
+    도움주신분: ElectricalBoy
     """
     await ctx.send(commands_list)
 
