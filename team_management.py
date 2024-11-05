@@ -16,7 +16,10 @@ async def 선수등록(ctx, position: str, name: str):
 
     # 선수 데이터 확인
     players_data = register_players()
-    if position not in players_data or name not in [player.name for player in players_data[position]]:
+    if position not in players_data:
+        await ctx.send(f"{position}은(는) 유효한 포지션이 아닙니다.")
+        return
+    elif name not in [player.name for player in players_data[position]]:
         await ctx.send(f"{name}는 유효한 선수 이름이 아닙니다.")
         return
 
