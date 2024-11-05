@@ -1,6 +1,6 @@
 import logging
 
-import discord
+import discord 
 from discord.ext import commands
 from team_management import 선수등록, 선수판매, 내팀
 from convenience import 선수목록, 명령어, 관리자, 육구놀이룰
@@ -60,5 +60,4 @@ bot.add_command(랭킹)
 
 
 # 메인 함수
-MY_TOKEN = "MTMwMTQ0NTMwNzg5MTk3NDE4NQ.GrOpPe.LKIH4MdIWi5ZXZjD6gbVPVgqGNIxk7B4r9sPvk"
-bot.run(MY_TOKEN)
+bot.run('MTMwMTQ0NTMwNzg5MTk3NDE4NQ.GgSW7V.JX9M4XdDMq5ODHBQhC5ivrwE6eOrbmnCmpYXD0')

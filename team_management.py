@@ -1,16 +1,20 @@
 import logging
 
 from discord.ext import commands
-from sharing_codes import UserData, PlayerData, initialize_user, register_players, is_registration_active, is_sale_active, user_data, ALLOWED_CHANNEL_ID
+from sharing_codes import UserData, PlayerData, initialize_user, register_players, players_data, is_registration_active, is_sale_active, user_data, ALLOWED_CHANNEL_ID
 
 logger = logging.getLogger()
+logger.debug(f"입력된 선수 이름: {PlayerData.name}")
+logger.debug(f"유효한 선수 이름 목록: {list(players_data.keys())}")
 
 @commands.command()
 async def 선수등록(ctx, position: str, name: str):
+    logger.debug(f"선수등록 함수 호출: position={position}, name={name}")
+
     if not is_registration_active:
         await ctx.send("현재 선수 등록이 비활성화 상태입니다.")
         return
-    
+
     if ctx.channel.id not in ALLOWED_CHANNEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
@@ -19,13 +23,17 @@ async def 선수등록(ctx, position: str, name: str):
     user = initialize_user(user_id)  # 사용자 초기화 및 가져오기
 
     # 선수 데이터 확인
-    players_data = register_players()
-    logger.debug(f"players_data = {players_data}")
-    if position not in players_data:
-        await ctx.send(f"{position}은(는) 유효한 포지션이 아닙니다.")
-        return
-    elif name not in [player.name for player in players_data[position]]:
+    if name not in players_data.keys():
+        logger.debug(f"{name}는 유효한 선수 이름이 아닙니다.")
         await ctx.send(f"{name}는 유효한 선수 이름이 아닙니다.")
+        return
+
+    player_info = players_data[name]
+    
+    # 포지션 확인
+    if player_info['position'] != position:
+        logger.debug(f"{name} 선수의 포지션은 {player_info['position']}입니다.")
+        await ctx.send(f"{name} 선수의 포지션은 {player_info['position']}입니다. 올바른 포지션을 입력해주세요.")
         return
 
     # 해당 포지션에 이미 선수가 있는지 확인
@@ -34,10 +42,9 @@ async def 선수등록(ctx, position: str, name: str):
         return
 
     # 선수 등록 및 잔고 차감
-    tier = next((tier for tier, players in players_data[position].items() if name in players), None)
-    player = PlayerData(name, tier)
+    player = PlayerData(name, player_info['tier'])
     setattr(user, position, player)
-    user.balance -= player.value
+    user.balance -= player_info['value']
     
     await ctx.send(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드")
 
@@ -45,7 +52,7 @@ async def 선수등록(ctx, position: str, name: str):
 @commands.command()
 async def 선수판매(ctx, position: str):
     if not is_sale_active:
-        await ctx.send("현재 선수 등록이 비활성화 상태입니다.")
+        await ctx.send("현재 선수 판매가 비활성화 상태입니다.")
         return
     
     if ctx.channel.id not in ALLOWED_CHANNEL_ID:

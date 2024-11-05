@@ -2,7 +2,7 @@ from discord.ext import commands
 from sharing_codes import PlayerData, players_data, TIER_VALUES, ALLOWED_CHANNEL_ID
 
 @commands.command()
-async def 선수목록(ctx, position):
+async def 선수목록(ctx, position: str):
     if ctx.channel.id not in ALLOWED_CHANNEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
@@ -12,9 +12,7 @@ async def 선수목록(ctx, position):
         return
 
     # 포지션에 해당하는 선수 불러오기
-    tiered_players = {}
-    for tier, players in players_data[position].items():
-        tiered_players[tier] = players
+    tiered_players = players_data.get(position, {})
 
     output = f"**{position} 포지션 선수 목록:**\n\n"
     for tier, players in sorted(tiered_players.items(), key=lambda x: TIER_VALUES[x[0]], reverse=True):
@@ -43,7 +41,7 @@ async def 명령어(ctx):
     **!육구놀이**: 15골드를 지불하고 간단한 미니게임을 진행합니다. '!육구놀이룰'을 통해 규칙을 확인 할 수 있어요!
     **!출석**: 하루에 한 번 출석하여 5골드를 수령합니다.
 
-    **!맞다이 [상대 아이디]**: 상대와 팀가치를 비교해 대결을 합니다.
+    **!맞다이 [@상대 아이디]**: 상대와 팀가치를 비교해 대결을 합니다. (상대방 멘션 필수)
 
     만든이:    다운사람 (www.instagram.com/lolsonam80)
     도움주신분: ElectricalBoy
