@@ -10,6 +10,14 @@ logger.debug(f"유효한 선수 이름 목록: {list(players_data.keys())}")
 @commands.command()
 async def 선수등록(ctx, position: str, name: str):
     logger.debug(f"선수등록 함수 호출: position={position}, name={name}")
+    pos_alias = {
+        '탑': 'top',
+        '정글': 'jgl',
+        '미드': 'mid',
+        '바텀': 'adc',
+        '원딜': 'adc',
+        '서폿': 'sup'
+    }
 
     if not is_registration_active:
         await ctx.send("현재 선수 등록이 비활성화 상태입니다.")
@@ -38,15 +46,14 @@ async def 선수등록(ctx, position: str, name: str):
         return
 
     # 해당 포지션에 이미 선수가 있는지 확인
-    if getattr(user, 'position') is not None:
+    if getattr(user, pos_alias[player_info['position']]) is not None:
         await ctx.send(f"{position} 포지션에는 이미 선수가 등록되어 있습니다.")
         return
 
     # 선수 등록 및 잔고 차감
     player = PlayerData(name, player_info['tier'])
-    setattr(user, position, player)
-    user.balance -= player_info['value']
-    
+    setattr(user, pos_alias[player_info['position']], player)
+
     await ctx.send(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드")
 
 
