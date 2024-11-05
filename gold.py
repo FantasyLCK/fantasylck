@@ -91,4 +91,4 @@ async def 출석(ctx):
     # 출석 처리 및 골드 지급
     user_data.daily_login()
     attendance_data[user_id] = today  # 마지막 출석 날짜 기록
-    await ctx.send(f"출석 완료! {DAILY_REWARD} 골드를 받았습니다. 현재 예산: {user_budgets[user_id]} 골드")
+    await ctx.send(f"출석 완료! {DAILY_REWARD} 골드를 받았습니다. 현재 예산: {user_data.balance} 골드")
