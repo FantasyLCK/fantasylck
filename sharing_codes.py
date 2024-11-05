@@ -64,9 +64,9 @@ class UserData:
     @property
     def team_value(self) -> int:
         value_sum = 0
-        for player in self.team_data:
-            if player != None:
-                value_sum += player.value
+        for pos in self.team_data:
+            if self.__team_data[pos] != None:
+                value_sum += self.__team_data[pos].value
 
     @property
     def balance(self):
