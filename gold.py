@@ -1,5 +1,5 @@
 from discord.ext import commands
-from sharing_codes import user_data, initialize_user, user_budgets, attendance_data, DAILY_REWARD, ALLOWED_CHANNEL_ID
+from sharing_codes import UserData, initialize_user, user_budgets, attendance_data, DAILY_REWARD, ALLOWED_CHANNEL_ID
 import random
 import asyncio
 from datetime import datetime, timedelta

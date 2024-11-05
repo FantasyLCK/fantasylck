@@ -60,4 +60,5 @@ bot.add_command(랭킹)
 
 
 # 메인 함수
-bot.run('MTMwMTQ0NTMwNzg5MTk3NDE4NQ.GgSW7V.JX9M4XdDMq5ODHBQhC5ivrwE6eOrbmnCmpYXD0')
+TOKEN = 'MTMwMTQ0NTMwNzg5MTk3NDE4NQ.GC0AfA.v42uQ7fqNk9Q0p0T29jaHyhCpg18MupbFP1D9A'
+bot.run(TOKEN)
