@@ -1,37 +1,19 @@
 from discord.ext import commands
-from sharing_codes import players_data, load_data, TIER_VALUES, ALLOWED_CHANNEL_ID
+from sharing_codes import PlayerData, players_data, TIER_VALUES, ALLOWED_CHANNEL_ID
 
 @commands.command()
-async def 선수목록(ctx, position):
-
+async def 선수목록(ctx, position: str):
     if ctx.channel.id not in ALLOWED_CHANNEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
-    # 포지션에 해당하는 선수들을 티어별로 정리
-    tiered_players = {}
-    for pos, tiers in players_data.items():
-        for tier, players in tiers.items():
-            for name in players:
-                if pos.lower() == position.lower():
-                    if tier not in tiered_players:
-                        tiered_players[tier] = []
-                    tiered_players[tier].append(name)
-
-    # 포지션에 선수가 없는 경우 처리
-    if not tiered_players:
-        await ctx.send(f"{position} 포지션에 해당하는 선수가 없습니다.")
-        return
-
-    # 티어별로 정렬하여 출력 형식 준비
-    output = f"**{position} 포지션 선수 목록:**\n\n"
-    for tier, players in sorted(tiered_players.items(), key=lambda x: TIER_VALUES[x[0]], reverse=True):
-        players_list = ", ".join(players)
-        gold_value = TIER_VALUES[tier]
-        output += f"{tier} ({gold_value}골드) | {players_list}\n"
-
+    output = f"### {position} 포지션 선수 목록:\n"
+    for player, player_data in players_data.items():
+        if player_data['position'] == position:
+            output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]}골드)\n"
 
     await ctx.send(output)
+
 
 @commands.command()
 async def 명령어(ctx):
@@ -51,9 +33,10 @@ async def 명령어(ctx):
     **!육구놀이**: 15골드를 지불하고 간단한 미니게임을 진행합니다. '!육구놀이룰'을 통해 규칙을 확인 할 수 있어요!
     **!출석**: 하루에 한 번 출석하여 5골드를 수령합니다.
 
-    **!맞다이 [상대 아이디]**: 상대와 팀가치를 비교해 대결을 합니다.
+    **!맞다이 [@상대 아이디]**: 상대와 팀가치를 비교해 대결을 합니다. (상대방 멘션 필수)
 
     만든이: 다운사람 (www.instagram.com/lolsonam80)
+    도움주신분: ElectricalBoy
     """
     await ctx.send(commands_list)
 
