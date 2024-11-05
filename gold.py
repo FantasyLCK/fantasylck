@@ -3,6 +3,7 @@ from sharing_codes import user_data, initialize_user, user_budgets, attendance_d
 import random
 import asyncio
 from datetime import datetime, timedelta
+import pytz
 
 MAX_ATTEMPTS_PER_DAY = 3
 attempts_data = {}
@@ -68,7 +69,6 @@ async def 육구놀이(ctx):
 
 @commands.command()
 async def 출석(ctx):
-
     if ctx.channel.id not in ALLOWED_CHANNEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
@@ -76,12 +76,16 @@ async def 출석(ctx):
     user_id = ctx.author.id
     initialize_user(user_id)  # 사용자를 초기화
 
-    # 현재 날짜와 출석 기록 확인
-    today = datetime.now().date()
+    # 현재 시간과 출석 기록 확인
+    korea_tz = pytz.timezone('Asia/Seoul')
+    current_time_kst = datetime.now(korea_tz)  # 한국 시간으로 현재 시간 얻기
+    today = current_time_kst.date()
+
     last_attendance = attendance_data.get(user_id)
 
-    if last_attendance == today:
-        await ctx.send("이미 오늘 출석하셨습니다! 내일 다시 시도해 주세요.")
+    # 출석 시간이 오전 6시 이전인지 확인
+    if last_attendance == today and current_time_kst.hour < 6:
+        await ctx.send("아직 출석할 수 없습니다! 한국 시간 기준으로 오전 6시 이후에 출석해 주세요.")
         return
 
     # 출석 처리 및 골드 지급

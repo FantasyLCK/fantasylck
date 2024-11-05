@@ -1,5 +1,5 @@
 from discord.ext import commands
-from sharing_codes import load_data, TIER_VALUES, ALLOWED_CHANNEL_ID
+from sharing_codes import players_data, load_data, TIER_VALUES, ALLOWED_CHANNEL_ID
 
 @commands.command()
 async def 선수목록(ctx, position):
@@ -8,16 +8,15 @@ async def 선수목록(ctx, position):
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
-    players_data = load_data()["players"]
-
     # 포지션에 해당하는 선수들을 티어별로 정리
     tiered_players = {}
-    for name, data in players_data.items():
-        if data["position"].lower() == position.lower():
-            tier = data["tier"]
-            if tier not in tiered_players:
-                tiered_players[tier] = []
-            tiered_players[tier].append(name)
+    for pos, tiers in players_data.items():
+        for tier, players in tiers.items():
+            for name in players:
+                if pos.lower() == position.lower():
+                    if tier not in tiered_players:
+                        tiered_players[tier] = []
+                    tiered_players[tier].append(name)
 
     # 포지션에 선수가 없는 경우 처리
     if not tiered_players:

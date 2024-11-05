@@ -1,11 +1,11 @@
 import discord
 from discord.ext import commands
-from sharing_codes import user_data, ALLOWED_CHANNEL_ID
+from sharing_codes import user_data, initialize_user,COMMUNITY_CHANEL_ID
 import asyncio
 
 @commands.command()
 async def 맞다이(ctx, opponent: discord.Member):
-    if ctx.channel.id not in ALLOWED_CHANNEL_ID:
+    if ctx.channel.id not in COMMUNITY_CHANEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
@@ -40,31 +40,36 @@ async def 맞다이(ctx, opponent: discord.Member):
 
 
 @commands.command()
-@commands.has_permissions(administrator=True)
 async def 랭킹(ctx):
-    if not user_data:
-        await ctx.send("현재 데이터가 없습니다.")
-        return
-
-    # 서버 구성원 팀가치 정렬
-    ranking = sorted(
-        ((user_id, data["team_value"]) for user_id, data in user_data.items() if "team_value" in data),
-        key=lambda x: x[1],
-        reverse=True
-    )
-
-    # 탑10 정렬 및 관리자 호출자의 랭킹 위치 확인
     user_id = ctx.author.id
+    initialize_user(user_id)  # 사용자를 초기화
+
+    # 현재 채널 멤버의 ID만 사용하여 랭킹을 계산
+    channel_member_ids = {member.id for member in ctx.channel.members if not member.bot}
+    
+    # 사용자 데이터에서 팀 가치가 있는 사용자만 필터링
+    ranking = []
+    for user_id, data in user_data.items():
+        if "team_value" in data and user_id in channel_member_ids:
+            ranking.append((user_id, data["team_value"]))
+            print(f"User ID: {user_id}, Team Value: {data['team_value']}")  # 디버깅 출력
+
+    ranking = sorted(ranking, key=lambda x: x[1], reverse=True)
+
+    # 탑10 정렬 및 사용자 랭크 찾기
     user_rank = next((i for i, (u_id, _) in enumerate(ranking, start=1) if u_id == user_id), None)
     top_10 = ranking[:10]
 
-    # 랭킹 메시지 생성
-    ranking_message = ["판타지 LCK 랭킹:"]
-    for i, (u_id, team_value) in enumerate(top_10, start=1):
-        user = await ctx.bot.fetch_user(u_id)  # 사용자의 display_name을 가져옴
-        ranking_message.append(f"{i}. {user.display_name} - {team_value} 골드")
+    # 랭킹 메시지 출력
+    ranking_message = ["판타지 LCK 채널 랭킹:"]
+    if top_10:  # 탑10이 존재할 경우에만 메시지 구성
+        for i, (u_id, team_value) in enumerate(top_10, start=1):
+            user = await ctx.bot.fetch_user(u_id)
+            ranking_message.append(f"{i}. {user.display_name} - {team_value} 골드")
+    else:
+        ranking_message.append("현재 채널에 랭킹이 없습니다.")
 
-    # 호출자의 순위가 탑10을 벗어난 경우 표시
+    # 사용자가 탑10 외에 있을 경우 개인 순위 추가
     if user_rank and user_rank > 10:
         user = await ctx.bot.fetch_user(user_id)
         ranking_message.append(f"\n{user.display_name}님의 현재 순위: {user_rank}위 - {user_data[user_id]['team_value']} 골드")
