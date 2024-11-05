@@ -186,9 +186,10 @@ def save_data(data):
 # 공유된 함수
 def initialize_user(user_id):
     if user_id not in user_data:
-        user_budgets[user_id] = STARTING_BUDGET
         user_data[user_id] = UserData(user_id)
         print(f"Initialized user data for user ID: {user_id}")
+    else:
+        print(f"User data for user ID: {user_id} already initialized")
 
 players_data = {
     "탑": {
