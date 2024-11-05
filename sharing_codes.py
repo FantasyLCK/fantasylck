@@ -78,7 +78,10 @@ class UserData:
     
     @top.setter
     def top(self, top: PlayerData):
-        self.__top = top
+        if self.top != None:
+            self.__top = top
+        else:
+            raise AttributeError
 
     @property
     def jgl(self):
@@ -86,7 +89,10 @@ class UserData:
     
     @jgl.setter
     def jgl(self, jgl: PlayerData):
-        self.__jgl = jgl
+        if self.jgl != None:
+            self.__jgl = jgl
+        else:
+            raise AttributeError
 
     @property
     def mid(self):
@@ -94,7 +100,10 @@ class UserData:
     
     @mid.setter
     def mid(self, mid: PlayerData):
-        self.__mid = mid
+        if self.mid != None:
+            self.__mid = mid
+        else:
+            raise AttributeError
 
     @property
     def adc(self):
@@ -102,7 +111,10 @@ class UserData:
     
     @adc.setter
     def adc(self, adc: PlayerData):
-        self.__adc = adc
+        if self.adc != None:
+            self.__adc = adc
+        else:
+            raise AttributeError
 
     @property
     def sup(self):
@@ -110,7 +122,10 @@ class UserData:
     
     @sup.setter
     def sup(self, sup: PlayerData):
-        self.__sup = sup
+        if self.sup != None:
+            self.__sup = sup
+        else:
+            raise AttributeError
 
 # 사용자 데이터와 출석 기록을 저장할 딕셔너리
 attendance_data = {}
