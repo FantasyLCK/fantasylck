@@ -69,20 +69,19 @@ async def 내팀(ctx):
     user_id = ctx.author.id
     initialize_user(user_id)
 
-    team_info = user_data[user_id].team_data  # 팀 데이터 가져오기
+    user_info: UserData = user_data[user_id]
+
+    team_info = user_info.team_data  # 팀 데이터 가져오기
     team_display = f"감독: {ctx.author.display_name}\n\n"
-    total_team_value = 0
 
     # 팀 정보 반복
     for position, player in team_info.items():
         if player:  # 선수가 등록되어 있는 경우
             team_display += f"{position}: {player.name} (가치: {player.value} 골드)\n"
-            total_team_value += player.value
         else:  # 선수가 등록되어 있지 않은 경우
             team_display += f"{position}: 없음\n"
 
-    UserData.team_value = total_team_value  # 팀 가치 설정
-    team_display += f"\n팀 가치: {total_team_value} 골드\n현재 예산: {UserData.balance} 골드"
+    team_display += f"\n팀 가치: {user_info.team_value} 골드\n현재 예산: {user_info.balance} 골드"
 
     await ctx.send(team_display)
 
