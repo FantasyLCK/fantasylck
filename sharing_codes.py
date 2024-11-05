@@ -153,6 +153,9 @@ class UserData:
             raise ValueError
         self.__balance -= player.value
 
+    def daily_login(self):
+        self.__balance += DAILY_REWARD
+
 # 사용자 데이터와 출석 기록을 저장할 딕셔너리
 attendance_data = {}
 

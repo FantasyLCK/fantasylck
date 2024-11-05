@@ -74,7 +74,7 @@ async def 출석(ctx):
         return
     
     user_id = ctx.author.id
-    initialize_user(user_id)  # 사용자를 초기화
+    user_data = initialize_user(user_id)  # 사용자를 초기화
 
     # 현재 시간과 출석 기록 확인
     korea_tz = pytz.timezone('Asia/Seoul')
@@ -89,6 +89,6 @@ async def 출석(ctx):
         return
 
     # 출석 처리 및 골드 지급
-    user_budgets[user_id] += DAILY_REWARD
+    user_data.daily_login()
     attendance_data[user_id] = today  # 마지막 출석 날짜 기록
     await ctx.send(f"출석 완료! {DAILY_REWARD} 골드를 받았습니다. 현재 예산: {user_budgets[user_id]} 골드")
