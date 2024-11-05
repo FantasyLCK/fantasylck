@@ -1,5 +1,9 @@
+import logging
 from discord.ext import commands
-from sharing_codes import PlayerData, players_data, TIER_VALUES, ALLOWED_CHANNEL_ID
+from sharing_codes import PlayerData, players_data, load_data, TIER_VALUES, ALLOWED_CHANNEL_ID
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 @commands.command()
 async def 선수목록(ctx, position: str):
@@ -7,12 +11,18 @@ async def 선수목록(ctx, position: str):
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
+    # 최신 player_data 로드
+    data = load_data()  
+    players_data = data["players"]  # 업데이트된 player_data 불러오기
+    
     output = f"### {position} 포지션 선수 목록:\n"
     for player, player_data in players_data.items():
         if player_data['position'] == position:
-            output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]}골드)\n"
+            output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
 
     await ctx.send(output)
+
+
 
 
 @commands.command()

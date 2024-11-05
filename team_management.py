@@ -1,7 +1,7 @@
 import logging
 
 from discord.ext import commands
-from sharing_codes import UserData, PlayerData, initialize_user, register_players, players_data, is_registration_active, is_sale_active, user_data, ALLOWED_CHANNEL_ID
+from sharing_codes import UserData, PlayerData, initialize_user, register_players, players_data, is_registration_active, is_sale_active, user_data, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
 
 pos_alias = {
     '탑': 'top',
@@ -88,7 +88,7 @@ async def 선수판매(ctx, position: str):
 
 @commands.command()
 async def 내팀(ctx):
-    if ctx.channel.id not in ALLOWED_CHANNEL_ID:
+    if ctx.channel.id not in COMMUNITY_CHANEL_ID:
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
