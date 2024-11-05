@@ -40,6 +40,16 @@ class PlayerData:
     def value(self) -> int:
         return TIER_VALUES[self.__tier]
 
+    @property
+    def tier(self):
+        return self.__tier
+
+    @tier.setter
+    def tier(self, tier: str):
+        if tier not in TIER_VALUES:
+            raise ValueError
+        self.__tier = tier
+
 class UserData:
     __id = int
     __top: PlayerData = None
