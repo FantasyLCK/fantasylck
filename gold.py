@@ -29,7 +29,7 @@ async def 육구놀이(ctx):
         await ctx.send("오늘의 시도 횟수를 모두 사용했습니다. **지나친 도박은 정신건강에 해롭읍니다.**")
         return
     
-    if user_budgets[user_id] < 15:  # 사용자 예산 확인
+    if user_data.balance < 15:  # 사용자 예산 확인
         await ctx.send("**골드가 부족합니다!**")
         return
     
