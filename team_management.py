@@ -1,5 +1,9 @@
+import logging
+
 from discord.ext import commands
 from sharing_codes import UserData, PlayerData, initialize_user, register_players, is_registration_active, is_sale_active, user_data, ALLOWED_CHANNEL_ID
+
+logger = logging.getLogger()
 
 @commands.command()
 async def 선수등록(ctx, position: str, name: str):
@@ -16,6 +20,7 @@ async def 선수등록(ctx, position: str, name: str):
 
     # 선수 데이터 확인
     players_data = register_players()
+    logger.debug(players_data)
     if position not in players_data:
         await ctx.send(f"{position}은(는) 유효한 포지션이 아닙니다.")
         return
