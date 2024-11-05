@@ -77,18 +77,15 @@ async def 내팀(ctx):
     team_info = user_info.team_data  # 팀 데이터 가져오기
     team_display = f"감독: {ctx.author.display_name}\n\n"
 
-    total_team_value = 0  # 팀 가치를 계산하기 위한 변수
-
     # 팀 정보 반복
     for position, player in team_info.items():
         if player:  # 선수가 등록되어 있는 경우
             team_display += f"{position}: {player.name} (가치: {player.value} 골드)\n"
-            total_team_value += player.value  # 선수 가치를 합산
         else:  # 선수가 등록되어 있지 않은 경우
             team_display += f"{position}: 없음\n"
 
     # 총 팀 가치 및 예산 출력
-    team_display += f"\n팀 가치: {total_team_value} 골드\n현재 예산: {user_info.balance} 골드"
+    team_display += f"\n팀 가치: {user_info.team_value} 골드\n현재 예산: {user_info.balance} 골드"
 
     await ctx.send(team_display)
 
