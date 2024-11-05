@@ -1,5 +1,5 @@
 from discord.ext import commands
-from sharing_codes import is_registration_active, is_sale_active
+from sharing_codes import is_registration_active, is_sale_active, initialize_user
 from player_database import add_player, update_player, remove_player
 
 @commands.command()
