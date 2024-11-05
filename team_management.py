@@ -23,6 +23,7 @@ async def 선수등록(ctx, position: str, name: str):
     user = initialize_user(user_id)  # 사용자 초기화 및 가져오기
 
     # 선수 데이터 확인
+    logger.debug(f"players_data = {players_data}")
     if name not in players_data.keys():
         logger.debug(f"{name}는 유효한 선수 이름이 아닙니다.")
         await ctx.send(f"{name}는 유효한 선수 이름이 아닙니다.")
