@@ -7,18 +7,10 @@ async def 선수목록(ctx, position: str):
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
-    if position not in players_data:
-        await ctx.send(f"{position} 포지션에 해당하는 선수가 없습니다.")
-        return
-
-    # 포지션에 해당하는 선수 불러오기
-    tiered_players = players_data.get(position, {})
-
-    output = f"**{position} 포지션 선수 목록:**\n\n"
-    for tier, players in sorted(tiered_players.items(), key=lambda x: TIER_VALUES[x[0]], reverse=True):
-        players_list = ", ".join(players)
-        gold_value = TIER_VALUES[tier]
-        output += f"{tier} ({gold_value}골드) | {players_list}\n"
+    output = f"### {position} 포지션 선수 목록:\n"
+    for player, player_data in players_data.items():
+        if player_data['position'] == position:
+            output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]}골드)\n"
 
     await ctx.send(output)
 
