@@ -89,6 +89,7 @@ class UserData:
     @top.setter
     def top(self, top: PlayerData):
         if self.top != None:
+            self.__update_balance(top)
             self.__top = top
         else:
             raise AttributeError
@@ -100,6 +101,7 @@ class UserData:
     @jgl.setter
     def jgl(self, jgl: PlayerData):
         if self.jgl != None:
+            self.__update_balance(jgl)
             self.__jgl = jgl
         else:
             raise AttributeError
@@ -111,6 +113,7 @@ class UserData:
     @mid.setter
     def mid(self, mid: PlayerData):
         if self.mid != None:
+            self.__update_balance(mid)
             self.__mid = mid
         else:
             raise AttributeError
@@ -122,6 +125,7 @@ class UserData:
     @adc.setter
     def adc(self, adc: PlayerData):
         if self.adc != None:
+            self.__update_balance(adc)
             self.__adc = adc
         else:
             raise AttributeError
@@ -133,9 +137,15 @@ class UserData:
     @sup.setter
     def sup(self, sup: PlayerData):
         if self.sup != None:
+            self.__update_balance(sup)
             self.__sup = sup
         else:
             raise AttributeError
+
+    def __update_balance(self, player: PlayerData):
+        if player.value > self.__balance:
+            raise ValueError
+        self.__balance -= player.value
 
 # 사용자 데이터와 출석 기록을 저장할 딕셔너리
 attendance_data = {}
