@@ -1,5 +1,5 @@
 from discord.ext import commands
-from sharing_codes import user_data, initialize_user, user_budgets, attendance_data, DAILY_REWARD, ALLOWED_CHANNEL_ID
+from sharing_codes import UserData, initialize_user, user_budgets, attendance_data, DAILY_REWARD, ALLOWED_CHANNEL_ID
 import random
 import asyncio
 from datetime import datetime, timedelta
@@ -16,7 +16,7 @@ async def 육구놀이(ctx):
         return
     
     user_id = ctx.author.id
-    initialize_user(user_id)  # 사용자 초기화
+    user_data = initialize_user(user_id)  # 사용자 초기화
 
     today = datetime.now().date()
 
@@ -33,7 +33,7 @@ async def 육구놀이(ctx):
         await ctx.send("**골드가 부족합니다!**")
         return
     
-    user_budgets[user_id] -= 15  # 골드 차감
+    user_data.balance -= 15  # 골드 차감
 
     numbers = random.choices([3, 6, 9], weights=[70, 20, 10], k=3)
     
@@ -61,7 +61,7 @@ async def 육구놀이(ctx):
     elif numbers.count(9) == 2:
         gold_earned = 35
     
-    user_budgets[user_id] += gold_earned  # 획득 골드 반영
+    user_data.balancee += gold_earned  # 획득 골드 반영
     await ctx.send(f"획득한 골드: {gold_earned}골드. 현재 예산: {user_budgets[user_id]}골드.")
 
     # 시도 횟수 증가
