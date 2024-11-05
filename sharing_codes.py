@@ -180,7 +180,6 @@ def initialize_user(user_id):
         user_data[user_id] = UserData(user_id)
         print(f"Initialized user data for user ID: {user_id}")
 
-
 players_data = {
     "탑": {
         "S": ["도란", "기인"],
@@ -223,19 +222,22 @@ players_data = {
 def register_players():
     data = load_data()  # 데이터 로드
 
-    for position, tiers in players_data.items():
-        for tier, players in tiers.items():
-            for name in players:
-                # 각 선수의 정보를 데이터에 추가
-                if name not in data["players"]:
-                    data["players"][name] = {}  # initialize the player data
-                data["players"][name].update({
-                    "position": position,
-                    "tier": tier,
-                    "value": TIER_VALUES[tier]  # 티어에 따라 가치 설정
-                })
+    if "players" not in data:
+        data["players"] = {}
 
-    save_data(data)  # 선수 정보를 파일에 저장
+    for position, tiers in players_data.items():
+        for tier, player_names in tiers.items():
+            for name in player_names:
+                # 중복 방지
+                if name not in data["players"]:
+                    data["players"][name] = {
+                        "position": position,
+                        "tier": tier,
+                        "value": TIER_VALUES[tier]
+                    }
+
+    save_data(data)
+    return data["players"]
 
 
     # 플레이어 가치 가져오기

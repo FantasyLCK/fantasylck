@@ -85,7 +85,7 @@ async def 출석(ctx):
 
     # 출석 시간이 오전 6시 이전인지 확인
     if last_attendance == today and current_time_kst.hour < 6:
-        await ctx.send("아직 출석할 수 없습니다! 한국 시간 기준으로 오전 6시 이후에 출석해 주세요.")
+        await ctx.send("아직 출석할 수 없습니다! 한국 시간 기준 오전 6시 이후에 출석해 주세요.")
         return
 
     # 출석 처리 및 골드 지급
