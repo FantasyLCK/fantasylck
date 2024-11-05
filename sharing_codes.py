@@ -79,7 +79,7 @@ class UserData:
     def team_value(self) -> int:
         value_sum = 0
         for pos in self.team_data:
-            if self.team_data[pos] != None:
+            if self.team_data[pos] == None:
                 value_sum += self.team_data[pos].value
         return value_sum
 
@@ -93,7 +93,7 @@ class UserData:
 
     @top.setter
     def top(self, top: PlayerData):
-        if self.top != None:
+        if self.top == None:
             self.__update_balance(top)
             self.__top = top
         else:
@@ -105,7 +105,7 @@ class UserData:
 
     @jgl.setter
     def jgl(self, jgl: PlayerData):
-        if self.jgl != None:
+        if self.jgl == None:
             self.__update_balance(jgl)
             self.__jgl = jgl
         else:
@@ -117,7 +117,8 @@ class UserData:
 
     @mid.setter
     def mid(self, mid: PlayerData):
-        if self.mid != None:
+        logger.debug(self.__mid)
+        if self.__mid == None:
             self.__update_balance(mid)
             self.__mid = mid
         else:
@@ -129,7 +130,7 @@ class UserData:
 
     @adc.setter
     def adc(self, adc: PlayerData):
-        if self.adc != None:
+        if self.adc == None:
             self.__update_balance(adc)
             self.__adc = adc
         else:
@@ -141,7 +142,7 @@ class UserData:
 
     @sup.setter
     def sup(self, sup: PlayerData):
-        if self.sup != None:
+        if self.sup == None:
             self.__update_balance(sup)
             self.__sup = sup
         else:
