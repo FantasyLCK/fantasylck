@@ -197,42 +197,62 @@ def initialize_user(user_id):
         logger.debug(f"User data for user ID: {user_id} already initialized")
 
 players_data = {
-    "탑": {
-        "S": ["도란", "기인"],
-        "A": ["제우스", "킹겐"],
-        "B": ["퍼펙트", "클리어"],
-        "C": ["두두", "미하일"],
-        "D": ["프로그", "모건"],
-    },
-    "정글": {
-        "S": ["피넛", "캐니언"],
-        "A": ["오너", "루시드"],
-        "B": ["표식", "랩터"],
-        "C": ["커즈", "실비"],
-        "D": ["스폰지", "영재"],
-    },
-    "미드": {
-        "S": ["제카", "쵸비"],
-        "A": ["페이커", "쇼메이커"],
-        "B": ["비디디", "클로저"],
-        "C": ["불독", "피셔"],
-        "D": ["예후", "페이트"],
-    },
-    "원딜": {
-        "S": ["바이퍼", "페이즈"],
-        "A": ["구마유시", "에이밍"],
-        "B": ["데프트", "헤나"],
-        "C": ["리퍼", "지우"],
-        "D": ["테디", "엔비"],
-    },
-    "서폿": {
-        "S": ["딜라이트", "리헨즈"],
-        "A": ["케리아", "켈린"],
-        "B": ["베릴", "듀로"],
-        "C": ["안딜", "구거"],
-        "D": ["플레타", "폴루"]
-    }
+    "도란": {"position": "탑", "tier": "S"},
+    "기인": {"position": "탑", "tier": "S"},
+    "제우스": {"position": "탑", "tier": "A"},
+    "킹겐": {"position": "탑", "tier": "A"},
+    "퍼펙트": {"position": "탑", "tier": "B"},
+    "클리어": {"position": "탑", "tier": "B"},
+    "두두": {"position": "탑", "tier": "C"},
+    "미하일": {"position": "탑", "tier": "C"},
+    "프로그": {"position": "탑", "tier": "D"},
+    "모건": {"position": "탑", "tier": "D"},
+    
+    "피넛": {"position": "정글", "tier": "S"},
+    "캐니언": {"position": "정글", "tier": "S"},
+    "오너": {"position": "정글", "tier": "A"},
+    "루시드": {"position": "정글", "tier": "A"},
+    "표식": {"position": "정글", "tier": "B"},
+    "랩터": {"position": "정글", "tier": "B"},
+    "커즈": {"position": "정글", "tier": "C"},
+    "실비": {"position": "정글", "tier": "C"},
+    "스폰지": {"position": "정글", "tier": "D"},
+    "영재": {"position": "정글", "tier": "D"},
+    
+    "제카": {"position": "미드", "tier": "S"},
+    "쵸비": {"position": "미드", "tier": "S"},
+    "페이커": {"position": "미드", "tier": "A"},
+    "쇼메이커": {"position": "미드", "tier": "A"},
+    "비디디": {"position": "미드", "tier": "B"},
+    "클로저": {"position": "미드", "tier": "B"},
+    "불독": {"position": "미드", "tier": "C"},
+    "피셔": {"position": "미드", "tier": "C"},
+    "예후": {"position": "미드", "tier": "D"},
+    "페이트": {"position": "미드", "tier": "D"},
+    
+    "바이퍼": {"position": "원딜", "tier": "S"},
+    "페이즈": {"position": "원딜", "tier": "S"},
+    "구마유시": {"position": "원딜", "tier": "A"},
+    "에이밍": {"position": "원딜", "tier": "A"},
+    "데프트": {"position": "원딜", "tier": "B"},
+    "헤나": {"position": "원딜", "tier": "B"},
+    "리퍼": {"position": "원딜", "tier": "C"},
+    "지우": {"position": "원딜", "tier": "C"},
+    "테디": {"position": "원딜", "tier": "D"},
+    "엔비": {"position": "원딜", "tier": "D"},
+    
+    "딜라이트": {"position": "서폿", "tier": "S"},
+    "리헨즈": {"position": "서폿", "tier": "S"},
+    "케리아": {"position": "서폿", "tier": "A"},
+    "켈린": {"position": "서폿", "tier": "A"},
+    "베릴": {"position": "서폿", "tier": "B"},
+    "듀로": {"position": "서폿", "tier": "B"},
+    "안딜": {"position": "서폿", "tier": "C"},
+    "구거": {"position": "서폿", "tier": "C"},
+    "플레타": {"position": "서폿", "tier": "D"},
+    "폴루": {"position": "서폿", "tier": "D"},
 }
+
 
 # 선수 데이터 등록
 def register_players():
@@ -248,7 +268,7 @@ def register_players():
                 # 중복 방지
                 if name not in data["players"]:
                     data["position"][position] = {
-                        "tier"[tier]: ["name"[name]]
+                        'tier'[tier]: ['name'[name]]
                     }
 
     save_data(data)
