@@ -247,10 +247,8 @@ def register_players():
             for name in player_names:
                 # 중복 방지
                 if name not in data["players"]:
-                    data["players"][name] = {
-                        "position": position,
-                        "tier": tier,
-                        "value": TIER_VALUES[tier]
+                    data["position"][position] = {
+                        "tier"[tier]: ["name"[name]]
                     }
 
     save_data(data)
