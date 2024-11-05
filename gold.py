@@ -33,7 +33,7 @@ async def 육구놀이(ctx):
         await ctx.send("**골드가 부족합니다!**")
         return
     
-    user_data.balance -= 15  # 골드 차감
+    user_data.update_balance(-15)  # 골드 차감
 
     numbers = random.choices([3, 6, 9], weights=[70, 20, 10], k=3)
     
@@ -61,8 +61,8 @@ async def 육구놀이(ctx):
     elif numbers.count(9) == 2:
         gold_earned = 35
     
-    user_data.balancee += gold_earned  # 획득 골드 반영
-    await ctx.send(f"획득한 골드: {gold_earned}골드. 현재 예산: {user_budgets[user_id]}골드.")
+    user_data.update_balance(gold_earned)  # 획득 골드 반영
+    await ctx.send(f"획득한 골드: {gold_earned}골드. 현재 예산: {user_data.balance}골드.")
 
     # 시도 횟수 증가
     attempts_data[user_id]['attempts'] += 1

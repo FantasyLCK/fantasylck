@@ -174,6 +174,11 @@ class UserData:
     def daily_login(self):
         self.__balance += DAILY_REWARD
 
+    def update_balance(self, change: int):
+        if change < 0 and abs(change) > self.balance:
+            raise ValueError
+        self.__balance += change
+
 # 사용자 데이터와 출석 기록을 저장할 딕셔너리
 attendance_data = {}
 
