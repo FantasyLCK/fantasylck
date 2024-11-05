@@ -1,7 +1,11 @@
+import logging
+
 import discord
 from discord.ext import commands
 import os
 import json
+
+logger = logging.getLogger(__name__)
 
 # 데이터 파일 경로
 DATA_FILE = "player_data.json"
@@ -188,9 +192,9 @@ def save_data(data):
 def initialize_user(user_id):
     if user_id not in user_data:
         user_data[user_id] = UserData(user_id)
-        print(f"Initialized user data for user ID: {user_id}")
+        logger.info(f"Initialized user data for user ID: {user_id}")
     else:
-        print(f"User data for user ID: {user_id} already initialized")
+        logger.debug(f"User data for user ID: {user_id} already initialized")
 
 players_data = {
     "탑": {
@@ -258,5 +262,5 @@ def get_player_value(name):
     if name in data["players"]:
         return data["players"][name]["value"]
     else:
-        print(f"{name} 선수를 찾을 수 없습니다.")
+        logger.error(f"{name} 선수를 찾을 수 없습니다.")
         return None

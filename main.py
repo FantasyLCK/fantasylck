@@ -1,3 +1,5 @@
+import logging
+
 import discord
 from discord.ext import commands
 from team_management import 선수등록, 선수판매, 내팀
@@ -5,6 +7,10 @@ from convenience import 선수목록, 명령어, 관리자, 육구놀이룰
 from gold import 육구놀이, 출석
 from admin import 선수추가, 선수삭제, 선수수정, on, off
 from ranking import 맞다이, 랭킹
+
+logging.basicConfig(level=logging.DEBUG)
+
+logger = logging.getLogger(__name__)
 
 # 봇의 프리픽스 설정
 intents = discord.Intents.default()
@@ -14,7 +20,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # 봇이 준비되었을 때 실행되는 이벤트
 @bot.event
 async def on_ready():
-    print(f'봇이 실행되었습니다: {bot.user}')
+    logger.info(f'봇이 실행되었습니다: {bot.user}')
 
 # 미등록 명령어에 대한 경고 메시지 처리
 @bot.event
