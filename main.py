@@ -22,12 +22,11 @@ async def on_message(message):
     if message.author == bot.user:
         return  # 봇의 메시지는 무시
 
-    # 명령어가 아닐 경우 다음 이벤트로 넘어갑니다.
     ctx = await bot.get_context(message)
     if ctx.command is None and message.content.startswith(bot.command_prefix):
         await message.channel.send("올바르지 않은 명령어입니다. '!명령어'를 입력하여 사용 가능한 명령어를 확인해 주세요.")
     
-    await bot.process_commands(message)  # 명령어가 처리되도록 합니다.
+    await bot.process_commands(message)
 
 
 # 명령어 등록
