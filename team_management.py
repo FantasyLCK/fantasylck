@@ -20,7 +20,7 @@ async def 선수등록(ctx, position: str, name: str):
 
     # 선수 데이터 확인
     players_data = register_players()
-    logger.debug(players_data)
+    logger.debug(f"players_data = {players_data}")
     if position not in players_data:
         await ctx.send(f"{position}은(는) 유효한 포지션이 아닙니다.")
         return
