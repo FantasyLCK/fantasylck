@@ -241,6 +241,7 @@ def register_players():
     if "players" not in data:
         data["players"] = {}
 
+    # 기존의 players_data 구조를 기반으로 데이터 등록
     for position, tiers in players_data.items():
         for tier, player_names in tiers.items():
             for name in player_names:
@@ -254,6 +255,7 @@ def register_players():
 
     save_data(data)
     return data["players"]
+
 
 
     # 플레이어 가치 가져오기
