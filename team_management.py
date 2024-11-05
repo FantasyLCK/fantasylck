@@ -81,7 +81,7 @@ async def 선수판매(ctx, position: str):
         return
 
     # 선수 판매
-    setattr(user, position, None)
+    setattr(user, pos_alias[position], None)
     
     await ctx.send(f"{player.name} 선수가 판매되었습니다. {player.value} 골드를 얻었습니다. 현재 예산: {user.balance} 골드")
 
