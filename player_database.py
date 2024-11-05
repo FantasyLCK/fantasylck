@@ -1,6 +1,6 @@
 import json
 import os
-from sharing_codes import load_data, save_data
+from sharing_codes import load_data, save_data, PlayerData
 
 
 # 플레이어 추가

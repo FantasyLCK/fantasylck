@@ -24,6 +24,55 @@ TIER_VALUES = {
     "D": 10,
 }
 
+class PlayerData:
+    __name:str
+    __tier:str
+
+    def __init__(self, name:str, tier:str):
+        self.__name = name
+        self.__tier = tier
+
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def value(self) -> int: 
+        return TIER_VALUES[self.__tier]
+
+class UserData:
+    __id = int
+    __top: PlayerData = None
+    __jgl: PlayerData = None
+    __mid: PlayerData = None
+    __adc: PlayerData = None
+    __sup: PlayerData = None
+    __balance: int
+
+    def __init__(self, id):
+        self.__id = id
+        self.__balance = STARTING_BUDGET
+
+    @property
+    def id(self):
+        return self.__id
+
+    @property
+    def team_data(self):
+        return {self.__top, self.__jgl, self.__mid, self.__adc, self.__sup}
+
+    @property
+    def team_value(self) -> int:
+        value_sum = 0
+        for player in self.team_data:
+            if player != None:
+                value_sum += player.value
+
+    @property
+    def balance(self):
+        return self.__balance
+
+
 # 사용자 데이터와 출석 기록을 저장할 딕셔너리
 attendance_data = {}
 
@@ -64,16 +113,7 @@ def save_data(data):
 def initialize_user(user_id):
     if user_id not in user_data: 
         user_budgets[user_id] = STARTING_BUDGET
-        user_data[user_id] = {
-            "team": {
-                "탑": None,
-                "정글": None,
-                "미드": None,
-                "원딜": None,
-                "서폿": None
-            },
-            "team_value": 0,
-        }
+        user_data[user_id] = UserData(user_id)
         print(f"Initialized user data for user ID: {user_id}")
 
 
