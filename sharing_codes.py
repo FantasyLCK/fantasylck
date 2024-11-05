@@ -72,6 +72,45 @@ class UserData:
     def balance(self):
         return self.__balance
 
+    @property
+    def top(self):
+        return self.__top
+    
+    @top.setter
+    def top(self, top: PlayerData):
+        self.__top = top
+
+    @property
+    def jgl(self):
+        return self.__jgl
+    
+    @jgl.setter
+    def jgl(self, jgl: PlayerData):
+        self.__jgl = jgl
+
+    @property
+    def mid(self):
+        return self.__mid
+    
+    @mid.setter
+    def mid(self, mid: PlayerData):
+        self.__mid = mid
+
+    @property
+    def adc(self):
+        return self.__adc
+    
+    @adc.setter
+    def adc(self, adc: PlayerData):
+        self.__adc = adc
+
+    @property
+    def sup(self):
+        return self.__sup
+    
+    @sup.setter
+    def sup(self, sup: PlayerData):
+        self.__sup = sup
 
 # 사용자 데이터와 출석 기록을 저장할 딕셔너리
 attendance_data = {}
