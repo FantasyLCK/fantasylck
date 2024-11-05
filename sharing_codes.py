@@ -59,7 +59,7 @@ class UserData:
 
     @property
     def team_data(self):
-        return {self.__top, self.__jgl, self.__mid, self.__adc, self.__sup}
+        return {"탑": self.__top, "정글": self.__jgl, "미드": self.__mid, "원딜": self.__adc, "서폿": self.__sup}
 
     @property
     def team_value(self) -> int:
