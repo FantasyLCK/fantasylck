@@ -6,7 +6,7 @@ import json
 # 데이터 파일 경로
 DATA_FILE = "player_data.json"
 
-user_data = {} 
+user_data = {}
 user_budgets = {}
 
 # 초기 예산 설정
@@ -37,7 +37,7 @@ class PlayerData:
         return self.__name
 
     @property
-    def value(self) -> int: 
+    def value(self) -> int:
         return TIER_VALUES[self.__tier]
 
 class UserData:
@@ -75,7 +75,7 @@ class UserData:
     @property
     def top(self):
         return self.__top
-    
+
     @top.setter
     def top(self, top: PlayerData):
         if self.top != None:
@@ -86,7 +86,7 @@ class UserData:
     @property
     def jgl(self):
         return self.__jgl
-    
+
     @jgl.setter
     def jgl(self, jgl: PlayerData):
         if self.jgl != None:
@@ -97,7 +97,7 @@ class UserData:
     @property
     def mid(self):
         return self.__mid
-    
+
     @mid.setter
     def mid(self, mid: PlayerData):
         if self.mid != None:
@@ -108,7 +108,7 @@ class UserData:
     @property
     def adc(self):
         return self.__adc
-    
+
     @adc.setter
     def adc(self, adc: PlayerData):
         if self.adc != None:
@@ -119,7 +119,7 @@ class UserData:
     @property
     def sup(self):
         return self.__sup
-    
+
     @sup.setter
     def sup(self, sup: PlayerData):
         if self.sup != None:
@@ -165,7 +165,7 @@ def save_data(data):
 
 # 공유된 함수
 def initialize_user(user_id):
-    if user_id not in user_data: 
+    if user_id not in user_data:
         user_budgets[user_id] = STARTING_BUDGET
         user_data[user_id] = UserData(user_id)
         print(f"Initialized user data for user ID: {user_id}")
@@ -212,7 +212,7 @@ players_data = {
 # 선수 데이터 등록
 def register_players():
     data = load_data()  # 데이터 로드
-    
+
     for position, tiers in players_data.items():
         for tier, players in tiers.items():
             for name in players:
