@@ -1,6 +1,6 @@
 from discord.ext import commands
 from sharing_codes import is_registration_active, is_sale_active
-from player_database import add_player, update_player, delete_player
+from player_database import add_player, update_player, remove_player
 
 @commands.command()
 @commands.has_permissions(administrator=True)
@@ -17,7 +17,7 @@ async def 선수수정(ctx, name: str, position: str = None, tier: str = None):
 @commands.command()
 @commands.has_permissions(administrator=True) 
 async def 선수삭제(ctx, name: str):
-    delete_player(name)
+    remove_player(name)
     await ctx.send(f"{name} 선수가 삭제되었습니다.")
 
 @commands.command()
