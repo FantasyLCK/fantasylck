@@ -94,8 +94,11 @@ class UserData:
     @top.setter
     def top(self, top: PlayerData):
         if self.top == None:
-            self.__update_balance(top)
+            self.__purchase_player(top)
             self.__top = top
+        elif top == None:
+            self.__sell_player(self.top)
+            self.__top = None
         else:
             raise AttributeError
 
@@ -106,8 +109,11 @@ class UserData:
     @jgl.setter
     def jgl(self, jgl: PlayerData):
         if self.jgl == None:
-            self.__update_balance(jgl)
+            self.__purchase_player(jgl)
             self.__jgl = jgl
+        elif jgl == None:
+            self.__sell_player(self.jgl)
+            self.__jgl = None
         else:
             raise AttributeError
 
@@ -119,8 +125,11 @@ class UserData:
     def mid(self, mid: PlayerData):
         logger.debug(self.__mid)
         if self.__mid == None:
-            self.__update_balance(mid)
+            self.__purchase_player(mid)
             self.__mid = mid
+        elif mid == None:
+            self.__sell_player(self.mid)
+            self.__mid = None
         else:
             raise AttributeError
 
@@ -131,8 +140,11 @@ class UserData:
     @adc.setter
     def adc(self, adc: PlayerData):
         if self.adc == None:
-            self.__update_balance(adc)
+            self.__purchase_player(adc)
             self.__adc = adc
+        elif adc == None:
+            self.__sell_player(self.adc)
+            self.__adc = None
         else:
             raise AttributeError
 
@@ -143,15 +155,21 @@ class UserData:
     @sup.setter
     def sup(self, sup: PlayerData):
         if self.sup == None:
-            self.__update_balance(sup)
+            self.__purchase_player(sup)
             self.__sup = sup
+        elif sup == None:
+            self.__sell_player(self.sup)
+            self.__sup = None
         else:
             raise AttributeError
 
-    def __update_balance(self, player: PlayerData):
+    def __purchase_player(self, player: PlayerData):
         if player.value > self.__balance:
             raise ValueError
         self.__balance -= player.value
+
+    def __sell_player(self, player: PlayerData):
+        self.__balance += player.value
 
     def daily_login(self):
         self.__balance += DAILY_REWARD

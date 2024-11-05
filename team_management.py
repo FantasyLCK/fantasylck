@@ -3,6 +3,15 @@ import logging
 from discord.ext import commands
 from sharing_codes import UserData, PlayerData, initialize_user, register_players, players_data, is_registration_active, is_sale_active, user_data, ALLOWED_CHANNEL_ID
 
+pos_alias = {
+    '탑': 'top',
+    '정글': 'jgl',
+    '미드': 'mid',
+    '바텀': 'adc',
+    '원딜': 'adc',
+    '서폿': 'sup'
+}
+
 logger = logging.getLogger()
 logger.debug(f"입력된 선수 이름: {PlayerData.name}")
 logger.debug(f"유효한 선수 이름 목록: {list(players_data.keys())}")
@@ -10,14 +19,6 @@ logger.debug(f"유효한 선수 이름 목록: {list(players_data.keys())}")
 @commands.command()
 async def 선수등록(ctx, position: str, name: str):
     logger.debug(f"선수등록 함수 호출: position={position}, name={name}")
-    pos_alias = {
-        '탑': 'top',
-        '정글': 'jgl',
-        '미드': 'mid',
-        '바텀': 'adc',
-        '원딜': 'adc',
-        '서폿': 'sup'
-    }
 
     if not is_registration_active:
         await ctx.send("현재 선수 등록이 비활성화 상태입니다.")
@@ -71,13 +72,15 @@ async def 선수판매(ctx, position: str):
     user = initialize_user(user_id)  # 사용자 초기화 및 가져오기
 
     # 포지션에 선수 확인
-    player = getattr(user, 'position')
+    if (position not in pos_alias):
+        await ctx.send(f"{position}은(는) 올바른 포지션이 아닙니다.")
+        return
+    player = getattr(user, pos_alias[position])
     if player is None:
         await ctx.send(f"{position} 포지션에 등록된 선수가 없습니다.")
         return
 
-    # 선수 판매 및 예산 갱신
-    user.balance += player.value
+    # 선수 판매
     setattr(user, position, None)
     
     await ctx.send(f"{player.name} 선수가 판매되었습니다. {player.value} 골드를 얻었습니다. 현재 예산: {user.balance} 골드")
