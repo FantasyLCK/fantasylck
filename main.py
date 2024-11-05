@@ -1,5 +1,5 @@
 import logging
-
+import os
 import discord 
 from discord.ext import commands
 from team_management import 선수등록, 선수판매, 내팀
@@ -58,7 +58,9 @@ bot.add_command(off)
 bot.add_command(맞다이)
 bot.add_command(랭킹)
 
+TOKEN = os.getenv('MTMwMTQ0NTMwNzg5MTk3NDE4NQ.GC0AfA.v42uQ7fqNk9Q0p0T29jaHyhCpg18MupbFP1D9A')
+if not TOKEN:
+    raise ValueError("DISCORD_TOKEN 환경 변수가 설정되지 않았습니다.")
 
-# 메인 함수
-TOKEN = 'MTMwMTQ0NTMwNzg5MTk3NDE4NQ.GC0AfA.v42uQ7fqNk9Q0p0T29jaHyhCpg18MupbFP1D9A'
-bot.run(TOKEN)
+client = discord.Client()
+client.run(TOKEN)
