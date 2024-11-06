@@ -1,17 +1,11 @@
 import logging
-
-import discord
-from discord.ext import commands
 import os
 import json
 
 logger = logging.getLogger(__name__)
 
 # 데이터 파일 경로
-DATA_FILE = "player_data.json"
-
-user_data = {}
-user_budgets = {}
+DATA_FILE = "players_data.json"
 
 # 초기 예산 설정
 STARTING_BUDGET = 150
@@ -27,6 +21,8 @@ TIER_VALUES = {
     "C": 20,
     "D": 10,
 }
+
+user_data = {}
 
 class PlayerData:
     __name:str
@@ -282,24 +278,33 @@ players_data = {
 }
 
 
-# 선수 데이터 등록
+# 선수 데이터 등록 및 복구
 def register_players():
     data = load_data()  # 데이터 로드
 
     if "players" not in data:
         data["players"] = {}
 
-    # 기존의 players_data 구조를 기반으로 데이터 등록
-    for position, tiers in players_data.items():
-        for tier, player_names in tiers.items():
-            for name in player_names:
-                # 중복 방지
-                if name not in data["players"]:
-                    data["players"][name] = {"position": position, "tier": tier}
+    # `players_data`와 비교, 필요한 선수들 등록, 삭제된 선수 복구
+    existing_players = set(data["players"].keys())  # 현재 JSON 파일에 있는 선수 목록
+    new_players = set(players_data.keys())  # 새로 추가된 선수 목록
 
+    # 삭제된 선수는 복구 (JSON에서 삭제된 선수는 복구)
+    for player in existing_players - new_players:
+        data["players"][player] = players_data[player]
+
+    # 새로운 선수 추가
+    for name, player_info in players_data.items():
+        if name not in data["players"]:
+            data["players"][name] = {
+                "position": player_info["position"],
+                "tier": player_info["tier"]
+            }
+
+    # 데이터 저장
     save_data(data)
+    logger.info("선수 데이터가 성공적으로 등록되었습니다.")
     return data["players"]
-
 
 
 # 플레이어 가치 가져오기

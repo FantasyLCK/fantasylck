@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from sharing_codes import players_data,load_data, save_data, PlayerData, UserData
+from sharing_codes import PlayerData, save_data, load_data
 
 logger = logging.getLogger(__name__)
 
@@ -14,24 +14,32 @@ TIER_VALUES = {
     "D": 10,
 }
 
+# 데이터 파일 경로
+DATA_FILE = "players_data.json"
+
 # 선수 추가
 def add_player(name: str, position: str, tier: str):
     data = load_data()  # 데이터 로드
-    logger.debug(f"players_data = {players_data}")
+    logger.debug(f"players_data = {data['players']}")
 
     if tier not in TIER_VALUES:
         logger.error(f"정의되지 않은 티어: {tier}. 선수를 추가할 수 없습니다.")
         return
-    
+
+    # PlayerData 객체 생성
     player = PlayerData(name, tier)
+
+    # players_data에 PlayerData 객체 추가
     data["players"][name] = {
         "position": position,
         "tier": player.tier,
         "value": player.value,
     }
-    save_data(data)  # 데이터 저장
+    
+    # 데이터 저장
+    save_data(data)
     logger.info(f"{name} 선수({position}, {tier} 등급)가 추가되었습니다.")
-    logger.info("업데이트된 player_data: %s", data["players"])
+    logger.debug(f"업데이트된 players_data = {data['players']}")
 
 # 선수 수정
 def update_player(name: str, position: str = None, tier: str = None):
@@ -61,12 +69,12 @@ def update_player(name: str, position: str = None, tier: str = None):
             logger.warning(f"정의되지 않은 티어: {tier}. 티어 업데이트를 생략합니다.")
 
     save_data(data)  # 데이터 저장
-    logger.debug(f"players_data = {players_data}")
+    logger.debug(f"players_data = {data['players']}")
 
 # 선수 삭제
 def remove_player(name: str):
     data = load_data()  # 데이터 로드
-    logger.debug(f"players_data = {players_data}")
+    logger.debug(f"players_data = {data['players']}")
 
     if name in data["players"]:
         del data["players"][name]  # 선수 삭제
