@@ -2,6 +2,7 @@ import logging
 import os
 import discord 
 from discord.ext import commands
+from sharing_codes import register_players, players_data
 from team_management import 선수등록, 선수판매, 내팀
 from convenience import 선수목록, 명령어, 관리자, 육구놀이룰
 from gold import 육구놀이, 출석
@@ -21,6 +22,9 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.event
 async def on_ready():
     logger.info(f'봇이 실행되었습니다: {bot.user}')
+    # 봇 시작 시 선수 데이터 초기화
+    register_players()
+    logger.debug(f'{players_data}')
 
 # 미등록 명령어에 대한 경고 메시지 처리
 @bot.event
