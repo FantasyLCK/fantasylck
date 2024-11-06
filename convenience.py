@@ -11,7 +11,6 @@ async def 선수목록(ctx, position: str):
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
-    # 최신 player_data 로드
     data = load_data()  
     players_data = data["players"]  # 업데이트된 player_data 불러오기
     
@@ -20,9 +19,9 @@ async def 선수목록(ctx, position: str):
         if player_data['position'] == position:
             output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
 
+    logger.debug(f"players_data = {players_data}")
+
     await ctx.send(output)
-
-
 
 
 @commands.command()

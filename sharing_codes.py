@@ -301,7 +301,6 @@ def register_players():
     return data["players"]
 
 
-
 # 플레이어 가치 가져오기
 def get_player_value(name):
     data = load_data()  # 데이터 로드
