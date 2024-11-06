@@ -33,7 +33,7 @@ async def on_message(message):
         await message.channel.send("올바르지 않은 명령어입니다. '!명령어'를 입력하여 사용 가능한 명령어를 확인해 주세요.")
     
     await bot.process_commands(message)
-
+    
 
 # 명령어 등록
 bot.add_command(선수등록)

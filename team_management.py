@@ -60,7 +60,7 @@ async def 선수판매(ctx, position: str = None):
 
     user_id = ctx.author.id
     user = initialize_user(user_id)  # 사용자 초기화
-    
+
     # 'all'이 입력되면 모든 포지션의 선수를 판매
     if position == "all":
         total_gold = 0
@@ -70,10 +70,6 @@ async def 선수판매(ctx, position: str = None):
                 total_gold += player.value
                 setattr(user, pos_alias[pos], None)  # 선수 판매
                 logger.info(f"{player.name} 선수가 {pos} 포지션에서 판매되었습니다.")
-        
-        # 각 포지션에 대해 None 설정
-        for pos in ['탑', '정글', '미드', '원딜', '서폿']:
-            setattr(user, pos_alias[pos], None)
         
         await ctx.send(f"모든 선수가 판매되었습니다. {total_gold} 골드를 얻었습니다. 현재 예산: {user.balance} 골드")
 

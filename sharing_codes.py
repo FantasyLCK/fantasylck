@@ -305,3 +305,4 @@ def get_player_value(name):
     else:
         logger.error(f"{name} 선수를 찾을 수 없습니다.")
         return None
+    
