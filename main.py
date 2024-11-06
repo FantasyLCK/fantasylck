@@ -62,6 +62,9 @@ bot.add_command(off)
 bot.add_command(맞다이)
 bot.add_command(랭킹)
 
-TOKEN = 'MTMwMTQ0NTMwNzg5MTk3NDE4NQ.Gn6AQk.LqxEIVVWUqBUnzaLz3ucc8VGftqnHyEltZViMk'
+token = ''
 
-bot.run(TOKEN)
+with open('token.txt', 'r') as token_file:
+    token = token_file.read().rstrip()
+
+bot.run(token)
