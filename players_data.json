@@ -154,8 +154,8 @@
         },
         "\ud398\uc774\ucee4": {
             "position": "\ubbf8\ub4dc",
-            "tier": "A",
-            "value": 40
+            "tier": "S",
+            "value": 50
         },
         "\uc1fc\uba54\uc774\ucee4": {
             "position": "\ubbf8\ub4dc",
@@ -301,6 +301,11 @@
             "position": "\uc815\uae00",
             "tier": "D",
             "value": 10
+        },
+        "\uace0\uc804\ud30c": {
+            "position": "\ubbf8\ub4dc",
+            "tier": "S",
+            "value": 50
         }
     }
 }

@@ -1,7 +1,4 @@
 import logging
-
-import discord
-from discord.ext import commands
 import os
 import json
 
@@ -9,9 +6,6 @@ logger = logging.getLogger(__name__)
 
 # 데이터 파일 경로
 DATA_FILE = "players_data.json"
-
-user_data = {}
-user_budgets = {}
 
 # 초기 예산 설정
 STARTING_BUDGET = 150
@@ -27,6 +21,8 @@ TIER_VALUES = {
     "C": 20,
     "D": 10,
 }
+
+user_data = {}
 
 class PlayerData:
     __name:str

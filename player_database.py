@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from sharing_codes import players_data,load_data, save_data, PlayerData, UserData
+from sharing_codes import PlayerData, save_data, load_data
 
 logger = logging.getLogger(__name__)
 
@@ -13,6 +13,9 @@ TIER_VALUES = {
     "C": 20,
     "D": 10,
 }
+
+# 데이터 파일 경로
+DATA_FILE = "players_data.json"
 
 # 선수 추가
 def add_player(name: str, position: str, tier: str):
@@ -66,12 +69,12 @@ def update_player(name: str, position: str = None, tier: str = None):
             logger.warning(f"정의되지 않은 티어: {tier}. 티어 업데이트를 생략합니다.")
 
     save_data(data)  # 데이터 저장
-    logger.debug(f"players_data = {players_data}")
+    logger.debug(f"players_data = {data['players']}")
 
 # 선수 삭제
 def remove_player(name: str):
     data = load_data()  # 데이터 로드
-    logger.debug(f"players_data = {players_data}")
+    logger.debug(f"players_data = {data['players']}")
 
     if name in data["players"]:
         del data["players"][name]  # 선수 삭제
