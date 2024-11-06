@@ -1,6 +1,8 @@
 import logging
 import os
 import json
+from datetime import datetime, timedelta
+import pytz
 
 logger = logging.getLogger(__name__)
 
@@ -168,6 +170,16 @@ class UserData:
         self.__balance += player.value
 
     def daily_login(self):
+        last_attendance = attendance_data.get(self.__id)
+        
+        # 현재 시간과 출석 기록 확인
+        korea_tz = pytz.timezone('Asia/Seoul')
+        current_time_kst = datetime.now(korea_tz)  # 한국 시간 얻기
+        today = current_time_kst.date()
+
+        # 출석 시간이 오전 6시 이전인지 확인
+        if last_attendance == today and current_time_kst.hour < 6:
+            return
         self.__balance += DAILY_REWARD
 
     def update_balance(self, change: int):

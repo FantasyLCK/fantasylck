@@ -1,5 +1,5 @@
 from discord.ext import commands
-from sharing_codes import UserData, initialize_user, attendance_data, DAILY_REWARD, ALLOWED_CHANNEL_ID
+from sharing_codes import UserData, initialize_user, attendance_data, today, DAILY_REWARD, ALLOWED_CHANNEL_ID
 import random
 import asyncio
 from datetime import datetime, timedelta
@@ -75,18 +75,6 @@ async def 출석(ctx):
     
     user_id = ctx.author.id
     user_data = initialize_user(user_id)  # 사용자를 초기화
-
-    # 현재 시간과 출석 기록 확인
-    korea_tz = pytz.timezone('Asia/Seoul')
-    current_time_kst = datetime.now(korea_tz)  # 한국 시간으로 현재 시간 얻기
-    today = current_time_kst.date()
-
-    last_attendance = attendance_data.get(user_id)
-
-    # 출석 시간이 오전 6시 이전인지 확인
-    if last_attendance == today and current_time_kst.hour < 6:
-        await ctx.send("아직 출석할 수 없습니다! 한국 시간 기준 오전 6시 이후에 출석해 주세요.")
-        return
 
     # 출석 처리 및 골드 지급
     user_data.daily_login()
