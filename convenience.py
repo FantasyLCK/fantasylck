@@ -15,13 +15,24 @@ async def 선수목록(ctx, position: str):
     data = load_data()
     players_data = data["players"]  # 업데이트된 players_data 가져오기
 
+    # 해당 포지션의 선수들만 필터링
+    players_in_position = [
+        (player, player_data) 
+        for player, player_data in players_data.items() 
+        if player_data['position'] == position
+    ]
+    
+    # 티어 순으로 정렬 (TIER_VALUES에 따라 정렬)
+    players_in_position.sort(key=lambda x: TIER_VALUES[x[1]['tier']], reverse=True)
+
+    # 출력 메시지 구성
     output = f"### {position} 포지션 선수 목록:\n"
-    for player, player_data in players_data.items():
-        if player_data['position'] == position:
-            output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
+    for player, player_data in players_in_position:
+        output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
 
     await ctx.send(output)
     logger.debug(f"players_data = {players_data}")
+
 
 
 @commands.command()
