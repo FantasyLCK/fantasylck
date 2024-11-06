@@ -11,17 +11,17 @@ async def 선수목록(ctx, position: str):
         await ctx.send("이 명령어는 지정된 채널에서만 사용할 수 있습니다.")
         return
 
-    data = load_data()  
-    players_data = data["players"]  # 업데이트된 player_data 불러오기
-    
+    # 최신 데이터 로드
+    data = load_data()
+    players_data = data["players"]  # 업데이트된 players_data 가져오기
+
     output = f"### {position} 포지션 선수 목록:\n"
     for player, player_data in players_data.items():
         if player_data['position'] == position:
             output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
 
-    logger.debug(f"players_data = {players_data}")
-
     await ctx.send(output)
+    logger.debug(f"players_data = {players_data}")
 
 
 @commands.command()

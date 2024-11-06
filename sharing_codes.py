@@ -8,7 +8,7 @@ import json
 logger = logging.getLogger(__name__)
 
 # 데이터 파일 경로
-DATA_FILE = "player_data.json"
+DATA_FILE = "players_data.json"
 
 user_data = {}
 user_budgets = {}
