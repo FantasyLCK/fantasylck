@@ -291,6 +291,16 @@
             "position": "\uc11c\ud3ff",
             "tier": "D",
             "value": 10
+        },
+        "\ubaa8\ud568": {
+            "position": "\uc11c\ud3ff",
+            "tier": "S",
+            "value": 50
+        },
+        "\ud074\ud15c": {
+            "position": "\uc815\uae00",
+            "tier": "D",
+            "value": 10
         }
     }
 }

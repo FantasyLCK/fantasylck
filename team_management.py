@@ -34,12 +34,12 @@ async def 선수등록(ctx, position: str, name: str):
     # 선수 데이터 확인
     logger.debug(f"players_data = {players_data}")
     if name not in players_data.keys():
-        logger.debug(f"{name}는 유효한 선수 이름이 아닙니다.")
-        await ctx.send(f"{name}는 유효한 선수 이름이 아닙니다.")
+        logger.debug(f"{name} 선수는 올바른 이름이 아닙니다.")
+        await ctx.send(f"{name} 선수 이름이 올바른 이름이 아닙니다.")
         return
 
     player_info = players_data[name]
-    
+
     # 포지션 확인
     if player_info['position'] != position:
         logger.debug(f"{name} 선수의 포지션은 {player_info['position']}입니다.")
@@ -54,12 +54,14 @@ async def 선수등록(ctx, position: str, name: str):
     # 선수 등록 및 잔고 차감
     player = PlayerData(name, player_info['tier'])
     setattr(user, pos_alias[player_info['position']], player)
-
+    
+    # 예산 차감 로직 추가 (여기서 player.value가 필요합니다)
+    user.__balance -= player.value  # 선수 등록 시 예산 차감
     await ctx.send(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드")
 
 
 @commands.command()
-async def 선수판매(ctx, position: str):
+async def 선수판매(ctx, position: str = None):
     if not is_sale_active:
         await ctx.send("현재 선수 판매가 비활성화 상태입니다.")
         return
@@ -71,19 +73,34 @@ async def 선수판매(ctx, position: str):
     user_id = ctx.author.id
     user = initialize_user(user_id)  # 사용자 초기화 및 가져오기
 
-    # 포지션에 선수 확인
-    if (position not in pos_alias):
-        await ctx.send(f"{position}은(는) 올바른 포지션이 아닙니다.")
-        return
-    player = getattr(user, pos_alias[position])
-    if player is None:
-        await ctx.send(f"{position} 포지션에 등록된 선수가 없습니다.")
-        return
+    # 'all!'이 입력되면 모든 포지션의 선수를 판매
+    if position == "all":
+        total_gold = 0
+        for pos in ['탑', '정글', '미드', '원딜', '서폿']:
+            player = getattr(user, pos_alias[pos])
+            if player is not None:
+                total_gold += player.value
+                setattr(user, pos_alias[pos], None)  # 선수 판매
+                logger.info(f"{player.name} 선수가 {pos} 포지션에서 판매되었습니다.")
+        
+        user.__balance += total_gold  # 총 금액을 유저의 예산에 추가
+        await ctx.send(f"모든 선수가 판매되었습니다. {total_gold} 골드를 얻었습니다. 현재 예산: {user.balance} 골드")
 
-    # 선수 판매
-    setattr(user, pos_alias[position], None)
+    elif position in pos_alias:
+        # 포지션에 특정 선수만 판매
+        player = getattr(user, pos_alias[position])
+        if player is None:
+            await ctx.send(f"{position} 포지션에 등록된 선수가 없습니다.")
+            return
+
+        # 선수 판매
+        setattr(user, pos_alias[position], None)
+        user.__balance += player.value  # 선수 가치를 예산에 더함
+        await ctx.send(f"{player.name} 선수가 판매되었습니다. {player.value} 골드를 얻었습니다. 현재 예산: {user.balance} 골드")
     
-    await ctx.send(f"{player.name} 선수가 판매되었습니다. {player.value} 골드를 얻었습니다. 현재 예산: {user.balance} 골드")
+    else:
+        await ctx.send(f"{position}은(는) 올바른 포지션이 아닙니다.")
+
 
 
 @commands.command()
