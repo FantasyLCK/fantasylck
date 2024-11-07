@@ -46,9 +46,4 @@ async def on_message(message):
     await bot.process_commands(message)  # 명령어 처리 추가
 
 
-token = ''
-
-with open('token.txt', 'r') as token_file:
-    token = token_file.read().rstrip()
-
-bot.run(token)
+bot.run('MTMwMTQ0NTMwNzg5MTk3NDE4NQ.GxwSYB.N8YLXGOyxB47wGkUJnjqn3g38UQoUrhfFPl2iA')
