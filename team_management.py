@@ -53,7 +53,7 @@ class TeamManagement(commands.Cog):
 
         # 잔고 확인
         if user.balance < PlayerData(name, player_info['tier']).value:
-            await interaction.response.send_message(f"잔고가 부족합니다. 현재 예산: {user.balance}골드", ephemeral=True)
+            await interaction.response.send_message(f"골드가 부족합니다. 현재 예산: {user.balance}골드", ephemeral=True)
             return
 
         # 선수 등록 및 잔고 차감
