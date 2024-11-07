@@ -51,11 +51,27 @@ class TeamManagement(commands.Cog):
             await interaction.response.send_message(f"{position} 포지션에는 이미 선수가 등록되어 있습니다.", ephemeral=True)
             return
 
+        # 잔고 확인
+        if user.balance < PlayerData(name, player_info['tier']).value:
+            await interaction.response.send_message(f"잔고가 부족합니다. 현재 예산: {user.balance}골드", ephemeral=True)
+            return
+
         # 선수 등록 및 잔고 차감
         player = PlayerData(name, player_info['tier'])
         setattr(user, pos_alias[player_info['position']], player)
 
-        await interaction.response.send_message(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
+        await interaction.response.send_message(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드", ephemeral=False)
+
+    # 선수의 티어에 따라 비용을 계산하는 함수
+    def get_player_cost(tier: str) -> int:
+        tier_costs = {
+            'S': 50,
+            'A': 40,
+            'B': 30,
+            'C': 20,
+            'D': 10
+        }
+        return tier_costs.get(tier, 0)
 
     @app_commands.command(name="선수판매", description="해당 포지션의 선수를 판매합니다.")
     @app_commands.describe(position="판매할 선수의 포지션. 'all'을 입력하면 모든 선수를 판매합니다")
