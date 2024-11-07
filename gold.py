@@ -86,10 +86,16 @@ class MiniGames(commands.Cog):
         current_time_kst = datetime.now(korea_tz)  # 한국 시간으로 현재 시간 얻기
         today = current_time_kst.date()
 
+        # 마지막 출석 날짜를 확인
         last_attendance = attendance_data.get(user_id)
 
-        # 출석 시간이 오전 6시 이전인지 확인
-        if last_attendance == today and current_time_kst.hour < 6:
+        # 이미 오늘 출석한 경우 처리
+        if last_attendance == today:
+            await interaction.response.send_message("오늘은 이미 출석했습니다. 내일 다시 출석해주세요!", ephemeral=True)
+            return
+
+        # 출석 시간이 오전 6시 이전인 경우, 출석 제한
+        if current_time_kst.hour < 6:
             await interaction.response.send_message("아직 출석할 수 없습니다! 한국 시간 기준 오전 6시 이후에 출석해 주세요.", ephemeral=True)
             return
 
