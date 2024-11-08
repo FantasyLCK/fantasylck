@@ -24,12 +24,11 @@ async def load_cogs():
 # 봇이 준비되었을 때 실행되는 이벤트
 @bot.event
 async def on_ready():
-    logger.info(f'봇이 실행되었습니다: {bot.user}')  # 봇 시작 로그
+    logger.info(f'Bot is ready: {bot.user}')  # 봇 시작 로그
     await load_cogs()  # Cog 로드
     await bot.tree.sync()  # 슬래시 커맨드 동기화
-    logger.info("슬래시 커맨드 동기화 완료.")  # 커맨드 동기화 로그
-    register_players(players_data)
-    logger.debug(f'{players_data}')
+    logger.info("Slash commands synced.")  # 커맨드 동기화 로그
+    register_players()
 
 # 미등록 명령어에 대한 경고 메시지 처리
 @bot.event
