@@ -60,7 +60,7 @@ class TeamManagement(commands.Cog):
         player = PlayerData(name, player_info['tier'])
         setattr(user, pos_alias[player_info['position']], player)
 
-        await interaction.response.send_message(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드", ephemeral=False)
+        await interaction.response.send_message(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
 
     # 선수의 티어에 따라 비용을 계산하는 함수
     def get_player_cost(tier: str) -> int:

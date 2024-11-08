@@ -45,7 +45,7 @@ class Convenience(commands.Cog):
     @app_commands.command(name="명령어", description="사용 가능한 명령어 목록을 확인합니다.")
     async def show_commands(self, interaction: discord.Interaction):
         if interaction.channel.id not in COMMUNITY_CHANEL_ID:
-            await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=False)
+            await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
         commands_list = """
@@ -69,7 +69,7 @@ class Convenience(commands.Cog):
     @app_commands.command(name="육구놀이룰", description="육구놀이 규칙을 확인합니다.")
     async def gamerule(self, interaction: discord.Interaction):
         if interaction.channel.id not in ALLOWED_CHANNEL_ID:
-            await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=False)
+            await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
         gamerule = """

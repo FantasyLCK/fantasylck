@@ -304,7 +304,7 @@ def register_players():
 
     # 데이터 저장
     save_data(data)
-    logger.info("PlayerData has been updated.")
+    logger.info("선수 데이터가 성공적으로 등록되었습니다.")
     return data["players"]
 
 
@@ -314,5 +314,5 @@ def get_player_value(name):
     if name in data["players"]:
         return data["players"][name]["value"]
     else:
-        logger.error(f"{name} cannot be found.")
+        logger.error(f"{name} 선수를 찾을 수 없습니다.")
         return None
