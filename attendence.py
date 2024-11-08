@@ -8,55 +8,7 @@ import pytz
 from sharing_codes import UserData, initialize_user, attendance_data, DAILY_REWARD, ALLOWED_CHANNEL_ID
 
 
-class MiniGames(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-
-    @app_commands.command(name="육구놀이", description="육구놀이를 실행합니다.")
-    async def minigame(self, interaction: discord.Interaction):
-        if interaction.channel.id not in ALLOWED_CHANNEL_ID:
-            await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=False)
-            return
-
-        user_id = interaction.user.id
-        user_data = initialize_user(user_id)  # 사용자 초기화
-
-
-        if user_data.balance < 15:  # 사용자 예산 확인
-            await interaction.response.send_message("**골드가 부족합니다!**", ephemeral=True)
-            return
-
-        user_data.update_balance(-15)  # 골드 차감
-
-        numbers = random.choices([3, 6, 9], weights=[70, 20, 10], k=3)
-
-        # 출력 메시지
-        await interaction.response.send_message(f"{numbers[0]}...")
-        await asyncio.sleep(1)  # 1초 대기
-        await interaction.followup.send(f"{numbers[1]}...")
-        await asyncio.sleep(1)  # 1초 대기
-        await interaction.followup.send(f"{numbers[2]}!!!!!")
-
-        # 획득 골드 계산
-        gold_earned = 0
-        if numbers == [3, 3, 3]:
-            gold_earned = 0
-        elif numbers == [3, 6, 9]:
-            gold_earned = 45
-        elif numbers == [6, 6, 6]:
-            gold_earned = 45
-        elif numbers == [9, 9, 9]:
-            gold_earned = 120
-        elif numbers.count(3) == 2:
-            gold_earned = 15
-        elif numbers.count(6) == 2:
-            gold_earned = 30
-        elif numbers.count(9) == 2:
-            gold_earned = 60
-
-        user_data.update_balance(gold_earned)  # 획득 골드 반영
-        await interaction.followup.send(f"획득한 골드: {gold_earned}골드. 현재 예산: {user_data.balance}골드.")
-
+class Attendence(commands.Cog):
 
     @app_commands.command(name="출석", description="출석하고 골드를 받습니다.")
     async def daily_attendance(self, interaction: discord.Interaction):
@@ -92,4 +44,4 @@ class MiniGames(commands.Cog):
 
 # Cog 등록 함수
 async def setup(bot):
-    await bot.add_cog(MiniGames(bot))
+    await bot.add_cog(Attendence(bot))

@@ -1,6 +1,5 @@
 import logging
-import os
-import discord 
+import discord
 from discord.ext import commands
 from discord import app_commands
 from sharing_codes import register_players, players_data
@@ -17,7 +16,7 @@ bot = commands.Bot(command_prefix='$', intents=intents)
 async def load_cogs():
     await bot.load_extension("convenience")  # convenience.py 파일 로드
     await bot.load_extension("team_management")  # team_management.py 파일 로드
-    await bot.load_extension("gold")  # gold.py 파일 로드
+    await bot.load_extension("attendence")  # attendendce.py 파일 로드
     await bot.load_extension("ranking")  # ranking.py 파일 로드
     await bot.load_extension("admin")  # admin.py 파일 로드
 

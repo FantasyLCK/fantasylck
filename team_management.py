@@ -2,7 +2,7 @@ import logging
 from discord.ext import commands
 from discord import app_commands
 import discord
-from sharing_codes import UserData, PlayerData, initialize_user, load_data, save_data, user_data, TIER_VALUES, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
+from sharing_codes import UserData, PlayerData, initialize_user, load_data, save_data, user_data, is_registration_active, is_sale_active, TIER_VALUES, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
 
 pos_alias = {
     '탑': 'top',
@@ -24,13 +24,16 @@ class TeamManagement(commands.Cog):
     async def purchase_player(self, interaction: discord.Interaction, position: str, name: str):
         logger.debug(f"선수등록 함수 호출: position={position}, name={name}")
 
-        # 선수 등록 활성화 체크
         if interaction.channel.id not in ALLOWED_CHANNEL_ID:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
         user_id = interaction.user.id
         user = initialize_user(user_id)  # 사용자 초기화
+
+        if not is_registration_active:
+            await interaction.response.send_message("현재 선수 등록이 비활성화되어 있습니다.", ephemeral=True)
+            return
 
         # JSON에서 선수 데이터 로드
         data = load_data()  # 플레이어 데이터를 JSON에서 불러오기
@@ -82,6 +85,10 @@ class TeamManagement(commands.Cog):
 
         user_id = interaction.user.id
         user = initialize_user(user_id)  # 사용자 초기화
+
+        if not is_sale_active:
+            await interaction.response.send_message("현재 선수 판매가 비활성화되어 있습니다.", ephemeral=True)
+            return
 
         # 'all'이 입력되면 모든 포지션의 선수를 판매
         if position == "all":
