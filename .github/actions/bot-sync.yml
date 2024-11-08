@@ -1,0 +1,16 @@
+name: remote ssh command
+on: [push]
+jobs:
+
+  sync:
+    name: Sync
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.1.0
+      with:
+        host: ${{ secrets.HOST }}
+        username: ubuntu
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: fantasylck/sync-script

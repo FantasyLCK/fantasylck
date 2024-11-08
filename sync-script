@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd ~/fantasylck
+git pull
+sudo systemctl restart fantasylck
+
