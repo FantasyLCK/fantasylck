@@ -6,8 +6,6 @@ jobs:
     name: Sync
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@4
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v1.1.0
       with:
