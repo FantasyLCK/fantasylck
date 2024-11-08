@@ -42,21 +42,21 @@ class MiniGames(commands.Cog):
         if numbers == [3, 3, 3]:
             gold_earned = 0
         elif numbers == [3, 6, 9]:
-            gold_earned = 50
+            gold_earned = 45
         elif numbers == [6, 6, 6]:
-            gold_earned = 50
+            gold_earned = 45
         elif numbers == [9, 9, 9]:
-            gold_earned = 100
+            gold_earned = 120
         elif numbers.count(3) == 2:
             gold_earned = 15
         elif numbers.count(6) == 2:
-            gold_earned = 25
+            gold_earned = 30
         elif numbers.count(9) == 2:
-            gold_earned = 35
+            gold_earned = 60
 
         user_data.update_balance(gold_earned)  # 획득 골드 반영
         await interaction.followup.send(f"획득한 골드: {gold_earned}골드. 현재 예산: {user_data.balance}골드.")
-        
+
 
     @app_commands.command(name="출석", description="출석하고 골드를 받습니다.")
     async def daily_attendance(self, interaction: discord.Interaction):
