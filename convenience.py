@@ -66,27 +66,6 @@ class Convenience(commands.Cog):
         """
         await interaction.response.send_message(commands_list, ephemeral=True)  # 본인만 볼 수 있도록
 
-    @app_commands.command(name="육구놀이룰", description="육구놀이 규칙을 확인합니다.")
-    async def gamerule(self, interaction: discord.Interaction):
-        if interaction.channel.id not in ALLOWED_CHANNEL_ID:
-            await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
-            return
-
-        gamerule = """
-        **육구놀이 룰**
-
-        ### 333 - 0골드
-        ### 369 - 30골드 (단, 순서대로)
-        ### 666 - 50골드
-        ### 999 - 100골드
-        ### 33X - 10골드
-        ### 66X - 20골드
-        ### 99X - 30골드
-
-        **지나친 도박은 정신건강에 해롭읍니다.**
-        """
-        await interaction.response.send_message(gamerule)
-
 # Cog 등록 함수
 async def setup(bot):
     await bot.add_cog(Convenience(bot))
