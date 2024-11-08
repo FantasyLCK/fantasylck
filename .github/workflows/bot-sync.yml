@@ -12,4 +12,4 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ubuntu
         key: ${{ secrets.SSH_KEY }}
-        script: fantasylck/sync-script
+        script: ~/fantasylck/sync-script
