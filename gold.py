@@ -3,12 +3,10 @@ from discord.ext import commands
 from discord import app_commands
 import random
 import asyncio
-from datetime import datetime
+from datetime import datetime, time, timedelta
 import pytz
 from sharing_codes import UserData, initialize_user, attendance_data, DAILY_REWARD, ALLOWED_CHANNEL_ID
 
-MAX_ATTEMPTS_PER_DAY = 3
-attempts_data = {}
 
 class MiniGames(commands.Cog):
     def __init__(self, bot):
@@ -23,16 +21,6 @@ class MiniGames(commands.Cog):
         user_id = interaction.user.id
         user_data = initialize_user(user_id)  # 사용자 초기화
 
-        today = datetime.now().date()
-
-        # 시도 정보 초기화
-        if user_id not in attempts_data or attempts_data[user_id]['last_attempt_date'] != today:
-            attempts_data[user_id] = {'last_attempt_date': today, 'attempts': 0}
-
-        # 하루 시도 횟수 초과 체크
-        if attempts_data[user_id]['attempts'] >= MAX_ATTEMPTS_PER_DAY:
-            await interaction.response.send_message("오늘의 시도 횟수를 모두 사용했습니다. **지나친 도박은 정신건강에 해롭읍니다.**", ephemeral=True)
-            return
 
         if user_data.balance < 15:  # 사용자 예산 확인
             await interaction.response.send_message("**골드가 부족합니다!**", ephemeral=True)
@@ -68,9 +56,7 @@ class MiniGames(commands.Cog):
 
         user_data.update_balance(gold_earned)  # 획득 골드 반영
         await interaction.followup.send(f"획득한 골드: {gold_earned}골드. 현재 예산: {user_data.balance}골드.")
-
-        # 시도 횟수 증가
-        attempts_data[user_id]['attempts'] += 1
+        
 
     @app_commands.command(name="출석", description="출석하고 골드를 받습니다.")
     async def daily_attendance(self, interaction: discord.Interaction):

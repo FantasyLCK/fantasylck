@@ -31,9 +31,9 @@ class Ranking(commands.Cog):
         opponent_team_value = user_data[opponent_id].team_value
 
         # 팀 가치 비교 과정 안내
-        await interaction.response.send_message("팀 가치 계산 중...", ephemeral=True)
+        await interaction.response.send_message("팀 가치 계산 중...", ephemeral=False)
         await asyncio.sleep(1)
-        await interaction.followup.send("맞다이 뜨는 중...", ephemeral=True)
+        await interaction.followup.send("맞다이 뜨는 중...", ephemeral=False)
         await asyncio.sleep(1)
 
         # 팀 가치 비교 결과 메시지

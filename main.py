@@ -27,11 +27,11 @@ async def on_ready():
     logger.info(f'봇이 실행되었습니다: {bot.user}')  # 봇 시작 로그
     # 봇 시작 시 선수 데이터 초기화
     register_players()
-    logger.debug(f'{players_data}')
+    logger.debug(f'players_data successfully registered.')
     await load_cogs()  # Cog 로드
     await bot.tree.sync()  # 슬래시 커맨드 동기화
-    logger.info("슬래시 커맨드 동기화 완료.")  # 커맨드 동기화 로그
-    print(f'Logged in as {bot.user}!')
+    logger.info("Slach command tree synced.")  # 커맨드 동기화 로그
+    logger.info(f'Logged in as {bot.user}!')
 
 # 미등록 명령어에 대한 경고 메시지 처리
 @bot.event
