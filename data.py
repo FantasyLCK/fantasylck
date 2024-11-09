@@ -96,25 +96,62 @@ class PlayerData:
         return PlayerData(id), True
 
 class UserData:
-    def __init__(self, user_id, discord_id, player_list, balance=150, login_record=None):
-        self.user_id = user_id
-        self.discord_id = discord_id
-        self.player_list = player_list or []
-        self.balance = balance
-        self.login_record = login_record or []
+
+    __discord_id: int
+
+    def __init__(self, discord_id):
+        self.__discord_id = discord_id
+
+    def __retrieve_db(self):
+        return users_collection.find_one({'discord_id': self.__discord_id})
 
     @staticmethod
-    def load_from_db(user_id):
-        data = users_collection.find_one({'user_id': user_id})
+    def load_from_db(discord_id):
+        data = users_collection.find_one({'discord_id': discord_id})
         if data:
-            return UserData(data['user_id'],
-                              data['discord_id'],
-                              data['player_list'],
-                              data['balance'],
-                              data['login_record'])
+            return UserData(data['discord_id'])
         else:
             print("User not found in database.")
             return None
+
+    @property
+    def balance(self) -> int:
+        return self.__retrieve_db()['balance']
+
+    @property
+    def top(self) -> PlayerData:
+        id = self.__retrieve_db()['top']
+        if id < 0:
+            return None
+        return PlayerData(id)
+
+    @property
+    def jgl(self) -> PlayerData:
+        id = self.__retrieve_db()['jgl']
+        if id < 0:
+            return None
+        return PlayerData(id)
+
+    @property
+    def mid(self) -> PlayerData:
+        id = self.__retrieve_db()['mid']
+        if id < 0:
+            return None
+        return PlayerData(id)
+
+    @property
+    def adc(self) -> PlayerData:
+        id = self.__retrieve_db()['adc']
+        if id < 0:
+            return None
+        return PlayerData(id)
+
+    @property
+    def sup(self) -> PlayerData:
+        id = self.__retrieve_db()['sup']
+        if id < 0:
+            return None
+        return PlayerData(id)
 
     def save_to_db(self):
         users_collection.update_one(
@@ -128,9 +165,16 @@ class UserData:
             upsert=True
         )
 
-    def update_balance(self, amount):
-        self.balance += amount
-        self.save_to_db()
+    def update_balance(self, amount: int):
+        if (amount < 0) and self.balance < abs(amount):
+            raise ValueError
+        users_collection.update_one(
+            {'discord_id': self.__discord_id},
+            {'$set': {
+                'balance': self.balance + amount
+            }},
+            upsert=True
+        )
 
     def add_login_record(self, record_time=None):
         if not record_time:
@@ -143,13 +187,35 @@ class UserData:
         users_collection.delete_one({'name': name})
 
 
-    @staticmethod
-    def get_team_value(self):
+    @property
+    def team_value(self) -> int:
         total_value = 0
-        for player in self.player_list:
-            if player:
+        for player in [self.top, self.jgl, self.mid, self.adc, self.sup]:
+            if player is not None:
                 total_value += player.value
         return total_value
+
+    @staticmethod
+    def create_new_entry(id, top, jgl, mid, adc, sup, balance, login_record) -> tuple['UserData', bool]:
+        entry = UserData.load_from_db(discord_id=id)
+        logger.debug(f"entry = {entry}")
+        if entry is not None:
+            return entry, False
+
+        users_collection.update_one(
+            {'discord_id': id},
+            {'$set': {
+                'top': top,
+                'jgl': jgl,
+                'mid': mid,
+                'adc': adc,
+                'sup': sup,
+                'balance': balance,
+                'login_record': login_record
+            }},
+            upsert=True
+        )
+        return PlayerData(id), True
 
 # Function to load data from JSON files and save to MongoDB
 def load_and_save_data():
@@ -205,28 +271,18 @@ def load_and_save_data():
         print(f"Error loading users data: {e}")
         return
 
-    # If users_data is a list (not dictionary), handle the case
-    if isinstance(users_data, list):
-        for user_info in users_data:
-            user = UserData(
-                user_id=user_info['user_id'],
-                discord_id=user_info['discord_id'],
-                player_list=user_info['player_list'],
-                balance=user_info['balance'],
-                login_record=user_info['login_record']
-            )
-            user.save_to_db()  # Save user data to MongoDB
-            print(f"User {user_info['discord_id']} saved to the database.")
-    elif isinstance(users_data, dict):
-        for user_id, user_info in users_data.items():
-            user = UserData(
-                user_id=user_info['user_id'],
-                discord_id=user_info['discord_id'],
-                player_list=user_info['player_list'],
-                balance=user_info['balance'],
-                login_record=user_info['login_record']
-            )
-            user.save_to_db()  # Save user data to MongoDB
-            print(f"User {user_info['discord_id']} saved to the database.")
-    else:
-        print("Users data is neither a list nor a dictionary, skipping database update.")
+    for user_info in users_data:
+        user, result = UserData.create_new_entry(
+            id = user_info['discord_id'],
+            top = user_info['discord_id'],
+            jgl = user_info['jgl'],
+            mid = user_info['mid'],
+            adc = user_info['adc'],
+            sup = user_info['sup'],
+            balance = user_info['balance'],
+            login_record = user_info['login_record']
+        )
+        if result:
+            logger.info(f"User {user_info['discord_id']} saved to the database.")
+        else:
+            logger.info(f"User {user_info['discord_id']} already exists in the database.")

@@ -1,9 +1,12 @@
-{
-    "": {
-        "user_id": "",
-        "discord_id": "",
-        "player_list": "",
-        "balance": "",
-        "login_record": ""
+[
+    {
+        "discord_id": -1,
+        "top": -1,
+        "jgl": -1,
+        "mid": -1,
+        "adc": -1,
+        "sup": -1,
+        "balance": 0,
+        "login_record": 0
     }
-}
+]
