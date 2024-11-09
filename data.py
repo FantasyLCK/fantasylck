@@ -81,23 +81,21 @@ class PlayerData:
 
     @staticmethod
     def create_new_entry(id, name, position, team, tier, trait_weight) -> tuple['PlayerData', bool]:
-        entry = PlayerData.load_from_db(player_id=id)
-        logger.debug(f"entry = {entry}")
-        if entry is not None:
-            return entry, False
-
-        players_collection.update_one(
-            {'player_id': id},
-            {'$set': {
-                'name': name,
-                'position': position,
-                'team': team,
-                'tier': tier,
-                'trait_weight': trait_weight
-            }},
-            upsert=True
-        )
-        return PlayerData(id), True
+        try:
+            return PlayerData.load_from_db(player_id=id), False
+        except ValueError:
+            players_collection.update_one(
+                {'player_id': id},
+                {'$set': {
+                    'name': name,
+                    'position': position,
+                    'team': team,
+                    'tier': tier,
+                    'trait_weight': trait_weight
+                }},
+                upsert=True
+            )
+            return PlayerData(id), True
 
 class UserData:
 
@@ -267,25 +265,23 @@ class UserData:
 
     @staticmethod
     def create_new_entry(id: int, top: int = -1, jgl: int = -1, mid: int = -1, adc: int = -1, sup: int = -1, balance: int = 0, login_record: int = 0) -> tuple['UserData', bool]:
-        entry = UserData.load_from_db(discord_id=id)
-        logger.debug(f"entry = {entry}")
-        if entry is not None:
-            return entry, False
-
-        users_collection.update_one(
-            {'discord_id': id},
-            {'$set': {
-                'top': top,
-                'jgl': jgl,
-                'mid': mid,
-                'adc': adc,
-                'sup': sup,
-                'balance': balance,
-                'login_record': login_record
-            }},
-            upsert=True
-        )
-        return PlayerData(id), True
+        try:
+            return UserData.load_from_db(discord_id=id), False
+        except ValueError:
+            users_collection.update_one(
+                {'discord_id': id},
+                {'$set': {
+                    'top': top,
+                    'jgl': jgl,
+                    'mid': mid,
+                    'adc': adc,
+                    'sup': sup,
+                    'balance': balance,
+                    'login_record': login_record
+                }},
+                upsert=True
+            )
+            return PlayerData(id), True
 
 # Function to load data from JSON files and save to MongoDB
 def load_and_save_data():
