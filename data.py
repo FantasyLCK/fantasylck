@@ -151,7 +151,7 @@ class UserData:
     
     @top_id.setter
     def top_id(self, id: int):
-        if (self.top_id >= 0):
+        if (self.top_id >= 0 and id >= 0):
             raise AttributeError
         users_collection().update_one(
             {'discord_id': self.__discord_id},
@@ -174,7 +174,7 @@ class UserData:
     
     @jgl_id.setter
     def jgl_id(self, id: int):
-        if (self.jgl_id >= 0):
+        if (self.jgl_id >= 0 and id >= 0):
             raise AttributeError
         users_collection().update_one(
             {'discord_id': self.__discord_id},
@@ -197,7 +197,7 @@ class UserData:
     
     @mid_id.setter
     def mid_id(self, id: int):
-        if (self.mid_id >= 0):
+        if (self.mid_id >= 0 and id >= 0):
             raise AttributeError
         users_collection().update_one(
             {'discord_id': self.__discord_id},
@@ -220,7 +220,7 @@ class UserData:
     
     @adc_id.setter
     def adc_id(self, id: int):
-        if (self.adc_id >= 0):
+        if (self.adc_id >= 0 and id >= 0):
             raise AttributeError
         users_collection().update_one(
             {'discord_id': self.__discord_id},
@@ -243,7 +243,7 @@ class UserData:
     
     @sup_id.setter
     def sup_id(self, id: int):
-        if (self.sup_id >= 0):
+        if (self.sup_id >= 0 and id >= 0):
             raise AttributeError
         users_collection().update_one(
             {'discord_id': self.__discord_id},
