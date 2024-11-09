@@ -1,6 +1,11 @@
 import json
+import logging
+from typing import Self
+
 from pymongo import MongoClient
 from datetime import datetime
+
+logger = logging.getLogger('data')
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["FantasyLCK"]
@@ -8,31 +13,13 @@ players_collection = db["players"]
 users_collection = db["users"]
 
 class PlayerData:
-    def __init__(self, player_id, name, position, team, tier, trait_weight):
-        
-        self.player_id = player_id
-        self.name = name
-        self.position = position
-        self.team = team
-        self.tier = tier
-        self.trait_weight = trait_weight
 
-    @staticmethod
-    def load_from_db(player_id):
-        data = players_collection.find_one({'player_id': player_id})
-        if data:
-            return PlayerData(data['player_id'],
-                              data['name'],
-                              data['position'],
-                              data['team'],
-                              data['tier'],
-                              data['value'],
-                              data['trait_weight'])
-        else:
-            print("Player not found in database.")
-            return None
+    __player_id: str
 
-    def save_to_db(self):
+    def __init__(self, player_id: str):
+        self.__player_id = player_id
+
+    def __save_to_db(self):
         players_collection.update_one(
             {'player_id': self.player_id},
             {'$set': {
@@ -46,8 +33,67 @@ class PlayerData:
         )
 
     @staticmethod
+    def load_from_db(player_id: str = None, player_name: str = None):
+        if player_id is not None:
+            data = players_collection.find_one({'player_id': player_id})
+        elif player_name is not None:
+            data = players_collection.find_one({'name': player_name})
+        else:
+            raise ValueError
+        if data is not None:
+            return PlayerData(data['player_id'])
+        else:
+            raise ValueError("Player not found in database.")
+
+    def __retrieve_db(self):
+        return players_collection.find_one({'player_id': self.__player_id})
+
+    @property
+    def name(self) -> str:
+        return self.__retrieve_db()['name']
+
+    @property
+    def position(self) -> str:
+        return self.__retrieve_db()['position']
+
+    @property
+    def team(self) -> str:
+        return self.__retrieve_db()['team']
+
+    @property
+    def tier(self) -> str:
+        return self.__retrieve_db()['tier']
+
+    @property
+    def trait_weight(self):
+        return self.__retrieve_db()['trait_weight']
+
+    def delete(self):
+        players_collection.delete_one({'player_id': self.__player_id})
+
+    @staticmethod
     def delete_from_db(name):
         players_collection.delete_one({'name': name})
+
+    @staticmethod
+    def create_new_entry(player_id, name, position, team, tier, trait_weight) -> tuple['PlayerData', bool]:
+        entry = players_collection.find_one({'player_id': player_id})
+        logger.debug(f"entry = {entry}")
+        if entry is not None:
+            return PlayerData(entry['player_id']), False
+
+        players_collection.update_one(
+            {'player_id': player_id},
+            {'$set': {
+                'name': name,
+                'position': position,
+                'team': team,
+                'tier': tier,
+                'trait_weight': trait_weight
+            }},
+            upsert=True
+        )
+        return PlayerData(player_id), True
 
 class UserData:
     def __init__(self, user_id, discord_id, player_list, balance=150, login_record=None):
@@ -96,7 +142,7 @@ class UserData:
     def delete_from_db(name):
         users_collection.delete_one({'name': name})
 
-    
+
     @staticmethod
     def get_team_value(self):
         total_value = 0
@@ -120,7 +166,7 @@ def load_and_save_data():
     # If players_data is a list (not dictionary), handle the case
     if isinstance(players_data, list):
         for player_info in players_data:
-            player = PlayerData(
+            player, result = PlayerData.create_new_entry(
                 player_id=player_info['player_id'],
                 name=player_info['name'],
                 position=player_info['position'],
@@ -128,11 +174,13 @@ def load_and_save_data():
                 tier=player_info['tier'],
                 trait_weight=player_info['trait_weight']
             )
-            player.save_to_db()  # Save player data to MongoDB
-            print(f"Player {player_info['name']} saved to the database.")
+            if result:
+                logger.info(f"Player {player_info['name']} saved to the database.")
+            else:
+                logger.info(f"Player {player_info['name']} already exists in the database.")
     elif isinstance(players_data, dict):
         for player_id, player_info in players_data.items():
-            player = PlayerData(
+            player, result = PlayerData.create_new_entry(
                 player_id=player_info['player_id'],
                 name=player_info['name'],
                 position=player_info['position'],
@@ -140,8 +188,10 @@ def load_and_save_data():
                 tier=player_info['tier'],
                 trait_weight=player_info['trait_weight']
             )
-            player.save_to_db()  # Save player data to MongoDB
-            print(f"Player {player_info['name']} saved to the database.")
+            if result:
+                logger.info(f"Player {player_info['name']} saved to the database.")
+            else:
+                logger.info(f"Player {player_info['name']} already exists in the database.")
     else:
         print("Players data is neither a list nor a dictionary, skipping database update.")
 

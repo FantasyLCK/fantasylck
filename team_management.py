@@ -49,7 +49,7 @@ class TeamManagement(commands.Cog):
             return
 
         # MongoDB에서 선수 데이터 로드
-        player_data = PlayerData.load_from_db(name)  # 이름으로 선수 데이터 로드
+        player_data = PlayerData.load_from_db(player_name=name)  # 이름으로 선수 데이터 로드
         if not player_data:
             logger.debug(f"{name} 선수는 올바른 이름이 아닙니다.")
             await interaction.response.send_message(f"{name} 선수는 올바른 이름이 아닙니다.", ephemeral=True)
