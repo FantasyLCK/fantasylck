@@ -33,7 +33,7 @@ class Attendence(commands.Cog):
 
         # 이미 오늘 출석한 경우 처리
         if last_attendance_date == today:
-            await interaction.followup.send_("오늘은 이미 출석했습니다. 내일 다시 출석해주세요!", ephemeral=True)
+            await interaction.followup.send("오늘은 이미 출석했습니다. 내일 다시 출석해주세요!", ephemeral=True)
             return
 
         # 출석 처리 및 골드 지급

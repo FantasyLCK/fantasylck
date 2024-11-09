@@ -262,11 +262,11 @@ class UserData:
         return self.__retrieve_db()['login_record']
 
     @login_record.setter
-    def update_login_record(self, record_time):
+    def login_record(self, record_time):
         users_collection().update_one(
             {'discord_id': self.__discord_id},
             {'$set': {
-                'record_time': record_time
+                'login_record': record_time
             }},
             upsert=True
         )
