@@ -257,10 +257,19 @@ class UserData:
             upsert=True
         )
 
-    def add_login_record(self, record_time=None):
-        if not record_time:
-            record_time = datetime.now()
-        self.login_record.append(record_time)
+    @property
+    def login_record(self):
+        return self.__retrieve_db()['login_record']
+
+    @login_record.setter
+    def update_login_record(self, record_time):
+        users_collection().update_one(
+            {'discord_id': self.__discord_id},
+            {'$set': {
+                'record_time': record_time
+            }},
+            upsert=True
+        )
 
     @staticmethod
     def delete_from_db(name):

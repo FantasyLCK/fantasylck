@@ -1,8 +1,10 @@
+from datetime import datetime
+
 import discord
 import pytz
+
 from discord.ext import commands
 from discord import app_commands
-from datetime import datetime
 from data import UserData
 from sharing_codes import config
 
@@ -27,7 +29,7 @@ class Attendence(commands.Cog):
         today = current_time_kst.date()
 
         # 마지막 출석 날짜 확인
-        last_attendance_date = user_data.login_record[-1].date() if user_data.login_record else None
+        last_attendance_date = datetime.fromtimestamp(user_data.login_record, korea_tz).date()
 
         # 이미 오늘 출석한 경우 처리
         if last_attendance_date == today:
@@ -36,8 +38,7 @@ class Attendence(commands.Cog):
 
         # 출석 처리 및 골드 지급
         user_data.update_balance(config().daily_reward)  # 골드 업데이트
-        user_data.add_login_record(current_time_kst)  # 로그인 기록 추가
-        user_data.save_to_db()  # DB에 업데이트된 정보 저장
+        user_data.login_record = current_time_kst.timestamp()  # 로그인 기록 추가
 
         # 출석 완료 메시지
         await interaction.followup.send(f"출석 완료! {config().daily_reward} 골드를 받았습니다. 현재 예산: {user_data.balance} 골드", ephemeral=False)
