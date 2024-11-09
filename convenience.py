@@ -15,25 +15,18 @@ class Convenience(commands.Cog):
     @app_commands.command(name="선수목록", description="각 포지션의 선수와 가치를 확인합니다")
     @app_commands.describe(position="확인하고 싶은 포지션 (탑, 정글, 미드, 원딜, 서폿 중 하나)")
     async def player_list(self, interaction: discord.Interaction, position: str):
-        await interaction.response.defer()
-
         if interaction.channel.id not in config().allowed_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
         # MongoDB에서 선수 데이터 로드
-        players_data = players_collection.find({'position': position.lower()})
+        players_data = players_collection().find({'position': position.lower()})
 
         # 해당 포지션의 선수들만 필터링
         players_in_position = []
         for player_data in players_data:
             player = PlayerData(
-                player_id=player_data['player_id'],
-                name=player_data['name'],
-                position=player_data['position'],
-                team=player_data['team'],
-                tier=player_data['tier'],
-                trait_weight=player_data['trait_weight']
+                player_id=player_data['player_id']
             )
             players_in_position.append((player, player_data))
         
@@ -53,8 +46,6 @@ class Convenience(commands.Cog):
 
     @app_commands.command(name="명령어", description="사용 가능한 명령어 목록을 확인합니다.")
     async def show_commands(self, interaction: discord.Interaction):
-        await interaction.response.defer()
-
         if interaction.channel.id not in config().community_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
