@@ -76,14 +76,14 @@ class PlayerData:
         players_collection.delete_one({'name': name})
 
     @staticmethod
-    def create_new_entry(player_id, name, position, team, tier, trait_weight) -> tuple['PlayerData', bool]:
-        entry = players_collection.find_one({'player_id': player_id})
+    def create_new_entry(id, name, position, team, tier, trait_weight) -> tuple['PlayerData', bool]:
+        entry = PlayerData.load_from_db(player_id=id)
         logger.debug(f"entry = {entry}")
         if entry is not None:
-            return PlayerData(entry['player_id']), False
+            return entry, False
 
         players_collection.update_one(
-            {'player_id': player_id},
+            {'player_id': id},
             {'$set': {
                 'name': name,
                 'position': position,
@@ -93,7 +93,7 @@ class PlayerData:
             }},
             upsert=True
         )
-        return PlayerData(player_id), True
+        return PlayerData(id), True
 
 class UserData:
     def __init__(self, user_id, discord_id, player_list, balance=150, login_record=None):
@@ -167,7 +167,7 @@ def load_and_save_data():
     if isinstance(players_data, list):
         for player_info in players_data:
             player, result = PlayerData.create_new_entry(
-                player_id=player_info['player_id'],
+                id=player_info['player_id'],
                 name=player_info['name'],
                 position=player_info['position'],
                 team=player_info['team'],
@@ -181,7 +181,7 @@ def load_and_save_data():
     elif isinstance(players_data, dict):
         for player_id, player_info in players_data.items():
             player, result = PlayerData.create_new_entry(
-                player_id=player_info['player_id'],
+                id=player_info['player_id'],
                 name=player_info['name'],
                 position=player_info['position'],
                 team=player_info['team'],
