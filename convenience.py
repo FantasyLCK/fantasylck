@@ -2,7 +2,8 @@ import logging
 import discord 
 from discord.ext import commands
 from discord import app_commands
-from sharing_codes import PlayerData, players_data, load_data, TIER_VALUES, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
+from sharing_codes import TIER_VALUES, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
+from data import PlayerData, players_collection
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -14,29 +15,37 @@ class Convenience(commands.Cog):
     @app_commands.command(name="선수목록", description="각 포지션의 선수와 가치를 확인합니다")
     @app_commands.describe(position="확인하고 싶은 포지션 (탑, 정글, 미드, 원딜, 서폿 중 하나)")
     async def player_list(self, interaction: discord.Interaction, position: str):
+        await interaction.response.defer()
+
         if interaction.channel.id not in ALLOWED_CHANNEL_ID:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
-        # 최신 데이터 로드
-        data = load_data()
-        players_data = data["players"]  # 업데이트된 players_data 가져오기
+        # MongoDB에서 선수 데이터 로드
+        players_data = players_collection.find({'position': position.lower()})
 
         # 해당 포지션의 선수들만 필터링
-        players_in_position = [
-            (player, player_data) 
-            for player, player_data in players_data.items() 
-            if player_data['position'].lower() == position.lower()
-        ]
+        players_in_position = []
+        for player_data in players_data:
+            player = PlayerData(
+                player_id=player_data['player_id'],
+                name=player_data['name'],
+                position=player_data['position'],
+                team=player_data['team'],
+                tier=player_data['tier'],
+                trait_weight=player_data['trait_weight']
+            )
+            players_in_position.append((player, player_data))
         
         # 티어 순으로 정렬 (TIER_VALUES에 따라 정렬)
         players_in_position.sort(key=lambda x: TIER_VALUES[x[1]['tier']], reverse=True)
+
 
         # 출력 메시지 구성
         if players_in_position:
             output = f"### {position} 포지션 선수 목록:\n"
             for player, player_data in players_in_position:
-                output += f"- {player}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
+                output += f"- {player.name}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
         else:
             output = f"{position} 포지션에 해당하는 선수가 없습니다."
 
@@ -44,6 +53,8 @@ class Convenience(commands.Cog):
 
     @app_commands.command(name="명령어", description="사용 가능한 명령어 목록을 확인합니다.")
     async def show_commands(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+
         if interaction.channel.id not in COMMUNITY_CHANEL_ID:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
@@ -64,7 +75,7 @@ class Convenience(commands.Cog):
         만든이: 다운사람
         도움주신분: ElectricalBoy
         """
-        await interaction.response.send_message(commands_list, ephemeral=True)  # 본인만 볼 수 있도록
+        await interaction.response.send_message(commands_list, ephemeral=True)
 
 # Cog 등록 함수
 async def setup(bot):
