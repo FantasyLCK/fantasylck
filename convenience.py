@@ -2,7 +2,7 @@ import logging
 import discord 
 from discord.ext import commands
 from discord import app_commands
-from sharing_codes import TIER_VALUES, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
+from sharing_codes import config
 from data import PlayerData, players_collection
 
 logging.basicConfig(level=logging.DEBUG)
@@ -17,7 +17,7 @@ class Convenience(commands.Cog):
     async def player_list(self, interaction: discord.Interaction, position: str):
         await interaction.response.defer()
 
-        if interaction.channel.id not in ALLOWED_CHANNEL_ID:
+        if interaction.channel.id not in config().allowed_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
@@ -38,14 +38,14 @@ class Convenience(commands.Cog):
             players_in_position.append((player, player_data))
         
         # 티어 순으로 정렬 (TIER_VALUES에 따라 정렬)
-        players_in_position.sort(key=lambda x: TIER_VALUES[x[1]['tier']], reverse=True)
+        players_in_position.sort(key=lambda x: config().tier_values[x[1]['tier']], reverse=True)
 
 
         # 출력 메시지 구성
         if players_in_position:
             output = f"### {position} 포지션 선수 목록:\n"
             for player, player_data in players_in_position:
-                output += f"- {player.name}: {player_data['tier']} 티어 ({TIER_VALUES[player_data['tier']]} 골드)\n"
+                output += f"- {player.name}: {player_data['tier']} 티어 ({config().tier_values[player_data['tier']]} 골드)\n"
         else:
             output = f"{position} 포지션에 해당하는 선수가 없습니다."
 
@@ -55,7 +55,7 @@ class Convenience(commands.Cog):
     async def show_commands(self, interaction: discord.Interaction):
         await interaction.response.defer()
 
-        if interaction.channel.id not in COMMUNITY_CHANEL_ID:
+        if interaction.channel.id not in config().community_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 

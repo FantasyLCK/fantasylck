@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from sharing_codes import is_registration_active, is_sale_active
+from sharing_codes import config
 from data_modification import add_player, update_player, remove_player
 
 class AdminCommands(commands.Cog):
@@ -32,17 +32,15 @@ class AdminCommands(commands.Cog):
     @app_commands.command(name="on", description="선수 등록 및 판매를 활성화합니다. (관리자 전용)")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
     async def on(self, interaction: discord.Interaction):
-        global is_registration_active, is_sale_active
-        is_registration_active = True
-        is_sale_active = True
+        config().is_registration_active = True
+        config().is_sale_active = True
         await interaction.response.send_message("선수 등록 및 판매가 활성화되었습니다.", ephemeral=True)
 
     @app_commands.command(name="off", description="선수 등록 및 판매를 비활성화합니다. (관리자 전용)")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
     async def off(self, interaction: discord.Interaction):
-        global is_registration_active, is_sale_active
-        is_registration_active = False
-        is_sale_active = False
+        config().is_registration_active = False
+        config().is_sale_active = False
         await interaction.response.send_message("선수 등록 및 판매가 비활성화되었습니다.", ephemeral=True)
 
 # Cog 등록 함수

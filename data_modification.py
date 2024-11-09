@@ -1,13 +1,13 @@
 import logging
 from pymongo import DESCENDING
-from sharing_codes import TIER_VALUES
+from sharing_codes import config
 from data import PlayerData, players_collection
 
 logger = logging.getLogger(__name__)
 
 # 선수 추가
 def add_player(name: str, position: str, tier: str, team: str, trait_weight: int):
-    if tier not in TIER_VALUES:
+    if tier not in config().tier_values:
         logger.error(f"정의되지 않은 티어: {tier}. 선수를 추가할 수 없습니다.")
         return
 
@@ -16,7 +16,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
     new_player_id = (last_player["player_id"] + 1) if last_player else 1
 
     # PlayerData 객체 생성 및 MongoDB에 저장
-    player = PlayerData(
+    player = PlayerData.create_new_entry(
         player_id=new_player_id,
         name=name,
         position=position,
@@ -24,8 +24,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
         tier=tier,
         trait_weight=trait_weight
     )
-    
-    players_collection.insert_one(player.__dict__)
+
     logger.info(f"{name} 선수({position}, {tier} 등급)가 추가되었습니다.")
     logger.debug(f"새로운 선수 데이터: {player.__dict__}")
 
@@ -49,9 +48,8 @@ def update_player(name: str, position: str = None, tier: str = None):
 
     # 티어 업데이트
     if tier:
-        if tier in TIER_VALUES:
+        if tier in config().tier_values:
             update_fields["tier"] = tier
-            update_fields["value"] = TIER_VALUES[tier]
             logger.info(f"{name} 선수의 티어가 {tier}로 업데이트되었습니다.")
         else:
             logger.warning(f"정의되지 않은 티어: {tier}. 티어 업데이트를 생략합니다.")

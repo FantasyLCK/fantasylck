@@ -2,7 +2,7 @@ import logging
 from discord.ext import commands
 from discord import app_commands
 import discord
-from sharing_codes import is_registration_active, is_sale_active, TIER_VALUES, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
+from sharing_codes import config
 from data import UserData, PlayerData, get_player_cost
 
 
@@ -36,13 +36,13 @@ class TeamManagement(commands.Cog):
     async def purchase_player(self, interaction: discord.Interaction, position: str, name: str):
         logger.debug(f"선수등록 함수 호출: position={position}, name={name}")
 
-        if interaction.channel.id not in ALLOWED_CHANNEL_ID:
+        if interaction.channel.id not in config().allowed_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
         user = init_load_user(interaction)  # 사용자 로드
 
-        if not is_registration_active:
+        if not config().is_registration_active:
             await interaction.response.send_message("현재 선수 등록이 비활성화되어 있습니다.", ephemeral=True)
             return
 
@@ -81,13 +81,13 @@ class TeamManagement(commands.Cog):
     @app_commands.command(name="선수판매", description="해당 포지션의 선수를 판매합니다.")
     @app_commands.describe(position="판매할 선수의 포지션. 'all'을 입력하면 모든 선수를 판매합니다")
     async def sell_player(self, interaction: discord.Interaction, position: str = None):
-        if interaction.channel.id not in ALLOWED_CHANNEL_ID:
+        if interaction.channel.id not in config().allowed_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
         user = init_load_user(interaction)  # 사용자 로드
 
-        if not is_sale_active:
+        if not config().is_sale_active:
             await interaction.response.send_message("현재 선수 판매가 비활성화되어 있습니다.", ephemeral=True)
             return
 
@@ -125,7 +125,7 @@ class TeamManagement(commands.Cog):
 
     @app_commands.command(name="내팀", description="현재 등록된 팀을 확인합니다")
     async def myteam(self, interaction: discord.Interaction):
-        if interaction.channel.id not in COMMUNITY_CHANEL_ID:
+        if interaction.channel.id not in config().community_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=False)
             return
 

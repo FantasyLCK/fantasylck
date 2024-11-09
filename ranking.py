@@ -2,7 +2,7 @@ import discord
 import asyncio
 from discord import app_commands
 from discord.ext import commands
-from sharing_codes import COMMUNITY_CHANEL_ID
+from sharing_codes import config
 from data import UserData, users_collection
 
 
@@ -15,7 +15,7 @@ class Ranking(commands.Cog):
     async def matchup(self, interaction: discord.Interaction, opponent: discord.Member):
 
         # 채널 ID 확인
-        if interaction.channel.id not in COMMUNITY_CHANEL_ID:
+        if interaction.channel.id not in config().community_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 

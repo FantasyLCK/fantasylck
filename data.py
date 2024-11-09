@@ -2,13 +2,12 @@ import json
 import logging
 from typing import Self
 
-from pymongo import MongoClient
 from datetime import datetime
 
-logger = logging.getLogger('data')
+from db_connection import db
+from sharing_codes import config
 
-client = MongoClient("mongodb://localhost:27017/")
-db = client["FantasyLCK"]
+logger = logging.getLogger('data')
 
 def players_collection():
     return db["players"]
@@ -18,13 +17,7 @@ def users_collection():
 
 # 선수의 티어에 따라 비용을 계산하는 함수
 def get_player_cost(tier: str) -> int:
-    tier_costs = {
-        'S': 50,
-        'A': 40,
-        'B': 30,
-        'C': 20,
-        'D': 10
-    }
+    tier_costs = config().tier_values
     return tier_costs.get(tier, 0)
 
 class PlayerData:

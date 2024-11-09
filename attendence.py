@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord import app_commands
 from datetime import datetime
 from data import UserData
-from sharing_codes import DAILY_REWARD, ALLOWED_CHANNEL_ID
+from sharing_codes import config
 
 
 class Attendence(commands.Cog):
@@ -12,7 +12,7 @@ class Attendence(commands.Cog):
     @app_commands.command(name="출석", description="출석하고 골드를 받습니다.")
 
     async def daily_attendance(self, interaction: discord.Interaction):
-        if interaction.channel.id not in ALLOWED_CHANNEL_ID:
+        if interaction.channel.id not in config().allowed_channel_id:
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
         
@@ -35,12 +35,12 @@ class Attendence(commands.Cog):
             return
 
         # 출석 처리 및 골드 지급
-        user_data.update_balance(DAILY_REWARD)  # 골드 업데이트
+        user_data.update_balance(config().daily_reward)  # 골드 업데이트
         user_data.add_login_record(current_time_kst)  # 로그인 기록 추가
         user_data.save_to_db()  # DB에 업데이트된 정보 저장
 
         # 출석 완료 메시지
-        await interaction.followup.send(f"출석 완료! {DAILY_REWARD} 골드를 받았습니다. 현재 예산: {user_data.balance} 골드", ephemeral=False)
+        await interaction.followup.send(f"출석 완료! {config().daily_reward} 골드를 받았습니다. 현재 예산: {user_data.balance} 골드", ephemeral=False)
 
 
 # Cog 등록 함수
