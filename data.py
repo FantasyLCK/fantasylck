@@ -290,6 +290,8 @@ class UserData:
 
     @staticmethod
     def create_new_entry(id: int, top: int = -1, jgl: int = -1, mid: int = -1, adc: int = -1, sup: int = -1, balance: int = 0, login_record: int = 0) -> tuple['UserData', bool]:
+        if (id < 0):
+            return None, False
         try:
             return UserData.load_from_db(discord_id=id), False
         except ValueError:
