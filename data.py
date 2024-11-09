@@ -2,7 +2,7 @@ import json
 from pymongo import MongoClient
 from datetime import datetime
 
-client = MongoClient("mongodb+srv://dawnsaram:tlXKevTVdqfWJwYO@fantasylck.jf24a.mongodb.net/?retryWrites=true&w=majority&appName=FantasyLCK")
+client = MongoClient("mongodb://localhost:27017/")
 db = client["FantsyLCK"]
 players_collection = db["players"]
 users_collection = db["users"]
