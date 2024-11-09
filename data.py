@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from datetime import datetime
 
 client = MongoClient("mongodb://localhost:27017/")
-db = client["FantsyLCK"]
+db = client["FantasyLCK"]
 players_collection = db["players"]
 users_collection = db["users"]
 
