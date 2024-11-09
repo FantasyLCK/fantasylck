@@ -14,9 +14,9 @@ users_collection = db["users"]
 
 class PlayerData:
 
-    __player_id: str
+    __player_id: int
 
-    def __init__(self, player_id: str):
+    def __init__(self, player_id: int):
         self.__player_id = player_id
 
     def __save_to_db(self):
@@ -33,7 +33,7 @@ class PlayerData:
         )
 
     @staticmethod
-    def load_from_db(player_id: str = None, player_name: str = None):
+    def load_from_db(player_id: int = -1, player_name: str = None):
         if player_id is not None:
             data = players_collection.find_one({'player_id': player_id})
         elif player_name is not None:
