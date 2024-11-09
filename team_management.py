@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import discord
 from sharing_codes import is_registration_active, is_sale_active, TIER_VALUES, ALLOWED_CHANNEL_ID, COMMUNITY_CHANEL_ID
-from data import UserData, PlayerData
+from data import UserData, PlayerData, get_player_cost
 
 
 pos_alias = {
@@ -14,17 +14,6 @@ pos_alias = {
     '원딜': 'adc',
     '서폿': 'sup'
 }
-
-# 선수의 티어에 따라 비용을 계산하는 함수
-def get_player_cost(tier: str) -> int:
-    tier_costs = {
-        'S': 50,
-        'A': 40,
-        'B': 30,
-        'C': 20,
-        'D': 10
-    }
-    return tier_costs.get(tier, 0)
 
 logger = logging.getLogger()
 

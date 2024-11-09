@@ -9,8 +9,23 @@ logger = logging.getLogger('data')
 
 client = MongoClient("mongodb://localhost:27017/")
 db = client["FantasyLCK"]
-players_collection = db["players"]
-users_collection = db["users"]
+
+def players_collection():
+    return db["players"]
+
+def users_collection():
+    return db["users"]
+
+# 선수의 티어에 따라 비용을 계산하는 함수
+def get_player_cost(tier: str) -> int:
+    tier_costs = {
+        'S': 50,
+        'A': 40,
+        'B': 30,
+        'C': 20,
+        'D': 10
+    }
+    return tier_costs.get(tier, 0)
 
 class PlayerData:
 
@@ -20,7 +35,7 @@ class PlayerData:
         self.__player_id = player_id
 
     def __save_to_db(self):
-        players_collection.update_one(
+        players_collection().update_one(
             {'player_id': self.player_id},
             {'$set': {
                 'name': self.name,
@@ -37,7 +52,7 @@ class PlayerData:
         if player_id >= 0:
             data = players_collection.find_one({'player_id': player_id})
         elif player_name is not None:
-            data = players_collection.find_one({'name': player_name})
+            data = players_collection().find_one({'name': player_name})
         else:
             raise ValueError
         if data is not None:
@@ -46,7 +61,7 @@ class PlayerData:
             raise ValueError("Player not found in database.")
 
     def __retrieve_db(self):
-        return players_collection.find_one({'player_id': self.__player_id})
+        return players_collection().find_one({'player_id': self.__player_id})
 
     @property
     def name(self) -> str:
@@ -71,20 +86,24 @@ class PlayerData:
     @property
     def id(self):
         return self.__player_id
+    
+    @property
+    def value(self):
+        return get_player_cost(self.tier)
 
     def delete(self):
-        players_collection.delete_one({'player_id': self.__player_id})
+        players_collection().delete_one({'player_id': self.__player_id})
 
     @staticmethod
     def delete_from_db(name):
-        players_collection.delete_one({'name': name})
+        players_collection().delete_one({'name': name})
 
     @staticmethod
     def create_new_entry(id, name, position, team, tier, trait_weight) -> tuple['PlayerData', bool]:
         try:
             return PlayerData.load_from_db(player_id=id), False
         except ValueError:
-            players_collection.update_one(
+            players_collection().update_one(
                 {'player_id': id},
                 {'$set': {
                     'name': name,
@@ -105,11 +124,11 @@ class UserData:
         self.__discord_id = discord_id
 
     def __retrieve_db(self):
-        return users_collection.find_one({'discord_id': self.__discord_id})
+        return users_collection().find_one({'discord_id': self.__discord_id})
 
     @staticmethod
     def load_from_db(discord_id) -> 'UserData':
-        data = users_collection.find_one({'discord_id': discord_id})
+        data = users_collection().find_one({'discord_id': discord_id})
         if data:
             return UserData(data['discord_id'])
         else:
@@ -134,7 +153,7 @@ class UserData:
     def top_id(self, id: int):
         if (self.top_id >= 0):
             raise AttributeError
-        users_collection.update_one(
+        users_collection().update_one(
             {'discord_id': self.__discord_id},
             {'$set': {
                 'top': id
@@ -157,7 +176,7 @@ class UserData:
     def jgl_id(self, id: int):
         if (self.jgl_id >= 0):
             raise AttributeError
-        users_collection.update_one(
+        users_collection().update_one(
             {'discord_id': self.__discord_id},
             {'$set': {
                 'jgl': id
@@ -180,7 +199,7 @@ class UserData:
     def mid_id(self, id: int):
         if (self.mid_id >= 0):
             raise AttributeError
-        users_collection.update_one(
+        users_collection().update_one(
             {'discord_id': self.__discord_id},
             {'$set': {
                 'mid': id
@@ -203,7 +222,7 @@ class UserData:
     def adc_id(self, id: int):
         if (self.adc_id >= 0):
             raise AttributeError
-        users_collection.update_one(
+        users_collection().update_one(
             {'discord_id': self.__discord_id},
             {'$set': {
                 'adc': id
@@ -226,7 +245,7 @@ class UserData:
     def sup_id(self, id: int):
         if (self.sup_id >= 0):
             raise AttributeError
-        users_collection.update_one(
+        users_collection().update_one(
             {'discord_id': self.__discord_id},
             {'$set': {
                 'sup': id
@@ -237,7 +256,7 @@ class UserData:
     def update_balance(self, amount: int):
         if (amount < 0) and self.balance < abs(amount):
             raise ValueError
-        users_collection.update_one(
+        users_collection().update_one(
             {'discord_id': self.__discord_id},
             {'$set': {
                 'balance': self.balance + amount
@@ -252,7 +271,7 @@ class UserData:
 
     @staticmethod
     def delete_from_db(name):
-        users_collection.delete_one({'name': name})
+        users_collection().delete_one({'name': name})
 
 
     @property
@@ -268,7 +287,7 @@ class UserData:
         try:
             return UserData.load_from_db(discord_id=id), False
         except ValueError:
-            users_collection.update_one(
+            users_collection().update_one(
                 {'discord_id': id},
                 {'$set': {
                     'top': top,
