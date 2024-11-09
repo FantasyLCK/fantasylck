@@ -68,6 +68,10 @@ class PlayerData:
     def trait_weight(self):
         return self.__retrieve_db()['trait_weight']
 
+    @property
+    def id(self):
+        return self.__player_id
+
     def delete(self):
         players_collection.delete_one({'player_id': self.__player_id})
 
@@ -119,38 +123,118 @@ class UserData:
 
     @property
     def top(self) -> PlayerData:
-        id = self.__retrieve_db()['top']
+        id = self.top_id
         if id < 0:
             return None
         return PlayerData(id)
+
+    @property
+    def top_id(self) -> PlayerData:
+        return self.__retrieve_db()['top']
+    
+    @top_id.setter
+    def top_id(self, id: int):
+        if (self.top_id >= 0):
+            raise AttributeError
+        users_collection.update_one(
+            {'discord_id': self.__discord_id},
+            {'$set': {
+                'top': id
+            }},
+            upsert=True
+        )
 
     @property
     def jgl(self) -> PlayerData:
-        id = self.__retrieve_db()['jgl']
+        id = self.jgl_id
         if id < 0:
             return None
         return PlayerData(id)
+
+    @property
+    def jgl_id(self) -> PlayerData:
+        return self.__retrieve_db()['jgl']
+    
+    @jgl_id.setter
+    def jgl_id(self, id: int):
+        if (self.jgl_id >= 0):
+            raise AttributeError
+        users_collection.update_one(
+            {'discord_id': self.__discord_id},
+            {'$set': {
+                'jgl': id
+            }},
+            upsert=True
+        )
 
     @property
     def mid(self) -> PlayerData:
-        id = self.__retrieve_db()['mid']
+        id = self.mid_id
         if id < 0:
             return None
         return PlayerData(id)
+
+    @property
+    def mid_id(self) -> PlayerData:
+        return self.__retrieve_db()['mid']
+    
+    @mid_id.setter
+    def mid_id(self, id: int):
+        if (self.mid_id >= 0):
+            raise AttributeError
+        users_collection.update_one(
+            {'discord_id': self.__discord_id},
+            {'$set': {
+                'mid': id
+            }},
+            upsert=True
+        )
 
     @property
     def adc(self) -> PlayerData:
-        id = self.__retrieve_db()['adc']
+        id = self.adc_id
         if id < 0:
             return None
         return PlayerData(id)
 
     @property
+    def adc_id(self) -> PlayerData:
+        return self.__retrieve_db()['adc']
+    
+    @adc_id.setter
+    def adc_id(self, id: int):
+        if (self.adc_id >= 0):
+            raise AttributeError
+        users_collection.update_one(
+            {'discord_id': self.__discord_id},
+            {'$set': {
+                'adc': id
+            }},
+            upsert=True
+        )
+
+    @property
     def sup(self) -> PlayerData:
-        id = self.__retrieve_db()['sup']
+        id = self.sup_id
         if id < 0:
             return None
         return PlayerData(id)
+
+    @property
+    def sup_id(self) -> PlayerData:
+        return self.__retrieve_db()['sup']
+    
+    @sup_id.setter
+    def sup_id(self, id: int):
+        if (self.sup_id >= 0):
+            raise AttributeError
+        users_collection.update_one(
+            {'discord_id': self.__discord_id},
+            {'$set': {
+                'sup': id
+            }},
+            upsert=True
+        )
 
     def save_to_db(self):
         users_collection.update_one(
