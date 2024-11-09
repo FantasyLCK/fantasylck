@@ -1,0 +1,402 @@
+{
+    "0": {
+        "player_id": 0,
+        "name": "도란",
+        "position": "탑",
+        "team": "HLE",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "1": {
+        "player_id": 1,
+        "name": "기인",
+        "position": "탑",
+        "team": "GEN",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "2": {
+        "player_id": 2,
+        "name": "제우스",
+        "position": "탑",
+        "team": "T1",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "3": {
+        "player_id": 3,
+        "name": "킹겐",
+        "position": "탑",
+        "team": "DK",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "4": {
+        "player_id": 4,
+        "name": "퍼펙트",
+        "position": "탑",
+        "team": "KT",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "5": {
+        "player_id": 5,
+        "name": "클리어",
+        "position": "탑",
+        "team": "FOX",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "6": {
+        "player_id": 6,
+        "name": "두두",
+        "position": "탑",
+        "team": "KDF",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "7": {
+        "player_id": 7,
+        "name": "미하일",
+        "position": "탑",
+        "team": "NS",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "8": {
+        "player_id": 8,
+        "name": "프로그",
+        "position": "탑",
+        "team": "DRX",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "9": {
+        "player_id": 9,
+        "name": "모건",
+        "position": "탑",
+        "team": "BRO",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "10": {
+        "player_id": 10,
+        "name": "피넛",
+        "position": "정글",
+        "team": "HLE",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "11": {
+        "player_id": 11,
+        "name": "캐니언",
+        "position": "정글",
+        "team": "GEN",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "12": {
+        "player_id": 12,
+        "name": "오너",
+        "position": "정글",
+        "team": "T1",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "13": {
+        "player_id": 13,
+        "name": "루시드",
+        "position": "정글",
+        "team": "DK",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "14": {
+        "player_id": 14,
+        "name": "표식",
+        "position": "정글",
+        "team": "KT",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "15": {
+        "player_id": 15,
+        "name": "랩터",
+        "position": "정글",
+        "team": "FOX",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "16": {
+        "player_id": 16,
+        "name": "커즈",
+        "position": "정글",
+        "team": "KDF",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "17": {
+        "player_id": 17,
+        "name": "실비",
+        "position": "정글",
+        "team": "NS",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "18": {
+        "player_id": 18,
+        "name": "스폰지",
+        "position": "정글",
+        "team": "DRX",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "19": {
+        "player_id": 19,
+        "name": "영재",
+        "position": "정글",
+        "team": "BRO",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "20": {
+        "player_id": 20,
+        "name": "제카",
+        "position": "미드",
+        "team": "HLE",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "21": {
+        "player_id": 21,
+        "name": "쵸비",
+        "position": "미드",
+        "team": "GEN",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "22": {
+        "player_id": 22,
+        "name": "페이커",
+        "position": "미드",
+        "team": "T1",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "23": {
+        "player_id": 23,
+        "name": "쇼메이커",
+        "position": "미드",
+        "team": "DK",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "24": {
+        "player_id": 24,
+        "name": "비디디",
+        "position": "미드",
+        "team": "KT",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "25": {
+        "player_id": 25,
+        "name": "클로저",
+        "position": "미드",
+        "team": "FOX",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "26": {
+        "player_id": 26,
+        "name": "불독",
+        "position": "미드",
+        "team": "KDF",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "27": {
+        "player_id": 27,
+        "name": "피셔",
+        "position": "미드",
+        "team": "NS",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "28": {
+        "player_id": 28,
+        "name": "예후",
+        "position": "미드",
+        "team": "DRX",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "29": {
+        "player_id": 29,
+        "name": "페이트",
+        "position": "미드",
+        "team": "BRO",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "30": {
+        "player_id": 30,
+        "name": "바이퍼",
+        "position": "원딜",
+        "team": "HLE",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "31": {
+        "player_id": 31,
+        "name": "페이즈",
+        "position": "원딜",
+        "team": "GEN",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "32": {
+        "player_id": 32,
+        "name": "구마유시",
+        "position": "원딜",
+        "team": "T1",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "33": {
+        "player_id": 33,
+        "name": "에이밍",
+        "position": "원딜",
+        "team": "DK",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "34": {
+        "player_id": 34,
+        "name": "데프트",
+        "position": "원딜",
+        "team": "KT",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "35": {
+        "player_id": 35,
+        "name": "헤나",
+        "position": "원딜",
+        "team": "FOX",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "36": {
+        "player_id": 36,
+        "name": "리퍼",
+        "position": "원딜",
+        "team": "KDF",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "37": {
+        "player_id": 37,
+        "name": "지우",
+        "position": "원딜",
+        "team": "NS",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "38": {
+        "player_id": 38,
+        "name": "테디",
+        "position": "원딜",
+        "team": "DRX",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "39": {
+        "player_id": 39,
+        "name": "엔비",
+        "position": "원딜",
+        "team": "BRO",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "40": {
+        "player_id": 40,
+        "name": "딜라이트",
+        "position": "서폿",
+        "team": "HLE",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "41": {
+        "player_id": 41,
+        "name": "리헨즈",
+        "position": "서폿",
+        "team": "GEN",
+        "tier": "S",
+        "trait_weight": 15
+    },
+    "42": {
+        "player_id": 42,
+        "name": "케리아",
+        "position": "서폿",
+        "team": "T1",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "43": {
+        "player_id": 43,
+        "name": "켈린",
+        "position": "서폿",
+        "team": "DK",
+        "tier": "A",
+        "trait_weight": 15
+    },
+    "44": {
+        "player_id": 44,
+        "name": "베릴",
+        "position": "서폿",
+        "team": "KT",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "45": {
+        "player_id": 45,
+        "name": "듀로",
+        "position": "서폿",
+        "team": "FOX",
+        "tier": "B",
+        "trait_weight": 15
+    },
+    "46": {
+        "player_id": 46,
+        "name": "안딜",
+        "position": "서폿",
+        "team": "KDF",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "47": {
+        "player_id": 47,
+        "name": "구거",
+        "position": "서폿",
+        "team": "NS",
+        "tier": "C",
+        "trait_weight": 15
+    },
+    "48": {
+        "player_id": 48,
+        "name": "플레타",
+        "position": "서폿",
+        "team": "DRX",
+        "tier": "D",
+        "trait_weight": 15
+    },
+    "49": {
+        "player_id": 49,
+        "name": "풀루",
+        "position": "서폿",
+        "team": "BRO",
+        "tier": "D",
+        "trait_weight": 15
+    }
+}
