@@ -236,18 +236,6 @@ class UserData:
             upsert=True
         )
 
-    def save_to_db(self):
-        users_collection.update_one(
-            {'user_id': self.user_id},
-            {'$set': {
-                'discord_id': self.discord_id,
-                'player_list': self.player_list,
-                'balance': self.balance,
-                'login_record': self.login_record,
-            }},
-            upsert=True
-        )
-
     def update_balance(self, amount: int):
         if (amount < 0) and self.balance < abs(amount):
             raise ValueError
@@ -263,7 +251,6 @@ class UserData:
         if not record_time:
             record_time = datetime.now()
         self.login_record.append(record_time)
-        self.save_to_db()
 
     @staticmethod
     def delete_from_db(name):
@@ -279,7 +266,7 @@ class UserData:
         return total_value
 
     @staticmethod
-    def create_new_entry(id, top, jgl, mid, adc, sup, balance, login_record) -> tuple['UserData', bool]:
+    def create_new_entry(id: int, top: int = -1, jgl: int = -1, mid: int = -1, adc: int = -1, sup: int = -1, balance: int = 0, login_record: int = 0) -> tuple['UserData', bool]:
         entry = UserData.load_from_db(discord_id=id)
         logger.debug(f"entry = {entry}")
         if entry is not None:

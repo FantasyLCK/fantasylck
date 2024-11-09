@@ -28,6 +28,16 @@ def get_player_cost(tier: str) -> int:
 
 logger = logging.getLogger()
 
+def init_load_user(interaction: discord.Interaction) -> UserData:
+    user_id = interaction.user.id
+    user: UserData
+    try:
+        user = UserData.load_from_db(user_id)  # 사용자 로드
+    except ValueError:
+        user = UserData.create_new_entry(id=interaction.user.id, balance=150) # 새 사용자 DB에 저장
+        logger.info(f"Initialized user data for user ID: {user_id}")
+    return user
+
 class TeamManagement(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -41,8 +51,7 @@ class TeamManagement(commands.Cog):
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
-        user_id = interaction.user.id
-        user = UserData.load_from_db(user_id)  # 사용자 로드
+        user = init_load_user(interaction)  # 사용자 로드
 
         if not is_registration_active:
             await interaction.response.send_message("현재 선수 등록이 비활성화되어 있습니다.", ephemeral=True)
@@ -72,7 +81,7 @@ class TeamManagement(commands.Cog):
             return
 
         # 선수 등록 및 잔고 차감
-        setattr(user, pos_alias[player_data.position], player_data)
+        setattr(user, pos_alias[player_data.position] + "_id", player_data.id)
         user.update_balance(-player_cost)  # 골드 차감
 
         await interaction.response.send_message(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
@@ -85,14 +94,7 @@ class TeamManagement(commands.Cog):
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
             return
 
-        user_id = interaction.user.id
-        user = UserData.load_from_db(user_id)  # 사용자 로드
-
-        if not user:
-            user = UserData(user_id=user_id, discord_id=interaction.user.id, player_list=[], balance=150, login_record=[])
-            user.save_to_db()  # 새 사용자 DB에 저장
-            logger.info(f"Initialized user data for user ID: {user_id}")
-
+        user = init_load_user(interaction)  # 사용자 로드
 
         if not is_sale_active:
             await interaction.response.send_message("현재 선수 판매가 비활성화되어 있습니다.", ephemeral=True)
@@ -106,7 +108,7 @@ class TeamManagement(commands.Cog):
                 if player is not None:
                     player_cost = get_player_cost(player.tier)  # 선수 비용 계산
                     total_gold += player_cost
-                    setattr(user, pos_alias[pos], None)  # 선수 판매
+                    setattr(user, pos_alias[pos] + "_id", -1)  # 선수 판매
                     logger.info(f"{player.name} 선수가 {pos} 포지션에서 판매되었습니다.")
             
             user.update_balance(total_gold)  # 총 골드 업데이트
@@ -138,8 +140,7 @@ class TeamManagement(commands.Cog):
             await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=False)
             return
 
-        user_id = interaction.user.id
-        user = UserData.load_from_db(user_id)  # 사용자 로드
+        user = init_load_user(interaction)  # 사용자 로드
 
         if not user:
             await interaction.response.send_message("팀 정보가 없습니다. 먼저 선수를 등록해주세요.", ephemeral=True)
@@ -155,8 +156,6 @@ class TeamManagement(commands.Cog):
 
         team_display = f"- 감독: {interaction.user.display_name}\n\n"
 
-        team_value = UserData.get_team_value()
-
         # 팀 정보 반복
         for position, player in team_info.items():
             if player:  # 선수가 등록되어 있는 경우
@@ -165,7 +164,7 @@ class TeamManagement(commands.Cog):
                 team_display += f"- {position}: 없음\n"
 
         # 총 팀 가치 및 예산 출력
-        team_display += f"\n팀 가치: {team_value} 골드\n현재 예산: {user.balance} 골드"
+        team_display += f"\n팀 가치: {user.team_value} 골드\n현재 예산: {user.balance} 골드"
 
         await interaction.response.send_message(team_display, ephemeral=True)
 
