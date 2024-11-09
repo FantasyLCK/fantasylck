@@ -106,13 +106,12 @@ class UserData:
         return users_collection.find_one({'discord_id': self.__discord_id})
 
     @staticmethod
-    def load_from_db(discord_id):
+    def load_from_db(discord_id) -> 'UserData':
         data = users_collection.find_one({'discord_id': discord_id})
         if data:
             return UserData(data['discord_id'])
         else:
-            print("User not found in database.")
-            return None
+            raise ValueError("User not found in database.")
 
     @property
     def balance(self) -> int:
