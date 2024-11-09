@@ -58,8 +58,10 @@ class TeamManagement(commands.Cog):
             return
 
         # MongoDB에서 선수 데이터 로드
-        player_data = PlayerData.load_from_db(player_name=name)  # 이름으로 선수 데이터 로드
-        if not player_data:
+        player_data: PlayerData
+        try:
+            player_data = PlayerData.load_from_db(player_name=name)  # 이름으로 선수 데이터 로드
+        except ValueError:
             logger.debug(f"{name} 선수는 올바른 이름이 아닙니다.")
             await interaction.response.send_message(f"{name} 선수는 올바른 이름이 아닙니다.", ephemeral=True)
             return
@@ -112,7 +114,6 @@ class TeamManagement(commands.Cog):
                     logger.info(f"{player.name} 선수가 {pos} 포지션에서 판매되었습니다.")
             
             user.update_balance(total_gold)  # 총 골드 업데이트
-            user.save_to_db()  # DB에 저장
 
             await interaction.response.send_message(f"모든 선수가 판매되었습니다. {total_gold} 골드를 얻었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
         
@@ -125,9 +126,8 @@ class TeamManagement(commands.Cog):
 
             # 선수 판매
             player_cost = get_player_cost(player.tier)  # 선수 비용 계산
-            setattr(user, pos_alias[position], None)  # 선수 판매
+            setattr(user, pos_alias[position] + "_id", None)  # 선수 판매
             user.update_balance(player_cost)  # 판매한 선수의 골드 추가
-            user.save_to_db()  # DB에 저장
 
             await interaction.response.send_message(f"{player.name} 선수가 판매되었습니다. {player_cost} 골드를 얻었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
 
@@ -147,11 +147,11 @@ class TeamManagement(commands.Cog):
             return
         
         team_info = {
-        "탑": getattr(user, pos_alias['탑']),
-        "정글": getattr(user, pos_alias['정글']),
-        "미드": getattr(user, pos_alias['미드']),
-        "원딜": getattr(user, pos_alias['원딜']),
-        "서폿": getattr(user, pos_alias['서폿'])
+            "탑": user.top,
+            "정글": user.jgl,
+            "미드": user.mid,
+            "원딜": user.adc,
+            "서폿": user.sup
         }
 
         team_display = f"- 감독: {interaction.user.display_name}\n\n"
