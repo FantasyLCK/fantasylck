@@ -50,7 +50,7 @@ class PlayerData:
         players_collection.delete_one({'name': name})
 
 class UserData:
-    def __init__(self, user_id, discord_id, player_list, balance=150, login_record=datetime):
+    def __init__(self, user_id, discord_id, player_list, balance=150, login_record=None):
         self.user_id = user_id
         self.discord_id = discord_id
         self.player_list = player_list or []
@@ -75,7 +75,6 @@ class UserData:
             {'user_id': self.user_id},
             {'$set': {
                 'discord_id': self.discord_id,
-                'discord_id': self.discord_id,
                 'player_list': self.player_list,
                 'balance': self.balance,
                 'login_record': self.login_record,
@@ -90,12 +89,13 @@ class UserData:
     def add_login_record(self, record_time=None):
         if not record_time:
             record_time = datetime.now()
-        self.login_records.append(record_time)
+        self.login_record.append(record_time)
         self.save_to_db()
 
     @staticmethod
     def delete_from_db(name):
         users_collection.delete_one({'name': name})
+
     
     @staticmethod
     def get_team_value(self):
