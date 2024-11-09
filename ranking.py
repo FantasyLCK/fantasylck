@@ -58,26 +58,31 @@ class Ranking(commands.Cog):
     @app_commands.command(name="랭킹", description="현재 서버의 팀가치 순위를 확인합니다.")
     async def ranking(self, interaction: discord.Interaction):
         # MongoDB에서 모든 사용자 로드
-        users_with_team_value = list(users_collection.find().limit(10))
+        users_with_team_value = list(users_collection().find())
 
         if not users_with_team_value:
             await interaction.response.send_message("현재 데이터가 없습니다.", ephemeral=True)
             return
+    
+        users_data: list[UserData] = list()
+
+        for i, users in enumerate(users_with_team_value):
+            users_data.append(UserData(users['discord_id']))
+
+        sorted_users_data = sorted(users_data, key = lambda x : x.team_value)
+        sorted_users_data.reverse()
 
         # 랭킹 메시지 구성
         ranking_message = ["판타지 LCK 랭킹:"]
-        for i, user_data in enumerate(users_with_team_value, start=1):
-            # 사용자 데이터 로드
-            user = UserData.load_from_db(user_data["user_id"])
+        for i in range(min(len(sorted_users_data), 10)):
 
-            # 사용자가 등록한 선수들의 총 팀 가치 계산
-            team_value = UserData.get_team_value()
+            user_data = sorted_users_data[i]
 
             # 디스코드 사용자 정보 가져오기
-            discord_user = await self.bot.fetch_user(user_data["discord_id"])
+            discord_user = await self.bot.fetch_user(user_data.discord_id)
 
             # 랭킹 메시지에 추가
-            ranking_message.append(f"{i}. {discord_user.display_name} - {team_value} 골드")
+            ranking_message.append(f"{i + 1}. {discord_user.display_name} - {user_data.team_value} 골드")
 
         # 랭킹 메시지 전송
         await interaction.response.send_message("\n".join(ranking_message), ephemeral=False)

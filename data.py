@@ -128,6 +128,10 @@ class UserData:
             raise ValueError("User not found in database.")
 
     @property
+    def discord_id(self):
+        return self.__discord_id
+
+    @property
     def balance(self) -> int:
         return self.__retrieve_db()['balance']
 
