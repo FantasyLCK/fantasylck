@@ -115,7 +115,7 @@ class TeamManagement(commands.Cog):
 
             # 선수 판매
             player_cost = get_player_cost(player.tier)  # 선수 비용 계산
-            setattr(user, pos_alias[position] + "_id", None)  # 선수 판매
+            setattr(user, pos_alias[position] + "_id", -1)  # 선수 판매
             user.update_balance(player_cost)  # 판매한 선수의 골드 추가
 
             await interaction.response.send_message(f"{player.name} 선수가 판매되었습니다. {player_cost} 골드를 얻었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
