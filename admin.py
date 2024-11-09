@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from sharing_codes import is_registration_active, is_sale_active
-from player_database import add_player, update_player, remove_player
+from data_modification import add_player, update_player, remove_player
 
 class AdminCommands(commands.Cog):
     def __init__(self, bot):
