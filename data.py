@@ -50,7 +50,7 @@ class PlayerData:
     @staticmethod
     def load_from_db(player_id: int = -1, player_name: str = None):
         if player_id >= 0:
-            data = players_collection.find_one({'player_id': player_id})
+            data = players_collection().find_one({'player_id': player_id})
         elif player_name is not None:
             data = players_collection().find_one({'name': player_name})
         else:
