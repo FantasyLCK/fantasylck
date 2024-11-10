@@ -7,6 +7,7 @@ from discord.ext import commands
 from discord import app_commands
 from data import UserData
 from sharing_codes import config
+from team_management import init_load_user
 
 
 class Attendence(commands.Cog):
@@ -20,8 +21,7 @@ class Attendence(commands.Cog):
         
         await interaction.response.defer()
 
-        user_id = interaction.user.id
-        user_data = UserData.load_from_db(user_id)
+        user = init_load_user(interaction)  # 사용자 로드
 
         # 현재 시간과 출석 기록 확인
         korea_tz = pytz.timezone('Asia/Seoul')
@@ -29,7 +29,7 @@ class Attendence(commands.Cog):
         today = current_time_kst.date()
 
         # 마지막 출석 날짜 확인
-        last_attendance_date = datetime.fromtimestamp(user_data.login_record, korea_tz).date()
+        last_attendance_date = datetime.fromtimestamp(user.login_record, korea_tz).date()
 
         # 이미 오늘 출석한 경우 처리
         if last_attendance_date == today:
@@ -37,11 +37,11 @@ class Attendence(commands.Cog):
             return
 
         # 출석 처리 및 골드 지급
-        user_data.update_balance(config().daily_reward)  # 골드 업데이트
-        user_data.login_record = current_time_kst.timestamp()  # 로그인 기록 추가
+        user.update_balance(config().daily_reward)  # 골드 업데이트
+        user.login_record = current_time_kst.timestamp()  # 로그인 기록 추가
 
         # 출석 완료 메시지
-        await interaction.followup.send(f"출석 완료! {config().daily_reward} 골드를 받았습니다. 현재 예산: {user_data.balance} 골드", ephemeral=False)
+        await interaction.followup.send(f"출석 완료! {config().daily_reward} 골드를 받았습니다. 현재 예산: {user.balance} 골드", ephemeral=False)
 
 
 # Cog 등록 함수
