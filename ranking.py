@@ -4,6 +4,7 @@ from discord import app_commands
 from discord.ext import commands
 from sharing_codes import config
 from data import UserData, users_collection
+from roster_logic import RosterComparisonLogic, PointComparisonLogic
 
 
 class Ranking(commands.Cog):
@@ -41,19 +42,19 @@ class Ranking(commands.Cog):
             await interaction.response.send_message("상대 팀이 초기화되지 않았습니다.", ephemeral=True)
             return
 
-        user_team_value = user_data.team_value
-        opponent_team_value = opponent_data.team_value
-
         # 팀 가치 비교 진행 안내
         await interaction.response.send_message("팀 가치 계산 중...", ephemeral=False)
         await asyncio.sleep(1)
         await interaction.followup.send("맞다이 뜨는 중...", ephemeral=False)
         await asyncio.sleep(1)
 
+        logic: RosterComparisonLogic = PointComparisonLogic(user_data, opponent_data)
+        logic_output = logic.determine_winner()
+
         # 팀 가치 비교 결과 메시지
-        if user_team_value > opponent_team_value:
+        if logic_output > 0:
             result = f"{interaction.user.display_name} vs. {opponent.display_name}, {interaction.user.display_name} 승리!"
-        elif user_team_value < opponent_team_value:
+        elif logic_output < 0:
             result = f"{interaction.user.display_name} vs. {opponent.display_name}, {interaction.user.display_name} 패배..."
         else:
             result = "무승부!"
@@ -61,8 +62,8 @@ class Ranking(commands.Cog):
         # 최종 결과 출력
         # 최종 결과 출력
         await interaction.followup.send(
-            f"{interaction.user.display_name}님의 팀 가치: {user_team_value} 골드\n"
-            f"{opponent.display_name}님의 팀 가치: {opponent_team_value} 골드\n\n{result}", ephemeral=False
+            f"{interaction.user.display_name}님의 팀 가치: {sum(logic.get_team1_values())} 골드\n"
+            f"{opponent.display_name}님의 팀 가치: {sum(logic.get_team2_values())} 골드\n\n{result}", ephemeral=False
         )
 
     @app_commands.command(name="랭킹", description="현재 서버의 팀가치 순위를 확인합니다.")
