@@ -1,7 +1,8 @@
 import logging
 from pymongo import DESCENDING
 from sharing_codes import config
-from data import PlayerData, players_collection
+from data import PlayerData, UserData, players_collection, users_collection
+from team_management import pos_alias
 
 logger = logging.getLogger(__name__)
 
@@ -37,13 +38,13 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
 # 선수 수정
 def update_player(name: str, position: str = None, tier: str = None):
     player_data = players_collection().find_one({"name": name})
-    
+
     if not player_data:
         logger.error(f"{name} 선수를 찾을 수 없습니다.")
         return
 
     update_fields = {}
-    
+
     # 포지션 업데이트
     if position and position in ['탑', '정글', '미드', '원딜', '서폿']:
         update_fields["position"] = position
@@ -66,9 +67,12 @@ def update_player(name: str, position: str = None, tier: str = None):
 
 # 선수 삭제
 def remove_player(name: str):
-    result = players_collection.delete_one({"name": name})
-    
-    if result.deleted_count > 0:
-        logger.info(f"{name} 선수가 삭제되었습니다.")
-    else:
+    try:
+        player_data = PlayerData.load_from_db(player_name=name)
+        for user in users_collection().find({pos_alias[player_data.position]: player_data.id}):
+            user_data = UserData(user['discord_id'])
+            user_data.sell_player(pos_alias[player_data.position])
+        return True
+    except ValueError:
         logger.error(f"{name} 선수를 찾을 수 없습니다.")
+        return False
