@@ -308,7 +308,7 @@ class UserData:
                 }},
                 upsert=True
             )
-            return PlayerData(id), True
+            return UserData(id), True
 
 # Function to load data from JSON files and save to MongoDB
 def load_and_save_data():
