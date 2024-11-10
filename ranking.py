@@ -35,10 +35,10 @@ class Ranking(commands.Cog):
         try:
             opponent_data = UserData.load_from_db(opponent.id)
             if None in opponent_data.roster:
-                await interaction.response.send_message("로스터가 완성되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
+                await interaction.response.send_message("상대 팀의 로스터가 완성되지 않았습니다.", ephemeral=True)
                 return
         except:
-            await interaction.response.send_message("팀이 초기화되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
+            await interaction.response.send_message("상대 팀이 초기화되지 않았습니다.", ephemeral=True)
             return
 
         user_team_value = user_data.team_value
