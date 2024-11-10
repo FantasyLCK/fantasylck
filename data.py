@@ -90,7 +90,7 @@ class PlayerData:
     @property
     def id(self):
         return self.__player_id
-    
+
     @property
     def value(self):
         return get_player_cost(self.tier)
@@ -168,7 +168,7 @@ class UserData:
     @property
     def top_id(self) -> PlayerData:
         return self.__retrieve_db()['top']
-    
+
     @top_id.setter
     def top_id(self, id: int):
         if (self.top_id >= 0 and id >= 0):
@@ -191,7 +191,7 @@ class UserData:
     @property
     def jgl_id(self) -> PlayerData:
         return self.__retrieve_db()['jgl']
-    
+
     @jgl_id.setter
     def jgl_id(self, id: int):
         if (self.jgl_id >= 0 and id >= 0):
@@ -214,7 +214,7 @@ class UserData:
     @property
     def mid_id(self) -> PlayerData:
         return self.__retrieve_db()['mid']
-    
+
     @mid_id.setter
     def mid_id(self, id: int):
         if (self.mid_id >= 0 and id >= 0):
@@ -237,7 +237,7 @@ class UserData:
     @property
     def adc_id(self) -> PlayerData:
         return self.__retrieve_db()['adc']
-    
+
     @adc_id.setter
     def adc_id(self, id: int):
         if (self.adc_id >= 0 and id >= 0):
@@ -260,7 +260,7 @@ class UserData:
     @property
     def sup_id(self) -> PlayerData:
         return self.__retrieve_db()['sup']
-    
+
     @sup_id.setter
     def sup_id(self, id: int):
         if (self.sup_id >= 0 and id >= 0):
@@ -315,9 +315,19 @@ class UserData:
     @property
     def roster(self):
         return [self.top, self.jgl, self.mid, self.adc, self.sup]
-    
+
     def has_full_roster(self):
         return users_full_roster_collection().find_one({'discord_id': self.discord_id}) is not None
+
+    @property
+    def single_team_roster(self):
+        if not self.has_full_roster():
+            return False
+        team = self.top.team
+        for player in [self.jgl, self.mid, self.adc, self.sup]:
+            if player.team != team:
+                return False
+        return True
 
     @property
     def team_value(self) -> int:
@@ -325,6 +335,8 @@ class UserData:
         for player in self.roster:
             if player is not None:
                 total_value += player.value
+        if self.single_team_roster:
+            total_value += config().single_team_bonus * 5
         return total_value
 
     @staticmethod
