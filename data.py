@@ -281,6 +281,16 @@ class UserData:
             upsert=True
         )
 
+    def sell_player(self, pos: str) -> bool:
+        if pos is None:
+            raise ValueError
+        player = getattr(self, pos)
+        if player is None:
+            return False
+        self.update_balance(player.value)
+        setattr(self, pos + '_id', -1)
+        return True
+
     @property
     def login_record(self):
         return self.__retrieve_db()['login_record']
