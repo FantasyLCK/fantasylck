@@ -12,8 +12,10 @@ class AdminCommands(commands.Cog):
     @app_commands.describe(name="선수 이름", position="선수 포지션", tier="선수 티어")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
     async def 선수추가(self, interaction: discord.Interaction, name: str, position: str, tier: str, team: str, trait_weight: int):
-        add_player(name, position, tier, team, trait_weight)
-        await interaction.response.send_message(f"{name} 선수가 추가되었습니다.", ephemeral=True)
+        if add_player(name, position, tier, team, trait_weight):
+            await interaction.response.send_message(f"{name} 선수가 추가되었습니다.", ephemeral=True)
+        else:
+            await interaction.response.send_message(f"{name} 선수를 추가할 수 없습니다.", ephemeral=True)
 
     @app_commands.command(name="선수수정", description="선수 정보를 수정합니다. (관리자 전용)")
     @app_commands.describe(name="선수 이름", position="새로운 포지션 (선택사항)", tier="새로운 티어 (선택사항)")
@@ -26,8 +28,10 @@ class AdminCommands(commands.Cog):
     @app_commands.describe(name="선수 이름")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
     async def 선수삭제(self, interaction: discord.Interaction, name: str):
-        remove_player(name)
-        await interaction.response.send_message(f"{name} 선수가 삭제되었습니다.", ephemeral=True)
+        if remove_player(name):
+            await interaction.response.send_message(f"{name} 선수가 삭제되었습니다.", ephemeral=True)
+        else:
+            await interaction.response.send_message(f"{name} 선수를 삭제할 수 없습니다.", ephemeral=True)
 
     @app_commands.command(name="on", description="선수 등록 및 판매를 활성화합니다. (관리자 전용)")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인

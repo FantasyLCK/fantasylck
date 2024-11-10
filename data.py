@@ -53,6 +53,14 @@ class PlayerData:
         else:
             raise ValueError("Player not found in database.")
 
+    @staticmethod
+    def player_exists(player_id: int = -1, player_name: str = None):
+        try:
+            PlayerData.load_from_db(player_id=player_id, player_name=player_name)
+            return True
+        except:
+            return False
+
     def __retrieve_db(self):
         return players_collection().find_one({'player_id': self.__player_id})
 
@@ -108,6 +116,18 @@ class PlayerData:
                 upsert=True
             )
             return PlayerData(id), True
+
+    def __as_dict(self):
+        return {
+            'name': self.name,
+            'position': self.position,
+            'team': self.team,
+            'tier': self.tier,
+            'trait_weight': self.trait_weight
+        }
+
+    def __str__(self):
+        return str(self.__as_dict())
 
 class UserData:
 
@@ -260,6 +280,16 @@ class UserData:
             }},
             upsert=True
         )
+
+    def sell_player(self, pos: str) -> bool:
+        if pos is None:
+            raise ValueError
+        player = getattr(self, pos)
+        if player is None:
+            return False
+        self.update_balance(player.value)
+        setattr(self, pos + '_id', -1)
+        return True
 
     @property
     def login_record(self):
