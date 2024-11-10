@@ -4,8 +4,23 @@ from discord.ext import commands
 from discord import app_commands
 from data import load_and_save_data
 
-logging.basicConfig(level=logging.WARNING)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+file_handler=logging.FileHandler('fantasylck.log')
+stream_handler=logging.StreamHandler()
+
+stream_formatter=logging.Formatter(
+    '%(asctime)-15s %(levelname)-8s %(message)s')
+file_formatter=logging.Formatter(
+    "{'time':'%(asctime)s', 'name': '%(name)s', \
+    'level': '%(levelname)s', 'message': '%(message)s'}"
+)
+
+file_handler.setFormatter(file_formatter)
+stream_handler.setFormatter(stream_formatter)
+
+logger.addHandler(file_handler)
 
 # 봇의 프리픽스 설정
 intents = discord.Intents.default()
