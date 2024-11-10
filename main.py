@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord import app_commands
 from data import load_and_save_data
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger(__name__)
 
 # 봇의 프리픽스 설정
