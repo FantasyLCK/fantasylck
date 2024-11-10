@@ -90,10 +90,14 @@ class PlayerData:
     @property
     def id(self):
         return self.__player_id
-    
+
     @property
     def value(self):
-        return get_player_cost(self.tier)
+        return get_player_cost(self.tier) + (config().pog_bonus if self.pog_status else 0)
+
+    @property
+    def pog_status(self) -> bool:
+        return self.__retrieve_db()['pog_status']
 
     def delete(self):
         players_collection().delete_one({'player_id': self.__player_id})
@@ -168,7 +172,7 @@ class UserData:
     @property
     def top_id(self) -> PlayerData:
         return self.__retrieve_db()['top']
-    
+
     @top_id.setter
     def top_id(self, id: int):
         if (self.top_id >= 0 and id >= 0):
@@ -191,7 +195,7 @@ class UserData:
     @property
     def jgl_id(self) -> PlayerData:
         return self.__retrieve_db()['jgl']
-    
+
     @jgl_id.setter
     def jgl_id(self, id: int):
         if (self.jgl_id >= 0 and id >= 0):
@@ -214,7 +218,7 @@ class UserData:
     @property
     def mid_id(self) -> PlayerData:
         return self.__retrieve_db()['mid']
-    
+
     @mid_id.setter
     def mid_id(self, id: int):
         if (self.mid_id >= 0 and id >= 0):
@@ -237,7 +241,7 @@ class UserData:
     @property
     def adc_id(self) -> PlayerData:
         return self.__retrieve_db()['adc']
-    
+
     @adc_id.setter
     def adc_id(self, id: int):
         if (self.adc_id >= 0 and id >= 0):
@@ -260,7 +264,7 @@ class UserData:
     @property
     def sup_id(self) -> PlayerData:
         return self.__retrieve_db()['sup']
-    
+
     @sup_id.setter
     def sup_id(self, id: int):
         if (self.sup_id >= 0 and id >= 0):
@@ -283,6 +287,17 @@ class UserData:
             }},
             upsert=True
         )
+
+    def purchase_player(self, player: PlayerData, pos: str) -> bool:
+        if player is None or pos is None:
+            raise ValueError
+        if player.value > self.balance:
+            return False
+        if getattr(self, pos + '_id') >= 0:
+            return False
+        self.update_balance(-player.value)
+        setattr(self, pos + '_id', player.id)
+        return True
 
     def sell_player(self, pos: str) -> bool:
         if pos is None:
@@ -315,9 +330,19 @@ class UserData:
     @property
     def roster(self):
         return [self.top, self.jgl, self.mid, self.adc, self.sup]
-    
+
     def has_full_roster(self):
         return users_full_roster_collection().find_one({'discord_id': self.discord_id}) is not None
+
+    @property
+    def single_team_roster(self):
+        if not self.has_full_roster():
+            return False
+        team = self.top.team
+        for player in [self.jgl, self.mid, self.adc, self.sup]:
+            if player.team != team:
+                return False
+        return True
 
     @property
     def team_value(self) -> int:
@@ -325,6 +350,8 @@ class UserData:
         for player in self.roster:
             if player is not None:
                 total_value += player.value
+        if self.single_team_roster:
+            total_value += config().single_team_bonus * 5
         return total_value
 
     @staticmethod

@@ -72,8 +72,7 @@ class TeamManagement(commands.Cog):
             return
 
         # 선수 등록 및 잔고 차감
-        setattr(user, pos_alias[player_data.position] + "_id", player_data.id)
-        user.update_balance(-player_cost)  # 골드 차감
+        user.purchase_player(player_data, pos_alias[player_data.position])
 
         await interaction.response.send_message(f"{name} 선수가 {position} 포지션에 등록되었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
 
@@ -142,10 +141,12 @@ class TeamManagement(commands.Cog):
 
         team_display = f"- 감독: {interaction.user.display_name}\n\n"
 
+        single_team = user.single_team_roster
+
         # 팀 정보 반복
         for position, player in team_info.items():
             if player:  # 선수가 등록되어 있는 경우
-                team_display += f"- {position}: {player.name} (가치: {get_player_cost(player.tier)} 골드)\n"
+                team_display += f"- {position}: {player.name} (가치: {player.value}{ f"(+{config().single_team_bonus})" if single_team else "" } 골드)\n"
             else:  # 선수가 등록되어 있지 않은 경우
                 team_display += f"- {position}: 없음\n"
 

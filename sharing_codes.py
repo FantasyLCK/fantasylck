@@ -35,6 +35,8 @@ class _BotConfig:
                     'b_tier_value': 30,
                     'c_tier_value': 20,
                     'd_tier_value': 10,
+                    'single_team_bonus': 10,
+                    'pog_bonus': 5,
                     'is_registration_active': True,
                     'is_sale_active': True,
                     'allowed_channel_id': [1302944526750453820],
@@ -90,6 +92,14 @@ class _BotConfig:
     @property
     def community_channel_id(self) -> list[int]:
         return self.__load_config()['community_channel_id']
+
+    @property
+    def single_team_bonus(self) -> int:
+        return self.__load_config()['single_team_bonus']
+
+    @property
+    def pog_bonus(self) -> int:
+        return self.__load_config()['pog_bonus']
 
 _CONFIG = _BotConfig()
 
