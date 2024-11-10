@@ -12,7 +12,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
         return
 
     # MongoDB에서 가장 최근에 추가된 player_id를 가져와서 +1
-    last_player = players_collection.find_one(sort=[("player_id", DESCENDING)])
+    last_player = players_collection().find_one(sort=[("player_id", DESCENDING)])
     new_player_id = (last_player["player_id"] + 1) if last_player else 1
 
     # PlayerData 객체 생성 및 MongoDB에 저장
