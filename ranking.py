@@ -91,7 +91,7 @@ class Ranking(commands.Cog):
         for i, users in enumerate(users_with_team_value):
             users_data.append(UserData(users['discord_id']))
 
-        sorted_users_data = sorted(users_data, key = lambda x : x.team_value)
+        sorted_users_data = sorted(users_data, key = lambda x : x.team_value + x.balance)
         sorted_users_data.reverse()
 
         # 랭킹 메시지 구성
@@ -106,7 +106,7 @@ class Ranking(commands.Cog):
             discord_user = await self.bot.fetch_user(user_data.discord_id)
 
             # 랭킹 메시지에 추가
-            ranking_message.append(f"{i + 1}. {discord_user.display_name} - {user_data.team_value} 골드")
+            ranking_message.append(f"{i + 1}. {discord_user.display_name} - {user_data.team_value + user_data.balance} (팀 밸류: {user_data.team_value}, 잔고: {user_data.balance})")
 
         # 랭킹 메시지 전송
         await interaction.response.send_message("\n".join(ranking_message), ephemeral=False)
