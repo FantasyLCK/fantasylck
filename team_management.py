@@ -23,7 +23,7 @@ def init_load_user(interaction: discord.Interaction) -> UserData:
     try:
         user = UserData.load_from_db(user_id)  # 사용자 로드
     except ValueError:
-        user = UserData.create_new_entry(id=interaction.user.id, balance=150) # 새 사용자 DB에 저장
+        user, result = UserData.create_new_entry(id=interaction.user.id, balance=150) # 새 사용자 DB에 저장
         logger.info(f"Initialized user data for user ID: {user_id}")
     return user
 
