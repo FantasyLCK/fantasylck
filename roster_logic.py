@@ -38,20 +38,31 @@ class PointComparisonLogic(RosterComparisonLogic):
     ADC_POINTS: Final[int] = 20
     SUP_POINTS: Final[int] = 15
 
+    __offset: list[tuple[int, int]]
+
     def __init__(self, user1, user2):
         super().__init__(user1, user2)
+        self.__offset = list()
 
-    def __value_for_game(self, player: PlayerData, single: bool) -> int:
+    def __value_for_game(self, player: PlayerData, single: bool) -> tuple[int, int]:
         bonus = config().single_team_bonus if single else 0
-        return max(0, player.value + bonus + random.randint(-player.trait_weight, player.trait_weight))
+        offset = random.randint(-player.trait_weight, player.trait_weight)
+        return max(0, player.value + bonus + offset), offset
 
     def __determine_points(self, total_points: int, player1: PlayerData, player2: PlayerData, single1: bool, single2: bool):
-        p1_value = self.__value_for_game(player1, single1)
-        p2_value = self.__value_for_game(player2, single2)
+        p1_value, p1_offset = self.__value_for_game(player1, single1)
+        p2_value, p2_offset = self.__value_for_game(player2, single2)
         self._append_player_values(p1_value, p2_value)
+        self.__offset.append((p1_offset, p2_offset))
         p1_points = Fraction(p1_value, p1_value + p2_value) * total_points
         p2_points = Fraction(p2_value, p1_value + p2_value) * total_points
         return p1_points, p2_points
+
+    def get_team1_offset(self):
+        return [self.__offset[i][0] for i in range(len(self.__offset))]
+
+    def get_team2_offset(self):
+        return [self.__offset[i][1] for i in range(len(self.__offset))]
 
     def determine_winner(self) -> Fraction:
         p1_single_team = self._user1.single_team_roster

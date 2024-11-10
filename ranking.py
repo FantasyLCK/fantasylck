@@ -48,7 +48,7 @@ class Ranking(commands.Cog):
         await interaction.followup.send("맞다이 뜨는 중...", ephemeral=False)
         await asyncio.sleep(1)
 
-        logic: RosterComparisonLogic = PointComparisonLogic(user_data, opponent_data)
+        logic = PointComparisonLogic(user_data, opponent_data)
         logic_output = logic.determine_winner()
 
         # 팀 가치 비교 결과 메시지
@@ -65,6 +65,17 @@ class Ranking(commands.Cog):
             f"{interaction.user.display_name}님의 팀 가치: {sum(logic.get_team1_values())} 골드\n"
             f"{opponent.display_name}님의 팀 가치: {sum(logic.get_team2_values())} 골드\n\n{result}", ephemeral=False
         )
+
+        pos_list = ['탑', '정글', '미드', '원딜', '서폿']
+
+        detailed_results = "**상세 맞다이 내역**\n"
+        for i in range(5):
+            detailed_results += f"- {pos_list[i]}: {user_data.roster[i].value}{f"(+{config().single_team_bonus})" if user_data.single_team_roster else ""} (주사위: {logic.get_team1_offset()[i]}) vs {opponent_data.roster[i].value + (config().single_team_bonus if opponent_data.single_team_roster else 0)} (주사위: {logic.get_team2_offset()[i]})\n"
+
+        await interaction.followup.send(
+            detailed_results, ephemeral=True
+        )
+
 
     @app_commands.command(name="랭킹", description="현재 서버의 팀가치 순위를 확인합니다.")
     async def ranking(self, interaction: discord.Interaction):
