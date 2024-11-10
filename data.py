@@ -93,7 +93,11 @@ class PlayerData:
 
     @property
     def value(self):
-        return get_player_cost(self.tier)
+        return get_player_cost(self.tier) + (config().pog_bonus if self.pog_status else 0)
+
+    @property
+    def pog_status(self) -> bool:
+        return self.__retrieve_db()['pog_status']
 
     def delete(self):
         players_collection().delete_one({'player_id': self.__player_id})
@@ -283,6 +287,17 @@ class UserData:
             }},
             upsert=True
         )
+
+    def purchase_player(self, player: PlayerData, pos: str) -> bool:
+        if player is None or pos is None:
+            raise ValueError
+        if player.value > self.balance:
+            return False
+        if getattr(self, pos + '_id') >= 0:
+            return False
+        self.update_balance(-player.value)
+        setattr(self, pos + '_id', player.id)
+        return True
 
     def sell_player(self, pos: str) -> bool:
         if pos is None:

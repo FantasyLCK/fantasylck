@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from sharing_codes import config
-from data_modification import add_player, update_player, remove_player
+from data_modification import add_player, update_player, remove_player, toggle_pog
 from ranking import UserData
 
 class AdminCommands(commands.Cog):
@@ -33,6 +33,15 @@ class AdminCommands(commands.Cog):
             await interaction.response.send_message(f"{name} 선수가 삭제되었습니다.", ephemeral=True)
         else:
             await interaction.response.send_message(f"{name} 선수를 삭제할 수 없습니다.", ephemeral=True)
+
+    @app_commands.command(name="pog", description="선수의 POG 상태를 변경합니다. (관리자 전용)")
+    @app_commands.describe(name="선수 이름")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def pog(self, interaction: discord.Interaction, name: str):
+        if toggle_pog(name):
+            await interaction.response.send_message(f"{name} 선수의 POG 상태가 변경되었습니다.", ephemeral=True)
+        else:
+            await interaction.response.send_message(f"{name} 선수의 POG 상태를 변경할 수 없습니다.", ephemeral=True)
 
     @app_commands.command(name="on", description="선수 등록 및 판매를 활성화합니다. (관리자 전용)")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
