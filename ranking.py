@@ -3,7 +3,8 @@ import asyncio
 from discord import app_commands
 from discord.ext import commands
 from sharing_codes import config
-from data import UserData, users_collection
+from data import UserData, users_full_roster_collection
+from roster_logic import RosterComparisonLogic, PointComparisonLogic
 
 
 class Ranking(commands.Cog):
@@ -20,19 +21,26 @@ class Ranking(commands.Cog):
             return
 
         # 유저 데이터 로드
-        user_data = UserData.load_from_db(interaction.user.id)
-        opponent_data = UserData.load_from_db(opponent.id)
+        user_data: UserData
+        opponent_data: UserData
 
         # 팀 초기화 여부 확인
-        if not user_data or user_data.team_value is None:
+        try:
+            user_data = UserData.load_from_db(interaction.user.id)
+            if not user_data.has_full_roster():
+                await interaction.response.send_message("로스터가 완성되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
+                return
+        except:
             await interaction.response.send_message("팀이 초기화되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
             return
-        if not opponent_data or opponent_data.team_value is None:
-            await interaction.response.send_message(f"{opponent.display_name}님의 팀이 초기화되지 않았습니다.", ephemeral=True)
+        try:
+            opponent_data = UserData.load_from_db(opponent.id)
+            if not opponent_data.has_full_roster():
+                await interaction.response.send_message("상대 팀의 로스터가 완성되지 않았습니다.", ephemeral=True)
+                return
+        except:
+            await interaction.response.send_message("상대 팀이 초기화되지 않았습니다.", ephemeral=True)
             return
-
-        user_team_value = user_data.team_value
-        opponent_team_value = opponent_data.team_value
 
         # 팀 가치 비교 진행 안내
         await interaction.response.send_message("팀 가치 계산 중...", ephemeral=False)
@@ -40,10 +48,13 @@ class Ranking(commands.Cog):
         await interaction.followup.send("맞다이 뜨는 중...", ephemeral=False)
         await asyncio.sleep(1)
 
+        logic: RosterComparisonLogic = PointComparisonLogic(user_data, opponent_data)
+        logic_output = logic.determine_winner()
+
         # 팀 가치 비교 결과 메시지
-        if user_team_value > opponent_team_value:
+        if logic_output > 0:
             result = f"{interaction.user.display_name} vs. {opponent.display_name}, {interaction.user.display_name} 승리!"
-        elif user_team_value < opponent_team_value:
+        elif logic_output < 0:
             result = f"{interaction.user.display_name} vs. {opponent.display_name}, {interaction.user.display_name} 패배..."
         else:
             result = "무승부!"
@@ -51,14 +62,14 @@ class Ranking(commands.Cog):
         # 최종 결과 출력
         # 최종 결과 출력
         await interaction.followup.send(
-            f"{interaction.user.display_name}님의 팀 가치: {user_team_value} 골드\n"
-            f"{opponent.display_name}님의 팀 가치: {opponent_team_value} 골드\n\n{result}", ephemeral=False
+            f"{interaction.user.display_name}님의 팀 가치: {sum(logic.get_team1_values())} 골드\n"
+            f"{opponent.display_name}님의 팀 가치: {sum(logic.get_team2_values())} 골드\n\n{result}", ephemeral=False
         )
 
     @app_commands.command(name="랭킹", description="현재 서버의 팀가치 순위를 확인합니다.")
     async def ranking(self, interaction: discord.Interaction):
         # MongoDB에서 모든 사용자 로드
-        users_with_team_value = list(users_collection().find())
+        users_with_team_value = list(users_full_roster_collection().find())
 
         if not users_with_team_value:
             await interaction.response.send_message("현재 데이터가 없습니다.", ephemeral=True)
@@ -73,6 +84,8 @@ class Ranking(commands.Cog):
         sorted_users_data.reverse()
 
         # 랭킹 메시지 구성
+        if len(sorted_users_data) == 0:
+            await interaction.response.send_message("판타지 LCK 랭킹이 비어 있습니다.", ephemeral=False)
         ranking_message = ["판타지 LCK 랭킹:"]
         for i in range(min(len(sorted_users_data), 10)):
 
