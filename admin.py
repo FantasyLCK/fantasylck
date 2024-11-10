@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 from sharing_codes import config
 from data_modification import add_player, update_player, remove_player
+from ranking import UserData
 
 class AdminCommands(commands.Cog):
     def __init__(self, bot):
@@ -42,6 +43,30 @@ class AdminCommands(commands.Cog):
         config().is_registration_active = False
         config().is_sale_active = False
         await interaction.response.send_message("선수 등록 및 판매가 비활성화되었습니다.", ephemeral=True)
+
+    @app_commands.command(name="골드지급", description="득정 유저에게 골드를 지급합니다. (관리자 전용)")
+    @app_commands.describe(target="대상 유저", amount="지급량")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def 골드지급(self, interaction: discord.Interaction, target: discord.Member, amount:str):
+        try:
+            gold_amount = max(0, int(amount))
+            user_data = UserData.load_from_db(target.id)
+            user_data.update_balance(gold_amount)
+            await interaction.response.send_message(f"{target.display_name} 유저에게 {gold_amount} 골드가 지급되었습니다.", ephemeral=True)
+        except:
+            await interaction.response.send_message(f"골드 지급에 실패하였습니다.", ephemeral=True)
+
+    @app_commands.command(name="골드몰수", description="득정 유저의 골드를 몰수합니다. (관리자 전용)")
+    @app_commands.describe(target="대상 유저", amount="몰수량")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def 골드몰수(self, interaction: discord.Interaction, target: discord.Member, amount:str):
+        try:
+            user_data = UserData.load_from_db(target.id)
+            gold_amount = min(user_data.balance, int(amount))
+            user_data.update_balance(-gold_amount)
+            await interaction.response.send_message(f"{target.display_name} 유저의 {gold_amount} 골드를 몰수하였습니다.", ephemeral=True)
+        except:
+            await interaction.response.send_message(f"골드 몰수에 실패하였습니다.", ephemeral=True)
 
 # Cog 등록 함수
 async def setup(bot):
