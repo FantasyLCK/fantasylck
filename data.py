@@ -309,11 +309,14 @@ class UserData:
     def delete_from_db(name):
         users_collection().delete_one({'name': name})
 
+    @property
+    def roster(self):
+        return [self.top, self.jgl, self.mid, self.adc, self.sup]
 
     @property
     def team_value(self) -> int:
         total_value = 0
-        for player in [self.top, self.jgl, self.mid, self.adc, self.sup]:
+        for player in self.roster:
             if player is not None:
                 total_value += player.value
         return total_value

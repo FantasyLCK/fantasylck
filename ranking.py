@@ -20,15 +20,25 @@ class Ranking(commands.Cog):
             return
 
         # 유저 데이터 로드
-        user_data = UserData.load_from_db(interaction.user.id)
-        opponent_data = UserData.load_from_db(opponent.id)
+        user_data: UserData
+        opponent_data: UserData
 
         # 팀 초기화 여부 확인
-        if not user_data or user_data.team_value is None:
+        try:
+            user_data = UserData.load_from_db(interaction.user.id)
+            if None in user_data.roster:
+                await interaction.response.send_message("로스터가 완성되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
+                return
+        except:
             await interaction.response.send_message("팀이 초기화되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
             return
-        if not opponent_data or opponent_data.team_value is None:
-            await interaction.response.send_message(f"{opponent.display_name}님의 팀이 초기화되지 않았습니다.", ephemeral=True)
+        try:
+            opponent_data = UserData.load_from_db(opponent.id)
+            if None in opponent_data.roster:
+                await interaction.response.send_message("로스터가 완성되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
+                return
+        except:
+            await interaction.response.send_message("팀이 초기화되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
             return
 
         user_team_value = user_data.team_value
