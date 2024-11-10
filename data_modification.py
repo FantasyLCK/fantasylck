@@ -9,7 +9,11 @@ logger = logging.getLogger(__name__)
 def add_player(name: str, position: str, tier: str, team: str, trait_weight: int):
     if tier not in config().tier_values:
         logger.error(f"정의되지 않은 티어: {tier}. 선수를 추가할 수 없습니다.")
-        return
+        return False
+
+    if PlayerData.player_exists(player_name=name):
+        logger.error(f"{tier} 선수가 이미 존재합니다.")
+        return False
 
     # MongoDB에서 가장 최근에 추가된 player_id를 가져와서 +1
     last_player = players_collection().find_one(sort=[("player_id", DESCENDING)])
@@ -17,7 +21,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
 
     # PlayerData 객체 생성 및 MongoDB에 저장
     player = PlayerData.create_new_entry(
-        player_id=new_player_id,
+        id=new_player_id,
         name=name,
         position=position,
         team=team,
@@ -26,7 +30,8 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
     )
 
     logger.info(f"{name} 선수({position}, {tier} 등급)가 추가되었습니다.")
-    logger.debug(f"새로운 선수 데이터: {player.__dict__}")
+    logger.debug(f"새로운 선수 데이터: {player}")
+    return True
 
 
 # 선수 수정
