@@ -15,6 +15,9 @@ def players_collection():
 def users_collection():
     return db["users"]
 
+def users_full_roster_collection():
+    return db["users_full_roster"]
+
 # 선수의 티어에 따라 비용을 계산하는 함수
 def get_player_cost(tier: str) -> int:
     tier_costs = config().tier_values
@@ -312,6 +315,9 @@ class UserData:
     @property
     def roster(self):
         return [self.top, self.jgl, self.mid, self.adc, self.sup]
+    
+    def has_full_roster(self):
+        return users_full_roster_collection().find_one({'discord_id': self.discord_id}) is not None
 
     @property
     def team_value(self) -> int:

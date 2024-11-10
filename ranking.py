@@ -3,7 +3,7 @@ import asyncio
 from discord import app_commands
 from discord.ext import commands
 from sharing_codes import config
-from data import UserData, users_collection
+from data import UserData, users_full_roster_collection
 from roster_logic import RosterComparisonLogic, PointComparisonLogic
 
 
@@ -27,7 +27,7 @@ class Ranking(commands.Cog):
         # 팀 초기화 여부 확인
         try:
             user_data = UserData.load_from_db(interaction.user.id)
-            if None in user_data.roster:
+            if not user_data.has_full_roster():
                 await interaction.response.send_message("로스터가 완성되지 않았습니다. 먼저 선수를 등록하세요.", ephemeral=True)
                 return
         except:
@@ -35,7 +35,7 @@ class Ranking(commands.Cog):
             return
         try:
             opponent_data = UserData.load_from_db(opponent.id)
-            if None in opponent_data.roster:
+            if not opponent_data.has_full_roster():
                 await interaction.response.send_message("상대 팀의 로스터가 완성되지 않았습니다.", ephemeral=True)
                 return
         except:
@@ -69,7 +69,7 @@ class Ranking(commands.Cog):
     @app_commands.command(name="랭킹", description="현재 서버의 팀가치 순위를 확인합니다.")
     async def ranking(self, interaction: discord.Interaction):
         # MongoDB에서 모든 사용자 로드
-        users_with_team_value = list(users_collection().find())
+        users_with_team_value = list(users_full_roster_collection().find())
 
         if not users_with_team_value:
             await interaction.response.send_message("현재 데이터가 없습니다.", ephemeral=True)
@@ -78,9 +78,7 @@ class Ranking(commands.Cog):
         users_data: list[UserData] = list()
 
         for i, users in enumerate(users_with_team_value):
-            user_data = UserData(users['discord_id'])
-            if None not in user_data.roster:
-                users_data.append(user_data)
+            users_data.append(UserData(users['discord_id']))
 
         sorted_users_data = sorted(users_data, key = lambda x : x.team_value)
         sorted_users_data.reverse()
