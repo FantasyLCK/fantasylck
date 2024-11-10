@@ -72,16 +72,16 @@ class _BotConfig:
         return self.__load_config()['is_registration_active']
 
     @is_registration_active.setter
-    def update_registration(self, new_status: bool):
-        self.__default_config.update_one({'id': 0}, {'is_registration_active': new_status})
+    def is_registration_active(self, new_status: bool):
+        self.__default_config.update_one({'id': 0}, {'$set': {'is_registration_active': new_status}})
 
     @property
     def is_sale_active(self) -> bool:
         return self.__load_config()['is_sale_active']
 
     @is_sale_active.setter
-    def update_sale(self, new_status: bool):
-        self.__default_config.update_one({'id': 0}, {'is_sale_active': new_status})
+    def is_sale_active(self, new_status: bool):
+        self.__default_config.update_one({'id': 0}, {'$set': {'is_sale_active': new_status}})
 
     @property
     def allowed_channel_id(self) -> list[int]:
