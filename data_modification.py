@@ -31,7 +31,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
 
 # 선수 수정
 def update_player(name: str, position: str = None, tier: str = None):
-    player_data = players_collection.find_one({"name": name})
+    player_data = players_collection().find_one({"name": name})
     
     if not player_data:
         logger.error(f"{name} 선수를 찾을 수 없습니다.")
@@ -56,7 +56,7 @@ def update_player(name: str, position: str = None, tier: str = None):
 
     # 업데이트 필드가 있는 경우 MongoDB에 적용
     if update_fields:
-        players_collection.update_one({"name": name}, {"$set": update_fields})
+        players_collection().update_one({"name": name}, {"$set": update_fields})
         logger.debug(f"{name} 선수 업데이트된 데이터: {update_fields}")
 
 # 선수 삭제
