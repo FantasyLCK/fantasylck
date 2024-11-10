@@ -77,12 +77,16 @@ class Ranking(commands.Cog):
         users_data: list[UserData] = list()
 
         for i, users in enumerate(users_with_team_value):
-            users_data.append(UserData(users['discord_id']))
+            user_data = UserData(users['discord_id'])
+            if None not in user_data.roster:
+                users_data.append(user_data)
 
         sorted_users_data = sorted(users_data, key = lambda x : x.team_value)
         sorted_users_data.reverse()
 
         # 랭킹 메시지 구성
+        if len(sorted_users_data) == 0:
+            await interaction.response.send_message("판타지 LCK 랭킹이 비어 있습니다.", ephemeral=False)
         ranking_message = ["판타지 LCK 랭킹:"]
         for i in range(min(len(sorted_users_data), 10)):
 
