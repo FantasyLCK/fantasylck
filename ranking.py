@@ -79,6 +79,7 @@ class Ranking(commands.Cog):
 
     @app_commands.command(name="랭킹", description="현재 서버의 팀가치 순위를 확인합니다.")
     async def ranking(self, interaction: discord.Interaction):
+        await interaction.response.defer(thinking=True)
         # MongoDB에서 모든 사용자 로드
         users_with_team_value = list(users_full_roster_collection().find())
 
@@ -109,7 +110,7 @@ class Ranking(commands.Cog):
             ranking_message.append(f"{i + 1}. {discord_user.display_name} - {user_data.team_value + user_data.balance} (팀 밸류: {user_data.team_value}, 잔고: {user_data.balance})")
 
         # 랭킹 메시지 전송
-        await interaction.response.send_message("\n".join(ranking_message), ephemeral=False)
+        await interaction.followup.send("\n".join(ranking_message), ephemeral=False)
 
 # Cog 등록 함수
 async def setup(bot):
