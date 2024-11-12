@@ -1,3 +1,4 @@
+from fractions import Fraction
 import logging
 
 from db_connection import db as _db
@@ -37,6 +38,7 @@ class _BotConfig:
                     'd_tier_value': 10,
                     'single_team_bonus': 10,
                     'pog_bonus': 5,
+                    'sale_charge_percentage': 20,
                     'is_registration_active': True,
                     'is_sale_active': True,
                     'allowed_channel_id': [1302944526750453820],
@@ -100,6 +102,10 @@ class _BotConfig:
     @property
     def pog_bonus(self) -> int:
         return self.__load_config()['pog_bonus']
+
+    @property
+    def sale_charge(self) -> Fraction:
+        return Fraction(self.__load_config()['sale_charge_percentage'], 100)
 
 _CONFIG = _BotConfig()
 

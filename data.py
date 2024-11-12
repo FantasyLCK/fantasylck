@@ -305,7 +305,7 @@ class UserData:
         player = getattr(self, pos)
         if player is None:
             return False
-        self.update_balance(player.value)
+        self.update_balance(round(player.value * (1 - config().sale_charge)))
         setattr(self, pos + '_id', -1)
         return True
 
