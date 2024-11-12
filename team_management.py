@@ -94,10 +94,9 @@ class TeamManagement(commands.Cog):
         if position == "all":
             total_gold = 0
             for pos in ['탑', '정글', '미드', '원딜', '서폿']:
-                player = getattr(user, pos_alias[pos])
+                player: PlayerData = getattr(user, pos_alias[pos])
                 if player is not None:
-                    player_cost = get_player_cost(player.tier)  # 선수 비용 계산
-                    total_gold += player_cost
+                    total_gold += round(player.value * (1 - config().sale_charge))
                     user.sell_player(pos_alias[pos])  # 선수 판매
                     logger.info(f"{player.name} 선수가 {pos} 포지션에서 판매되었습니다.")
 
@@ -105,13 +104,13 @@ class TeamManagement(commands.Cog):
         
         elif position in pos_alias:
             # 포지션에 특정 선수만 판매
-            player = getattr(user, pos_alias[position])
+            player: PlayerData = getattr(user, pos_alias[position])
             if player is None:
                 await interaction.response.send_message(f"{position} 포지션에 등록된 선수가 없습니다.", ephemeral=True)
                 return
 
             # 선수 판매
-            player_cost = get_player_cost(player.tier)  # 선수 비용 계산
+            player_cost = round(player.value * (1 - config().sale_charge))  # 선수 비용 계산
             user.sell_player(pos_alias[position])  # 선수 판매
 
             await interaction.response.send_message(f"{player.name} 선수가 판매되었습니다. {player_cost} 골드를 얻었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
