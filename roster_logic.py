@@ -32,11 +32,11 @@ class RosterComparisonLogic(ABC):
         self.__values.append((value1, value2))
 
 class PointComparisonLogic(RosterComparisonLogic):
-    TOP_POINTS: Final[int] = 15
-    JGL_POINTS: Final[int] = 25
-    MID_POINTS: Final[int] = 25
-    ADC_POINTS: Final[int] = 20
-    SUP_POINTS: Final[int] = 15
+    TOP_POINTS: Final[int] = 17
+    JGL_POINTS: Final[int] = 20
+    MID_POINTS: Final[int] = 22
+    ADC_POINTS: Final[int] = 22
+    SUP_POINTS: Final[int] = 19
 
     __offset: list[tuple[int, int]]
 
