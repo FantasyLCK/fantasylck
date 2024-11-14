@@ -36,7 +36,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
 
 
 # 선수 수정
-def update_player(name: str, position: str = None, tier: str = None):
+def update_player(name: str, position: str = None, tier: str = None, pog_stack: str = None):
     player_data = players_collection().find_one({"name": name})
 
     if not player_data:
@@ -60,28 +60,19 @@ def update_player(name: str, position: str = None, tier: str = None):
         else:
             logger.warning(f"정의되지 않은 티어: {tier}. 티어 업데이트를 생략합니다.")
 
+    if pog_stack is not None:
+        try:
+            pog_stack_val = int(pog_stack)
+            player_data = PlayerData.load_from_db(player_name=name)
+            player_data.pog_stacks = pog_stack_val
+        except:
+            logger.warning(f"올바르지 않은 POG 스택: {pog_stack}. POG 스택 업데이트를 생략합니다.")
+
     # 업데이트 필드가 있는 경우 MongoDB에 적용
     if update_fields:
         players_collection().update_one({"name": name}, {"$set": update_fields})
         logger.debug(f"{name} 선수 업데이트된 데이터: {update_fields}")
 
-# 선수 수정
-def toggle_pog(name: str):
-    player_data = players_collection().find_one({"name": name})
-
-    if not player_data:
-        logger.error(f"{name} 선수를 찾을 수 없습니다.")
-        return False
-
-    players_collection().update_one(
-        {"name": name},
-        {'$set': {
-            'pog_status': not player_data['pog_status']
-        }},
-        upsert=True
-    )
-    logger.info(f"{name} 선수의 POG 상태를 변경하였습니다.")
-    return True
 
 # 선수 삭제
 def remove_player(name: str):
