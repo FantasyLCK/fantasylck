@@ -38,7 +38,7 @@ class Convenience(commands.Cog):
         if players_in_position:
             output = f"### {position} 포지션 선수 목록:\n"
             for player, player_data in players_in_position:
-                output += f"- {player.name}: {player_data['tier']} 티어 ({config().tier_values[player_data['tier']]}{ f"+{config().pog_bonus}" if player_data['pog_status'] else "" } 골드{ " / **POG 보너스 활성화**" if player_data['pog_status'] else "" })\n"
+                output += f"- {player.name}: {player_data['tier']} 티어 ({config().tier_values[player_data['tier']]}{ f"+{config().pog_bonus}*{player_data['pog_stacks']}" if player_data['pog_stacks'] > 0 else "" } 골드{ " / **POG 보너스 활성화**" if player_data['pog_stacks'] > 0 else "" })\n"
         else:
             output = f"{position} 포지션에 해당하는 선수가 없습니다."
 

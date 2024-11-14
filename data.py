@@ -93,11 +93,27 @@ class PlayerData:
 
     @property
     def value(self):
-        return get_player_cost(self.tier) + (config().pog_bonus if self.pog_status else 0)
+        return get_player_cost(self.tier) + (config().pog_bonus * self.pog_stacks)
 
     @property
     def pog_status(self) -> bool:
-        return self.__retrieve_db()['pog_status']
+        return self.pog_stacks > 0
+
+    @property
+    def pog_stacks(self) -> int:
+        return self.__retrieve_db()['pog_stacks']
+    
+    @pog_stacks.setter
+    def pog_stacks(self, stack: int):
+        if stack < 0:
+            raise ValueError(f"Invalid POG stack: {stack}")
+        players_collection().update_one(
+            {'player_id': self.id},
+            {'$set': {
+                'pog_stacks': stack
+            }},
+            upsert=True
+        )
 
     def delete(self):
         players_collection().delete_one({'player_id': self.__player_id})
