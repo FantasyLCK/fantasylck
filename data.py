@@ -101,7 +101,7 @@ class PlayerData:
 
     @property
     def pog_stacks(self) -> int:
-        return self.__retrieve_db()['pog_stacks']
+        return min(self.__retrieve_db()['pog_stacks'], config().pog_stack_bound[self.tier.lower()])
     
     @pog_stacks.setter
     def pog_stacks(self, stack: int):

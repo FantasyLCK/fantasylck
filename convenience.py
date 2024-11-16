@@ -23,22 +23,21 @@ class Convenience(commands.Cog):
         players_data = players_collection().find({'position': position.lower()})
 
         # 해당 포지션의 선수들만 필터링
-        players_in_position = []
+        players_in_position: list[PlayerData] = []
         for player_data in players_data:
-            player = PlayerData(
-                player_id=player_data['player_id']
-            )
-            players_in_position.append((player, player_data))
+            players_in_position.append(PlayerData(player_id=player_data['player_id']))
         
         # 티어 순으로 정렬 (TIER_VALUES에 따라 정렬)
-        players_in_position.sort(key=lambda x: config().tier_values[x[1]['tier']], reverse=True)
+        players_in_position.sort(key=lambda x: x.value, reverse=True)
 
 
         # 출력 메시지 구성
-        if players_in_position:
+        if len(players_in_position) > 0:
             output = f"### {position} 포지션 선수 목록:\n"
-            for player, player_data in players_in_position:
-                output += f"- {player.name}: {player_data['tier']} 티어 ({config().tier_values[player_data['tier']]}{ f"+{config().pog_bonus}*{player_data['pog_stacks']}" if player_data['pog_stacks'] > 0 else "" } 골드{ " / **POG 보너스 활성화**" if player_data['pog_stacks'] > 0 else "" })\n"
+            for player in players_in_position:
+                output += f"- {player.name}: {player.tier} 티어 ({player.value} 골드)\n"
+                if player.pog_stacks > 0:
+                    output += f"  - POG 보너스: {player.pog_stacks} 스택, 총 {player.pog_stacks * config().pog_bonus} 골드\n"
         else:
             output = f"{position} 포지션에 해당하는 선수가 없습니다."
 

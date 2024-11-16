@@ -107,6 +107,10 @@ class _BotConfig:
     def sale_charge(self) -> Fraction:
         return Fraction(self.__load_config()['sale_charge_percentage'], 100)
 
+    @property
+    def pog_stack_bound(self):
+        return self.__load_config()['pog_stack_bound']
+
 _CONFIG = _BotConfig()
 
 def config():
