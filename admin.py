@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from sharing_codes import config
-from data_modification import add_player, update_player, remove_player
+from data_modification import add_player, update_player, remove_player, add_team, update_team
 from ranking import UserData
 
 class AdminCommands(commands.Cog):
@@ -71,6 +71,33 @@ class AdminCommands(commands.Cog):
             await interaction.response.send_message(f"{target.display_name} 유저의 {gold_amount} 골드를 몰수하였습니다.", ephemeral=True)
         except:
             await interaction.response.send_message(f"골드 몰수에 실패하였습니다.", ephemeral=True)
+
+    @app_commands.command(name="팀추가", description="팀을 추가합니다. (관리자 전용)")
+    @app_commands.describe(name="팀 이름", placement="팀 순위")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def 팀추가(self, interaction: discord.Interaction, name: str, placement: str):
+        try:
+            placement_numeric = int(placement)
+            if add_team(name, placement_numeric):
+                await interaction.response.send_message(f"{name} 팀이 추가되었습니다.", ephemeral=True)
+            else:
+                await interaction.response.send_message(f"{name} 팀을 추가할 수 없습니다.", ephemeral=True)
+        except:
+            await interaction.response.send_message("팀 추가 중 오류가 발생하였습니다.", ephemeral=True)
+
+    @app_commands.command(name="팀수정", description="팀 정보를 수정합니다. (관리자 전용)")
+    @app_commands.describe(name="팀 이름", placement="팀 순위")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def 팀수정(self, interaction: discord.Interaction, name: str, placement: str):
+        try:
+            placement_numeric = int(placement)
+            if update_team(name, placement_numeric):
+                await interaction.response.send_message(f"{name} 팀 정보가 수정되었습니다.", ephemeral=True)
+            else:
+                await interaction.response.send_message(f"{name} 팀 정보를 수정할 수 없습니다.", ephemeral=True)
+        except Exception as e:
+            await interaction.response.send_message(f"팀 수정 중 오류가 발생하였습니다.", ephemeral=True)
+            raise e
 
 # Cog 등록 함수
 async def setup(bot):

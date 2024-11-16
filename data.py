@@ -165,9 +165,9 @@ class TeamData:
         return teams_collection().find_one({'id': self.__id})
 
     @staticmethod
-    def load_from_db(id: int = -1, name: str = None) -> 'TeamData':
-        if id >= 0:
-            data = teams_collection().find_one({'id': id})
+    def load_from_db(team_id: int = -1, name: str = None) -> 'TeamData':
+        if team_id >= 0:
+            data = teams_collection().find_one({'id': team_id})
         elif name is not None:
             data = teams_collection().find_one({'name': name})
         else:
@@ -175,10 +175,33 @@ class TeamData:
         if data is not None:
             return TeamData(data['id'])
         else:
-            raise ValueError(f"Team with (id = { id } / name = \"{ name }\") not found in database.")
+            raise ValueError(f"Team with (id = { team_id } / name = \"{ name }\") not found in database.")
+
+    @staticmethod
+    def team_exists(team_id: int = -1, name: str = None) -> bool:
+        try:
+            TeamData.load_from_db(team_id, name)
+            return True
+        except:
+            return False
+
+    @staticmethod
+    def create_new_entry(team_id: int, name: str, placement: int) -> tuple['TeamData', bool]:
+        try:
+            return TeamData.load_from_db(team_id=team_id), False
+        except ValueError:
+            teams_collection().update_one(
+                {'id': id},
+                {'$set': {
+                    'name': name,
+                    'placement': placement
+                }},
+                upsert=True
+            )
+            return TeamData(id), True
 
     @property
-    def id(self):
+    def team_id(self):
         return self.__id
 
     @property
@@ -188,6 +211,18 @@ class TeamData:
     @property
     def placement(self) -> int:
         return self.__retrieve_db()['placement']
+
+    @placement.setter
+    def placement(self, new_placement: int):
+        if new_placement <= 0:
+            raise ValueError(f"Invalid placement: {new_placement}")
+        teams_collection().update_one(
+            {'id': self.__id},
+            {'$set': {
+                'placement': new_placement
+            }},
+            upsert=True
+        )
 
     def __eq__(self, value) -> bool:
         if self is value:
