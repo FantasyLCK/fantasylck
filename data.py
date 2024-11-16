@@ -18,6 +18,9 @@ def users_collection():
 def users_full_roster_collection():
     return db["users_full_roster"]
 
+def teams_collection():
+    return db["teams"]
+
 # 선수의 티어에 따라 비용을 계산하는 함수
 def get_player_cost(tier: str) -> int:
     tier_costs = config().tier_values
@@ -76,8 +79,8 @@ class PlayerData:
         return self.__retrieve_db()['position']
 
     @property
-    def team(self) -> str:
-        return self.__retrieve_db()['team']
+    def team(self) -> 'TeamData':
+        return TeamData.load_from_db(name=self.__retrieve_db()['team'])
 
     @property
     def tier(self) -> str:
@@ -151,6 +154,51 @@ class PlayerData:
 
     def __str__(self):
         return str(self.__as_dict())
+
+class TeamData:
+    __id: int
+
+    def __init__(self, id: int):
+        self.__id = id
+
+    def __retrieve_db(self):
+        return teams_collection().find_one({'id': self.__id})
+
+    @staticmethod
+    def load_from_db(id: int = -1, name: str = None) -> 'TeamData':
+        if id >= 0:
+            data = teams_collection().find_one({'id': id})
+        elif name is not None:
+            data = teams_collection().find_one({'name': name})
+        else:
+            raise ValueError
+        if data is not None:
+            return TeamData(data['id'])
+        else:
+            raise ValueError(f"Team with (id = { id } / name = \"{ name }\") not found in database.")
+
+    @property
+    def id(self):
+        return self.__id
+
+    @property
+    def name(self):
+        return self.__retrieve_db()['name']
+
+    @property
+    def placement(self) -> int:
+        return self.__retrieve_db()['placement']
+
+    def __eq__(self, value) -> bool:
+        if self is value:
+            return True
+        if isinstance(value, TeamData):
+            return self.name == value.name
+        else:
+            return False
+
+    def __str__(self):
+        return self.name
 
 class UserData:
 
@@ -360,6 +408,12 @@ class UserData:
                 return False
         return True
 
+    def get_single_team_bonus(self):
+        if not self.single_team_roster:
+            return 0
+        team = self.top.team
+        return config().single_team_bonus[team.placement // 2]
+
     @property
     def team_value(self) -> int:
         total_value = 0
@@ -367,7 +421,7 @@ class UserData:
             if player is not None:
                 total_value += player.value
         if self.single_team_roster:
-            total_value += config().single_team_bonus * 5
+            total_value += self.get_single_team_bonus() * 5
         return total_value
 
     @staticmethod
