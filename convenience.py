@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from sharing_codes import config
-from data import PlayerData, players_collection
+from data import PlayerData, players_collection, get_player_cost
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -36,12 +36,33 @@ class Convenience(commands.Cog):
             output = f"### {position} 포지션 선수 목록:\n"
             for player in players_in_position:
                 output += f"- {player.name}: {player.tier} 티어 ({player.value} 골드)\n"
-                if player.pog_stacks > 0:
-                    output += f"  - POG 보너스: {player.pog_stacks} 스택, 총 {player.pog_stacks * config().pog_bonus} 골드\n"
         else:
             output = f"{position} 포지션에 해당하는 선수가 없습니다."
 
         await interaction.response.send_message(output)
+
+    @app_commands.command(name="선수정보", description="선수의 정보를 확인합니다")
+    @app_commands.describe(name="확인하고 싶은 선수의 이름")
+    async def player_info(self, interaction: discord.Interaction, name: str):
+        if interaction.channel.id not in config().allowed_channel_id:
+            await interaction.response.send_message("이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True)
+            return
+        await interaction.response.defer(ephemeral=True, thinking=True)
+        try:
+            player_data = PlayerData.load_from_db(player_name=name)
+            output = f"""
+            ### 선수 정보: {player_data.name}
+            - 소속 팀: {player_data.team}{f" ({player_data.team.placement}위)" if not player_data.team.is_legacy_team() else ""}
+            - 티어: {player_data.tier} 티어
+            - 가치: {player_data.value} 골드
+              - 티어: {get_player_cost(player_data.tier)} 골드
+              - POG 보너스: {player_data.pog_stacks * config().pog_bonus} 골드 ({player_data.pog_stacks} 스택)
+              - {f"팀 순위 보너스: {player_data.team.get_team_placement_bonus_ratio()}%" if not player_data.team.is_legacy_team()
+                 else "레전드 선수"}
+            """
+            await interaction.followup.send(output, ephemeral=True)
+        except:
+            await interaction.followup.send(f"{name} 선수를 찾을 수 없습니다.", ephemeral=True)
 
     @app_commands.command(name="명령어", description="사용 가능한 명령어 목록을 확인합니다.")
     async def show_commands(self, interaction: discord.Interaction):
