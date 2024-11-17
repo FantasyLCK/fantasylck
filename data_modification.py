@@ -1,7 +1,7 @@
 import logging
 from pymongo import DESCENDING
 from sharing_codes import config
-from data import PlayerData, UserData, players_collection, users_collection
+from data import PlayerData, TeamData, UserData, players_collection, users_collection, teams_collection
 from team_management import pos_alias
 
 logger = logging.getLogger(__name__)
@@ -84,4 +84,37 @@ def remove_player(name: str):
         return True
     except ValueError:
         logger.error(f"{name} 선수를 찾을 수 없습니다.")
+        return False
+
+# 팀 추가
+def add_team(name: str, placement: int):
+
+    if TeamData.team_exists(name=name):
+        logger.error(f"{name} 팀이 이미 존재합니다.")
+        return False
+
+    # MongoDB에서 가장 최근에 추가된 player_id를 가져와서 +1
+    last_team = teams_collection().find_one(sort=[("id", DESCENDING)])
+    new_team_id = (last_team["id"] + 1) if last_team else 1
+
+    # PlayerData 객체 생성 및 MongoDB에 저장
+    team = TeamData.create_new_entry(new_team_id, name, placement)
+
+    logger.info(f"{name} 팀({placement}위)이 추가되었습니다.")
+    return True
+
+# 팀 수정
+def update_team(name: str, placement: int):
+    team_data: TeamData
+    try:
+        team_data = TeamData.load_from_db(name = name)
+    except ValueError:
+        logger.error(f"{name} 팀이 존재하지 않습니다.")
+        return False
+    try:
+        team_data.placement = placement
+        logger.info(f"{name} 팀의 순위를 {placement}위로 설정하였습니다.")
+        return True
+    except ValueError:
+        logger.error(f"{name} 팀의 순위를 {placement}로 설정할 수 없습니다.")
         return False

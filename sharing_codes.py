@@ -96,7 +96,7 @@ class _BotConfig:
         return self.__load_config()['community_channel_id']
 
     @property
-    def single_team_bonus(self) -> int:
+    def single_team_bonus(self) -> list[int]:
         return self.__load_config()['single_team_bonus']
 
     @property

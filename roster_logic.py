@@ -45,7 +45,7 @@ class PointComparisonLogic(RosterComparisonLogic):
         self.__offset = list()
 
     def __value_for_game(self, player: PlayerData, single: bool) -> tuple[int, int]:
-        bonus = config().single_team_bonus if single else 0
+        bonus = config().single_team_bonus[player.team.placement // 2] if single else 0
         offset = random.randint(-player.trait_weight, player.trait_weight)
         return max(0, player.value + bonus + offset), offset
 

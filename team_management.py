@@ -145,7 +145,7 @@ class TeamManagement(commands.Cog):
         # 팀 정보 반복
         for position, player in team_info.items():
             if player:  # 선수가 등록되어 있는 경우
-                team_display += f"- {position}: {player.name} (가치: {player.value}{ f"(+{config().single_team_bonus})" if single_team else "" } 골드)\n"
+                team_display += f"- {position}: {player.name} (가치: {player.value}{ f"(+{user.get_single_team_bonus()})" if single_team else "" } 골드)\n"
             else:  # 선수가 등록되어 있지 않은 경우
                 team_display += f"- {position}: 없음\n"
 

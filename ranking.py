@@ -70,7 +70,7 @@ class Ranking(commands.Cog):
 
         detailed_results = "**상세 맞다이 내역**\n"
         for i in range(5):
-            detailed_results += f"- {pos_list[i]}: {user_data.roster[i].value}{f"(+{config().single_team_bonus})" if user_data.single_team_roster else ""} (주사위: {logic.get_team1_offset()[i]}) vs {opponent_data.roster[i].value + (config().single_team_bonus if opponent_data.single_team_roster else 0)} (주사위: {logic.get_team2_offset()[i]})\n"
+            detailed_results += f"- {pos_list[i]}: {user_data.roster[i].value}{f"(+{user_data.get_single_team_bonus()})" if user_data.single_team_roster else ""} (주사위: {logic.get_team1_offset()[i]}) vs {opponent_data.roster[i].value + (opponent_data.get_single_team_bonus() if opponent_data.single_team_roster else 0)} (주사위: {logic.get_team2_offset()[i]})\n"
 
         await interaction.followup.send(
             detailed_results, ephemeral=True
