@@ -1,3 +1,4 @@
+from fractions import Fraction
 import json
 import logging
 from typing import Self
@@ -96,7 +97,8 @@ class PlayerData:
 
     @property
     def value(self):
-        return get_player_cost(self.tier) + (config().pog_bonus * self.pog_stacks)
+        team_placement_bonus = Fraction(100 + self.team.get_team_placement_bonus_ratio(), 100)
+        return round((get_player_cost(self.tier) + (config().pog_bonus * self.pog_stacks)) * team_placement_bonus)
 
     @property
     def pog_status(self) -> bool:
@@ -223,6 +225,14 @@ class TeamData:
             }},
             upsert=True
         )
+
+    def is_legacy_team(self) -> bool:
+        return self.placement <= 0
+
+    def get_team_placement_bonus_ratio(self) -> int:
+        if self.is_legacy_team():
+            return 0
+        return range(10)[-self.placement] * 5
 
     def __eq__(self, value) -> bool:
         if self is value:
