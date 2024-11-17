@@ -66,8 +66,7 @@ class TeamManagement(commands.Cog):
             return
 
         # 잔고 확인
-        player_cost = get_player_cost(player_data.tier)  # 선수 비용 계산
-        if user.balance < player_cost:
+        if user.balance < player_data.value:
             await interaction.response.send_message(f"골드가 부족합니다. 현재 예산: {user.balance}골드", ephemeral=True)
             return
 
