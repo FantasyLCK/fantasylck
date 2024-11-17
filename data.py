@@ -447,7 +447,7 @@ class UserData:
         if not self.single_team_roster:
             return 0
         team = self.top.team
-        return config().single_team_bonus[team.placement // 2]
+        return config().single_team_bonus[(team.placement // 2) - 1]
 
     @property
     def team_value(self) -> int:
