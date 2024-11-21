@@ -92,6 +92,14 @@ class PlayerData:
         return self.__retrieve_db()['trait_weight']
 
     @property
+    def purchasable(self) -> bool:
+        return self.__retrieve_db()['purchasable']
+
+    @property
+    def sellable(self) -> bool:
+        return self.__retrieve_db()['sellable']
+
+    @property
     def id(self):
         return self.__player_id
 
@@ -404,6 +412,8 @@ class UserData:
             return False
         if getattr(self, pos + '_id') >= 0:
             return False
+        if not player.purchasable:
+            return False
         self.update_balance(-player.value)
         setattr(self, pos + '_id', player.id)
         return True
@@ -411,8 +421,10 @@ class UserData:
     def sell_player(self, pos: str) -> bool:
         if pos is None:
             raise ValueError
-        player = getattr(self, pos)
+        player: PlayerData = getattr(self, pos)
         if player is None:
+            return False
+        if not player.sellable:
             return False
         self.update_balance(round(player.value * (1 - config().sale_charge)))
         setattr(self, pos + '_id', -1)

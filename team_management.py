@@ -55,6 +55,11 @@ class TeamManagement(commands.Cog):
             await interaction.response.send_message(f"{name} 선수는 올바른 이름이 아닙니다.", ephemeral=True)
             return
 
+        # 거래제한 확인
+        if not player_data.purchasable:
+            await interaction.response.send_message(f"{name}은(는) 거래가 제한된 상태입니다.", ephemeral=True)
+            return
+
         # 포지션 확인
         if player_data.position != position:
             await interaction.response.send_message(f"{name} 선수의 포지션은 {player_data.position}입니다. 올바른 포지션을 입력해주세요.", ephemeral=True)
@@ -110,9 +115,10 @@ class TeamManagement(commands.Cog):
 
             # 선수 판매
             player_cost = round(player.value * (1 - config().sale_charge))  # 선수 비용 계산
-            user.sell_player(pos_alias[position])  # 선수 판매
-
-            await interaction.response.send_message(f"{player.name} 선수가 판매되었습니다. {player_cost} 골드를 얻었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
+            if user.sell_player(pos_alias[position]):  # 선수 판매
+                await interaction.response.send_message(f"{player.name} 선수가 판매되었습니다. {player_cost} 골드를 얻었습니다. 현재 예산: {user.balance} 골드", ephemeral=True)
+            else:
+                await interaction.response.send_message(f"{player.name} 선수를 판매할 수 없습니다.", ephemeral=True)
 
         else:
             await interaction.response.send_message(f"{position}은(는) 올바른 포지션이 아닙니다.", ephemeral=True)

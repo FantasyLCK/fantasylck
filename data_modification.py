@@ -73,6 +73,26 @@ def update_player(name: str, position: str = None, tier: str = None, pog_stack: 
         players_collection().update_one({"name": name}, {"$set": update_fields})
         logger.debug(f"{name} 선수 업데이트된 데이터: {update_fields}")
 
+# 선수 거래 여부 수정
+def update_player_availability(name: str, purchasable: bool = None, sellable: bool = None):
+    player_data = players_collection().find_one({"name": name})
+
+    if not player_data:
+        logger.error(f"{name} 선수를 찾을 수 없습니다.")
+        return
+
+    update_fields = {}
+
+    if purchasable is not None:
+        update_fields["purchasable"] = purchasable
+    if sellable is not None:
+        update_fields["sellable"] = sellable
+
+    # 업데이트 필드가 있는 경우 MongoDB에 적용
+    if len(update_fields) > 0:
+        players_collection().update_one({"name": name}, {"$set": update_fields})
+        logger.debug(f"{name} 선수 업데이트된 데이터: {update_fields}")
+
 
 # 선수 삭제
 def remove_player(name: str):

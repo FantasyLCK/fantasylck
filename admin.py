@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 from sharing_codes import config
-from data_modification import add_player, update_player, remove_player, add_team, update_team
+from data_modification import add_player, update_player, update_player_availability, remove_player, add_team, update_team
 from ranking import UserData
 
 class AdminCommands(commands.Cog):
@@ -23,6 +23,34 @@ class AdminCommands(commands.Cog):
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
     async def 선수수정(self, interaction: discord.Interaction, name: str, position: str = None, tier: str = None, pog_stack: str = None):
         update_player(name, position, tier, pog_stack)
+        await interaction.response.send_message(f"{name} 선수 정보가 수정되었습니다.", ephemeral=True)
+
+    @app_commands.command(name="구매허용", description="(관리자 전용)")
+    @app_commands.describe(name="선수 이름")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def enable_player_purchase(self, interaction: discord.Interaction, name: str):
+        update_player_availability(name, purchasable=True)
+        await interaction.response.send_message(f"{name} 선수 정보가 수정되었습니다.", ephemeral=True)
+
+    @app_commands.command(name="구매제한", description="(관리자 전용)")
+    @app_commands.describe(name="선수 이름")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def disable_player_purchase(self, interaction: discord.Interaction, name: str):
+        update_player_availability(name, purchasable=False)
+        await interaction.response.send_message(f"{name} 선수 정보가 수정되었습니다.", ephemeral=True)
+
+    @app_commands.command(name="판매허용", description="(관리자 전용)")
+    @app_commands.describe(name="선수 이름")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def disable_player_purchase(self, interaction: discord.Interaction, name: str):
+        update_player_availability(name, sellable=True)
+        await interaction.response.send_message(f"{name} 선수 정보가 수정되었습니다.", ephemeral=True)
+
+    @app_commands.command(name="판매제한", description="(관리자 전용)")
+    @app_commands.describe(name="선수 이름")
+    @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
+    async def disable_player_purchase(self, interaction: discord.Interaction, name: str):
+        update_player_availability(name, sellable=False)
         await interaction.response.send_message(f"{name} 선수 정보가 수정되었습니다.", ephemeral=True)
 
     @app_commands.command(name="선수삭제", description="선수를 삭제합니다. (관리자 전용)")
