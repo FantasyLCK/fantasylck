@@ -55,7 +55,7 @@ class Convenience(commands.Cog):
             f" ({
                     "구매불가" if not player_data.purchasable else ""
                 }{
-                    " / " if not (player_data.purchasable or player_data.sellable) else ""
+                    " / " if not (player_data.purchasable or player_data.sellable) else "거래가능"
                 }{
                     "판매불가" if not player_data.sellable else ""
                 })" 
