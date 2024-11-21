@@ -92,6 +92,20 @@ class PlayerData:
         return self.__retrieve_db()['trait_weight']
 
     @property
+    def offset(self) -> int:
+        return self.__retrieve_db()['offset']
+    
+    @offset.setter
+    def offset(self, new_offset: int) -> int:
+        players_collection().update_one(
+            {'player_id': self.id},
+            {'$set': {
+                'offset': new_offset
+            }},
+            upsert=True
+        )
+
+    @property
     def purchasable(self) -> bool:
         return self.__retrieve_db()['purchasable']
 
@@ -106,7 +120,7 @@ class PlayerData:
     @property
     def value(self):
         team_placement_bonus = Fraction(100 + self.team.get_team_placement_bonus_ratio(), 100)
-        return round((get_player_cost(self.tier) + (config().pog_bonus * self.pog_stacks)) * team_placement_bonus)
+        return round((get_player_cost(self.tier) + self.offset + (config().pog_bonus * self.pog_stacks)) * team_placement_bonus)
 
     @property
     def pog_status(self) -> bool:

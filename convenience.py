@@ -55,7 +55,9 @@ class Convenience(commands.Cog):
             - 소속 팀: {player_data.team}{f" ({player_data.team.placement}위)" if not player_data.team.is_legacy_team() else ""}
             - 티어: {player_data.tier} 티어
             - 가치: {player_data.value} 골드
-              - 티어: {get_player_cost(player_data.tier)} 골드
+              - 티어: {get_player_cost(player_data.tier)} 골드{
+                  f"\n  - 수동 보너스: {player_data.offset} 골드" if player_data.offset != 0 else ""
+              }
               - POG 보너스: {player_data.pog_stacks * config().pog_bonus} 골드 ({player_data.pog_stacks} 스택)
               - {f"팀 순위 보너스: {player_data.team.get_team_placement_bonus_ratio()}%" if not player_data.team.is_legacy_team()
                  else "레전드 선수"}

@@ -36,7 +36,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
 
 
 # 선수 수정
-def update_player(name: str, position: str = None, tier: str = None, pog_stack: str = None):
+def update_player(name: str, position: str = None, tier: str = None, pog_stack: str = None, offset: str = None):
     player_data = players_collection().find_one({"name": name})
 
     if not player_data:
@@ -67,6 +67,14 @@ def update_player(name: str, position: str = None, tier: str = None, pog_stack: 
             player_data.pog_stacks = pog_stack_val
         except:
             logger.warning(f"올바르지 않은 POG 스택: {pog_stack}. POG 스택 업데이트를 생략합니다.")
+
+    if offset is not None:
+        try:
+            offset_val = int(offset)
+            player_data = PlayerData.load_from_db(player_name=name)
+            player_data.offset = offset_val
+        except:
+            logger.warning(f"올바르지 않은 오프셋: {offset}. 오프셋 업데이트를 생략합니다.")
 
     # 업데이트 필드가 있는 경우 MongoDB에 적용
     if update_fields:
