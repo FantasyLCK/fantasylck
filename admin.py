@@ -42,14 +42,14 @@ class AdminCommands(commands.Cog):
     @app_commands.command(name="판매허용", description="(관리자 전용)")
     @app_commands.describe(name="선수 이름")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
-    async def disable_player_purchase(self, interaction: discord.Interaction, name: str):
+    async def enable_player_sale(self, interaction: discord.Interaction, name: str):
         update_player_availability(name, sellable=True)
         await interaction.response.send_message(f"{name} 선수 정보가 수정되었습니다.", ephemeral=True)
 
     @app_commands.command(name="판매제한", description="(관리자 전용)")
     @app_commands.describe(name="선수 이름")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
-    async def disable_player_purchase(self, interaction: discord.Interaction, name: str):
+    async def disable_player_sale(self, interaction: discord.Interaction, name: str):
         update_player_availability(name, sellable=False)
         await interaction.response.send_message(f"{name} 선수 정보가 수정되었습니다.", ephemeral=True)
 
