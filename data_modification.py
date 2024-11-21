@@ -36,7 +36,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
 
 
 # 선수 수정
-def update_player(name: str, position: str = None, tier: str = None, pog_stack: str = None):
+def update_player(name: str, position: str = None, tier: str = None, pog_stack: str = None, offset: str = None):
     player_data = players_collection().find_one({"name": name})
 
     if not player_data:
@@ -68,8 +68,36 @@ def update_player(name: str, position: str = None, tier: str = None, pog_stack: 
         except:
             logger.warning(f"올바르지 않은 POG 스택: {pog_stack}. POG 스택 업데이트를 생략합니다.")
 
+    if offset is not None:
+        try:
+            offset_val = int(offset)
+            player_data = PlayerData.load_from_db(player_name=name)
+            player_data.offset = offset_val
+        except:
+            logger.warning(f"올바르지 않은 오프셋: {offset}. 오프셋 업데이트를 생략합니다.")
+
     # 업데이트 필드가 있는 경우 MongoDB에 적용
     if update_fields:
+        players_collection().update_one({"name": name}, {"$set": update_fields})
+        logger.debug(f"{name} 선수 업데이트된 데이터: {update_fields}")
+
+# 선수 거래 여부 수정
+def update_player_availability(name: str, purchasable: bool = None, sellable: bool = None):
+    player_data = players_collection().find_one({"name": name})
+
+    if not player_data:
+        logger.error(f"{name} 선수를 찾을 수 없습니다.")
+        return
+
+    update_fields = {}
+
+    if purchasable is not None:
+        update_fields["purchasable"] = purchasable
+    if sellable is not None:
+        update_fields["sellable"] = sellable
+
+    # 업데이트 필드가 있는 경우 MongoDB에 적용
+    if len(update_fields) > 0:
         players_collection().update_one({"name": name}, {"$set": update_fields})
         logger.debug(f"{name} 선수 업데이트된 데이터: {update_fields}")
 

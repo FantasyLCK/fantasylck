@@ -51,11 +51,21 @@ class Convenience(commands.Cog):
         try:
             player_data = PlayerData.load_from_db(player_name=name)
             output = f"""
-            ### 선수 정보: {player_data.name}
+            ### 선수 정보: {player_data.name}{
+            f" ({
+                    "구매불가" if not player_data.purchasable else ""
+                }{
+                    " / " if not (player_data.purchasable or player_data.sellable) else "거래가능"
+                }{
+                    "판매불가" if not player_data.sellable else ""
+                })" 
+            }
             - 소속 팀: {player_data.team}{f" ({player_data.team.placement}위)" if not player_data.team.is_legacy_team() else ""}
             - 티어: {player_data.tier} 티어
             - 가치: {player_data.value} 골드
-              - 티어: {get_player_cost(player_data.tier)} 골드
+              - 티어: {get_player_cost(player_data.tier)} 골드{
+                  f"\n  - 수동 보너스: {player_data.offset} 골드" if player_data.offset != 0 else ""
+              }
               - POG 보너스: {player_data.pog_stacks * config().pog_bonus} 골드 ({player_data.pog_stacks} 스택)
               - {f"팀 순위 보너스: {player_data.team.get_team_placement_bonus_ratio()}%" if not player_data.team.is_legacy_team()
                  else "레전드 선수"}

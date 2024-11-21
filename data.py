@@ -92,13 +92,35 @@ class PlayerData:
         return self.__retrieve_db()['trait_weight']
 
     @property
+    def offset(self) -> int:
+        return self.__retrieve_db()['offset']
+    
+    @offset.setter
+    def offset(self, new_offset: int) -> int:
+        players_collection().update_one(
+            {'player_id': self.id},
+            {'$set': {
+                'offset': new_offset
+            }},
+            upsert=True
+        )
+
+    @property
+    def purchasable(self) -> bool:
+        return self.__retrieve_db()['purchasable']
+
+    @property
+    def sellable(self) -> bool:
+        return self.__retrieve_db()['sellable']
+
+    @property
     def id(self):
         return self.__player_id
 
     @property
     def value(self):
         team_placement_bonus = Fraction(100 + self.team.get_team_placement_bonus_ratio(), 100)
-        return round((get_player_cost(self.tier) + (config().pog_bonus * self.pog_stacks)) * team_placement_bonus)
+        return round((get_player_cost(self.tier) + self.offset + (config().pog_bonus * self.pog_stacks)) * team_placement_bonus)
 
     @property
     def pog_status(self) -> bool:
@@ -404,6 +426,8 @@ class UserData:
             return False
         if getattr(self, pos + '_id') >= 0:
             return False
+        if not player.purchasable:
+            return False
         self.update_balance(-player.value)
         setattr(self, pos + '_id', player.id)
         return True
@@ -411,8 +435,10 @@ class UserData:
     def sell_player(self, pos: str) -> bool:
         if pos is None:
             raise ValueError
-        player = getattr(self, pos)
+        player: PlayerData = getattr(self, pos)
         if player is None:
+            return False
+        if not player.sellable:
             return False
         self.update_balance(round(player.value * (1 - config().sale_charge)))
         setattr(self, pos + '_id', -1)
