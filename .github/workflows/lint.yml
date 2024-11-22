@@ -12,6 +12,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Check styling
