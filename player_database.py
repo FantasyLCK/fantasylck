@@ -14,6 +14,7 @@ TIER_VALUES = {
 # 데이터 파일 경로
 DATA_FILE = "players_data.json"
 
+
 # 선수 추가
 def add_player(name: str, position: str, tier: str):
     data = load_data()  # 데이터 로드
@@ -32,11 +33,12 @@ def add_player(name: str, position: str, tier: str):
         "tier": player.tier,
         "value": player.value,
     }
-    
+
     # 데이터 저장
     save_data(data)
     logger.info(f"{name} 선수({position}, {tier} 등급)가 추가되었습니다.")
     logger.debug(f"업데이트된 players_data = {data['players']}")
+
 
 # 선수 수정
 def update_player(name: str, position: str = None, tier: str = None):
@@ -50,11 +52,13 @@ def update_player(name: str, position: str = None, tier: str = None):
 
     # 포지션 업데이트
     if position and data["players"][name]["position"] != position:
-        if position in ['탑', '정글', '미드', '원딜', '서폿']:
+        if position in ["탑", "정글", "미드", "원딜", "서폿"]:
             data["players"][name]["position"] = position
             logger.info(f"{name} 선수가 {position} 포지션으로 이동했습니다.")
         else:
-            logger.warning(f"유효하지 않은 포지션: {position}. 포지션 업데이트 생략합니다.")
+            logger.warning(
+                f"유효하지 않은 포지션: {position}. 포지션 업데이트 생략합니다."
+            )
 
     # 티어 업데이트
     if tier:
@@ -67,6 +71,7 @@ def update_player(name: str, position: str = None, tier: str = None):
 
     save_data(data)  # 데이터 저장
     logger.debug(f"players_data = {data['players']}")
+
 
 # 선수 삭제
 def remove_player(name: str):

@@ -1,10 +1,18 @@
 import logging
 from pymongo import DESCENDING
 from sharing_codes import config
-from data import PlayerData, TeamData, UserData, players_collection, users_collection, teams_collection
+from data import (
+    PlayerData,
+    TeamData,
+    UserData,
+    players_collection,
+    users_collection,
+    teams_collection,
+)
 from team_management import pos_alias
 
 logger = logging.getLogger(__name__)
+
 
 # 선수 추가
 def add_player(name: str, position: str, tier: str, team: str, trait_weight: int):
@@ -27,7 +35,7 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
         position=position,
         team=team,
         tier=tier,
-        trait_weight=trait_weight
+        trait_weight=trait_weight,
     )
 
     logger.info(f"{name} 선수({position}, {tier} 등급)가 추가되었습니다.")
@@ -36,7 +44,13 @@ def add_player(name: str, position: str, tier: str, team: str, trait_weight: int
 
 
 # 선수 수정
-def update_player(name: str, position: str = None, tier: str = None, pog_stack: str = None, offset: str = None):
+def update_player(
+    name: str,
+    position: str = None,
+    tier: str = None,
+    pog_stack: str = None,
+    offset: str = None,
+):
     player_data = players_collection().find_one({"name": name})
 
     if not player_data:
@@ -46,7 +60,7 @@ def update_player(name: str, position: str = None, tier: str = None, pog_stack: 
     update_fields = {}
 
     # 포지션 업데이트
-    if position and position in ['탑', '정글', '미드', '원딜', '서폿']:
+    if position and position in ["탑", "정글", "미드", "원딜", "서폿"]:
         update_fields["position"] = position
         logger.info(f"{name} 선수가 {position} 포지션으로 이동했습니다.")
     elif position:
@@ -66,7 +80,9 @@ def update_player(name: str, position: str = None, tier: str = None, pog_stack: 
             player_data = PlayerData.load_from_db(player_name=name)
             player_data.pog_stacks = pog_stack_val
         except:
-            logger.warning(f"올바르지 않은 POG 스택: {pog_stack}. POG 스택 업데이트를 생략합니다.")
+            logger.warning(
+                f"올바르지 않은 POG 스택: {pog_stack}. POG 스택 업데이트를 생략합니다."
+            )
 
     if offset is not None:
         try:
@@ -74,15 +90,20 @@ def update_player(name: str, position: str = None, tier: str = None, pog_stack: 
             player_data = PlayerData.load_from_db(player_name=name)
             player_data.offset = offset_val
         except:
-            logger.warning(f"올바르지 않은 오프셋: {offset}. 오프셋 업데이트를 생략합니다.")
+            logger.warning(
+                f"올바르지 않은 오프셋: {offset}. 오프셋 업데이트를 생략합니다."
+            )
 
     # 업데이트 필드가 있는 경우 MongoDB에 적용
     if update_fields:
         players_collection().update_one({"name": name}, {"$set": update_fields})
         logger.debug(f"{name} 선수 업데이트된 데이터: {update_fields}")
 
+
 # 선수 거래 여부 수정
-def update_player_availability(name: str, purchasable: bool = None, sellable: bool = None):
+def update_player_availability(
+    name: str, purchasable: bool = None, sellable: bool = None
+):
     player_data = players_collection().find_one({"name": name})
 
     if not player_data:
@@ -106,13 +127,16 @@ def update_player_availability(name: str, purchasable: bool = None, sellable: bo
 def remove_player(name: str):
     try:
         player_data = PlayerData.load_from_db(player_name=name)
-        for user in users_collection().find({pos_alias[player_data.position]: player_data.id}):
-            user_data = UserData(user['discord_id'])
+        for user in users_collection().find(
+            {pos_alias[player_data.position]: player_data.id}
+        ):
+            user_data = UserData(user["discord_id"])
             user_data.sell_player(pos_alias[player_data.position])
         return True
     except ValueError:
         logger.error(f"{name} 선수를 찾을 수 없습니다.")
         return False
+
 
 # 팀 추가
 def add_team(name: str, placement: int):
@@ -131,11 +155,12 @@ def add_team(name: str, placement: int):
     logger.info(f"{name} 팀({placement}위)이 추가되었습니다.")
     return True
 
+
 # 팀 수정
 def update_team(name: str, placement: int):
     team_data: TeamData
     try:
-        team_data = TeamData.load_from_db(name = name)
+        team_data = TeamData.load_from_db(name=name)
     except ValueError:
         logger.error(f"{name} 팀이 존재하지 않습니다.")
         return False
