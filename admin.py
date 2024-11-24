@@ -60,7 +60,7 @@ class AdminCommands(commands.Cog):
         pog_stack: str = None,
         offset: str = None,
     ):
-        update_player(name, position, tier, pog_stack, int(offset))
+        update_player(name, position, tier, pog_stack, offset)
         await interaction.response.send_message(
             f"{name} 선수 정보가 수정되었습니다.", ephemeral=True
         )
