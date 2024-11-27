@@ -15,7 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 # 선수 추가
-def add_player(name: str, position: str, tier: str, team: str, trait_weight: int):
+def add_player(
+    name: str,
+    position: str,
+    tier: str,
+    team: str,
+    trait_weight: int,
+):
     if tier not in config().tier_values:
         logger.error(f"정의되지 않은 티어: {tier}. 선수를 추가할 수 없습니다.")
         return False
