@@ -20,7 +20,7 @@ class AdminCommands(commands.Cog):
     @app_commands.command(
         name="선수추가", description="선수를 추가합니다. (관리자 전용)"
     )
-    @app_commands.describe(name="선수 이름", position="선수 포지션", tier="선수 티어")
+    @app_commands.describe(name="선수 이름", position="선수 포지션", tier="선수 티어", team="소속 팀", trait_weight="주사위 범위")
     @app_commands.default_permissions(administrator=True)  # 관리자 권한 확인
     async def 선수추가(
         self,
