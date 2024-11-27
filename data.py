@@ -163,16 +163,16 @@ class PlayerData:
 
     @staticmethod
     def create_new_entry(
-        id,
-        name,
-        position,
-        team,
-        tier,
-        trait_weight,
-        pog_stacks=0,
-        offset=0,
-        purchasable=True,
-        sellable=True,
+        id: int,
+        name: str,
+        position: str,
+        team: str,
+        tier: str,
+        trait_weight: int,
+        pog_stacks: int = 0,
+        offset: int = 0,
+        purchasable: bool = True,
+        sellable: bool = True,
     ) -> tuple["PlayerData", bool]:
         try:
             return PlayerData.load_from_db(player_id=id), False
