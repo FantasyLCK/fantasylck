@@ -253,7 +253,7 @@ class TeamData:
             return TeamData.load_from_db(team_id=team_id), False
         except ValueError:
             teams_collection().update_one(
-                {"id": id},
+                {"id": team_id},
                 {"$set": {"name": name, "placement": placement}},
                 upsert=True,
             )
