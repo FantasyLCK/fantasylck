@@ -1,3 +1,5 @@
+from typing import Literal
+
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -32,7 +34,7 @@ class AdminCommands(commands.Cog):
         self,
         interaction: discord.Interaction,
         name: str,
-        position: str,
+        position: Literal["탑", "정글", "미드", "원딜", "서폿"],
         tier: str,
         team: str,
         trait_weight: int,
