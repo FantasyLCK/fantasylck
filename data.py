@@ -540,5 +540,3 @@ class UserData:
                 upsert=True,
             )
             return UserData(id), True
-
-
