@@ -242,6 +242,10 @@ class TeamData:
             return False
 
     @staticmethod
+    def count_active_teams() -> int:
+        return teams_collection().count_documents({"placement": {"$gt": 0}})
+
+    @staticmethod
     def create_new_entry(
         team_id: int, name: str, placement: int
     ) -> tuple["TeamData", bool]:
@@ -281,7 +285,10 @@ class TeamData:
     def get_team_placement_bonus_ratio(self) -> int:
         if self.is_legacy_team():
             return 0
-        return range(10)[-self.placement] * 5
+        return (
+            range(TeamData.count_active_teams())[-self.placement]
+            * config().placement_bonus_gradient
+        )
 
     def __eq__(self, value) -> bool:
         if self is value:

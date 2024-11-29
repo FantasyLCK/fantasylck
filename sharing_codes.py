@@ -48,6 +48,7 @@ class _BotConfig:
                             1302961629562011750,
                             1302944526750453820,
                         ],
+                        "placement_bonus_gradient": 3,
                     }
                 },
                 upsert=True,
@@ -120,6 +121,10 @@ class _BotConfig:
     @property
     def pog_stack_bound(self):
         return self.__load_config()["pog_stack_bound"]
+
+    @property
+    def placement_bonus_gradient(self) -> int:
+        return self.__load_config()["placement_bonus_gradient"]
 
 
 _CONFIG = _BotConfig()
