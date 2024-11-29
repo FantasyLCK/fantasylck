@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import discord
-import pytz
+from zoneinfo import ZoneInfo
 
 from discord.ext import commands
 from discord import app_commands
@@ -25,14 +25,12 @@ class Attendence(commands.Cog):
         user = init_load_user(interaction)  # 사용자 로드
 
         # 현재 시간과 출석 기록 확인
-        korea_tz = pytz.timezone("Asia/Seoul")
+        korea_tz = ZoneInfo("Asia/Seoul")
         current_time_kst = datetime.now(korea_tz)  # 한국 시간으로 현재 시간 얻기
         today = current_time_kst.date()
 
         # 마지막 출석 날짜 확인
-        last_attendance_date = datetime.fromtimestamp(
-            user.login_record, korea_tz
-        ).date()
+        last_attendance_date = user.login_record.date()
 
         # 이미 오늘 출석한 경우 처리
         if last_attendance_date == today:
@@ -43,7 +41,7 @@ class Attendence(commands.Cog):
 
         # 출석 처리 및 골드 지급
         user.update_balance(config().daily_reward)  # 골드 업데이트
-        user.login_record = current_time_kst.timestamp()  # 로그인 기록 추가
+        user.login_record = current_time_kst  # 로그인 기록 추가
 
         # 출석 완료 메시지
         await interaction.followup.send(
