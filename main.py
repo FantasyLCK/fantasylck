@@ -1,8 +1,6 @@
 import logging
 import discord
 from discord.ext import commands
-from discord import app_commands
-from data import load_and_save_data
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -44,8 +42,6 @@ async def on_ready():
     await bot.tree.sync()  # 슬래시 커맨드 동기화
     logger.info("Slach command tree synced.")  # 커맨드 동기화 로그
     logger.info(f"Logged in as {bot.user}!")
-    load_and_save_data()
-    logger.info("Data loaded and saved.")
 
 
 # 미등록 명령어에 대한 경고 메시지 처리
