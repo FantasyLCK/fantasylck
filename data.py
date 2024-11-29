@@ -281,7 +281,7 @@ class TeamData:
     def get_team_placement_bonus_ratio(self) -> int:
         if self.is_legacy_team():
             return 0
-        return range(10)[-self.placement] * 5
+        return range(10)[-self.placement] * config().placement_bonus_gradient
 
     def __eq__(self, value) -> bool:
         if self is value:
