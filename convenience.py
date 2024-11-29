@@ -1,3 +1,4 @@
+from typing import Literal
 import logging
 import discord
 from discord.ext import commands
@@ -16,10 +17,12 @@ class Convenience(commands.Cog):
     @app_commands.command(
         name="선수목록", description="각 포지션의 선수와 가치를 확인합니다"
     )
-    @app_commands.describe(
-        position="확인하고 싶은 포지션 (탑, 정글, 미드, 원딜, 서폿 중 하나)"
-    )
-    async def player_list(self, interaction: discord.Interaction, position: str):
+    @app_commands.describe(position="확인하고 싶은 포지션")
+    async def player_list(
+        self,
+        interaction: discord.Interaction,
+        position: Literal["탑", "정글", "미드", "원딜", "서폿"],
+    ):
         if interaction.channel.id not in config().allowed_channel_id:
             await interaction.response.send_message(
                 "이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True

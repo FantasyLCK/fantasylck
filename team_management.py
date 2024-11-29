@@ -1,3 +1,4 @@
+from typing import Literal
 import logging
 from discord.ext import commands
 from discord import app_commands
@@ -40,7 +41,10 @@ class TeamManagement(commands.Cog):
     )
     @app_commands.describe(position="선수를 등록할 포지션", name="등록할 선수의 이름")
     async def purchase_player(
-        self, interaction: discord.Interaction, position: str, name: str
+        self,
+        interaction: discord.Interaction,
+        position: Literal["탑", "정글", "미드", "원딜", "서폿"],
+        name: str,
     ):
         logger.debug(f"선수등록 함수 호출: position={position}, name={name}")
 
@@ -114,7 +118,11 @@ class TeamManagement(commands.Cog):
     @app_commands.describe(
         position="판매할 선수의 포지션. 'all'을 입력하면 모든 선수를 판매합니다"
     )
-    async def sell_player(self, interaction: discord.Interaction, position: str = None):
+    async def sell_player(
+        self,
+        interaction: discord.Interaction,
+        position: Literal["탑", "정글", "미드", "원딜", "서폿", "all"],
+    ):
         if interaction.channel.id not in config().allowed_channel_id:
             await interaction.response.send_message(
                 "이 명령어는 지정된 채널에서만 사용할 수 있습니다.", ephemeral=True
