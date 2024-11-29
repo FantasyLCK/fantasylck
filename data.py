@@ -2,7 +2,7 @@ from fractions import Fraction
 import logging
 from typing import Self
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from db_connection import db
 from sharing_codes import config
@@ -457,14 +457,14 @@ class UserData:
         return True
 
     @property
-    def login_record(self):
+    def login_record(self) -> datetime:
         return self.__retrieve_db()["login_record"]
 
     @login_record.setter
-    def login_record(self, record_time):
+    def login_record(self, record_time: datetime):
         users_collection().update_one(
             {"discord_id": self.__discord_id},
-            {"$set": {"login_record": record_time}},
+            {"$set": {"login_record": record_time.astimezone(timezone.utc)}},
             upsert=True,
         )
 
@@ -517,7 +517,7 @@ class UserData:
         adc: int = -1,
         sup: int = -1,
         balance: int = 0,
-        login_record: int = 0,
+        login_record: datetime = datetime(1970, 1, 1, tzinfo=timezone.utc),
     ) -> tuple["UserData", bool]:
         if id < 0:
             return None, False
