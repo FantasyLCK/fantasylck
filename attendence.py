@@ -30,7 +30,9 @@ class Attendence(commands.Cog):
         today = current_time_kst.date()
 
         # 마지막 출석 날짜 확인
-        last_attendance_date = user.login_record.date()
+        last_attendance_date = user.login_record.astimezone(
+            ZoneInfo("Asia/Seoul")
+        ).date()
 
         # 이미 오늘 출석한 경우 처리
         if last_attendance_date == today:
