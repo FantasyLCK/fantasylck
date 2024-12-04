@@ -43,7 +43,9 @@ class Attendence(commands.Cog):
 
         # 출석 처리 및 골드 지급
         user.update_balance(config().daily_reward)  # 골드 업데이트
-        user.login_record = current_time_kst.astimezone(timezone.utc)  # 로그인 기록 추가
+        user.login_record = current_time_kst.astimezone(
+            timezone.utc
+        )  # 로그인 기록 추가
 
         # 출석 완료 메시지
         await interaction.followup.send(
