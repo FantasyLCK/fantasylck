@@ -458,7 +458,7 @@ class UserData:
 
     @property
     def login_record(self) -> datetime:
-        return self.__retrieve_db()["login_record"]
+        return self.__retrieve_db()["login_record"].replace(tzinfo=timezone.utc)
 
     @login_record.setter
     def login_record(self, record_time: datetime):
